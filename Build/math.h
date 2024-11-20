@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "FbxConvertDX11.h"
 XMMATRIX mtxrotX(float x);
 XMMATRIX mtxrotY(float y);
 XMMATRIX mtxrotZ(float z);
@@ -15,8 +16,3 @@ XMVECTOR xonevec(void);
 XMVECTOR yonevec(void);
 XMVECTOR zonevec(void);
 
-XMFLOAT3 FbxDouble3ConvertToXMFLOAT3(FbxDouble3 fbxd3);
-
-XMMATRIX FbxMatrixConvertToXMMATRIX(FbxMatrix fbxmat);
-
-XMFLOAT3 XMFLOAT3Normalize(XMFLOAT3 p);

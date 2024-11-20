@@ -1,18 +1,24 @@
 #include "SkinMeshDataList.h"
 #include "AssetsManager.h"
+#include "GameEngine.h"
+#include "DX11Texture.h"
 
-BONE::BONE()
+Bone::Bone()
 {
 	this->initMtxInverse = XMMatrixIdentity();
 	this->mtx = XMMatrixIdentity();
+	this->child = nullptr;
+	this->childCnt = 0;
+	this->isRootBone = FALSE;
+	this->parent = nullptr;
 
 }
 
-BONE::~BONE()
+Bone::~Bone()
 {
 }
 
-void BONE::LoadBone(FbxCluster* cluster)
+void Bone::LoadBone(FbxCluster* cluster)
 {
 	FbxAMatrix initmtx;
 
@@ -27,7 +33,7 @@ void BONE::LoadBone(FbxCluster* cluster)
 	
 
 }
-void BONE::LoadBone(FbxNode* node,BONE* parent)
+void Bone::LoadBone(FbxNode* node,Bone* parent)
 {
 	if (parent==nullptr)
 	{
@@ -47,7 +53,7 @@ void BONE::LoadBone(FbxNode* node,BONE* parent)
 
 	this->SetInitMtx(FbxMatrixConvertToXMMATRIX(initmtx));
 
-	this->child = new BONE[childCnt];
+	this->child = new Bone[childCnt];
 	
 
 	for (int i = 0; i < childCnt; i++)
@@ -57,7 +63,7 @@ void BONE::LoadBone(FbxNode* node,BONE* parent)
 	
 
 }
-void BONE::LoadBoneFrame(FbxCluster* cluster,FbxTime time)
+void Bone::LoadBoneFrame(FbxCluster* cluster,FbxTime time)
 {
 
 	FbxNode* bonenode = cluster->GetLink();
@@ -71,54 +77,64 @@ void BONE::LoadBoneFrame(FbxCluster* cluster,FbxTime time)
 
 }
 
-void BONE::SetInitMtx(XMMATRIX Mtx)
+void Bone::SetInitMtx(XMMATRIX Mtx)
 {
 	this->mtx = Mtx;
 	this->initMtxInverse = XMMatrixInverse(nullptr, Mtx);
 
 }
 
-XMMATRIX BONE::GetMtx(void)
+XMMATRIX Bone::GetMtx(void)
 {
 	return this->mtx;
 
 }
 
-XMMATRIX BONE::GetInitMtxInverse(void)
+XMMATRIX Bone::GetInitMtxInverse(void)
 {
 	return this->initMtxInverse;
 }
 
-void BONE::CreateChildArray(int n)
+void Bone::CreateChildArray(int n)
 {
 	this->childCnt = n;
-	child = new BONE[n];
+	child = new Bone[n];
+}
+
+int Bone::GetIndex(void)
+{
+	return this->index;
+}
+
+void Bone::SetIndex(int n)
+{
+	this->index = n;
 }
 
 
 
-SKELETON::SKELETON()
+Skeleton::Skeleton()
 {
 	this->bone = nullptr;
 	boneCnt = 0;
 }
 
-SKELETON::~SKELETON()
+Skeleton::~Skeleton()
 {
 	if (bone) delete[]bone;
 }
 
-void SKELETON::CreateBoneArray(int n)
+void Skeleton::CreateBoneArray(int n)
 {
 	this->boneCnt = n;
-	this->bone = new BONE[n];
+	this->bone = new Bone[n];
 }
 
-void SKELETON::LoadSkeleton(FbxScene* scene)
+void Skeleton::LoadSkeleton(FbxScene* scene)
 {
 	
 
-	int n = scene->GetSrcObjectCount<FbxDeformer>();
+	int n = scene->GetSrcObjectCount<FbxSkin>();
 	FbxSkin*skin = (FbxSkin*)scene->GetSrcObject<FbxDeformer>(0);
 	int bonecount=skin->GetClusterCount();
 	this->boneCnt = bonecount;
@@ -129,10 +145,7 @@ void SKELETON::LoadSkeleton(FbxScene* scene)
 	//for (int i = 0; i < bonecount; i++)
 	//{
 	//	this->bone[i].LoadBone(scene->GetSrcObject<FbxCluster>(i));
-	//}
-
-
-	////仮
+	//}																																										
 	//FbxSkeleton* fbxbone= scene->GetSrcObject<FbxSkeleton>(0);
 
 	//
@@ -145,7 +158,7 @@ void SKELETON::LoadSkeleton(FbxScene* scene)
 
 }
 
-void SKELETON::LoadSkeletonFrame(FbxSkin* skin,int boneCnt,FbxTime time)
+void Skeleton::LoadSkeletonFrame(FbxSkin* skin,int boneCnt,FbxTime time)
 {
 	this->CreateBoneArray(boneCnt);
 	for (int i = 0; i < boneCnt; i++)
@@ -159,12 +172,12 @@ void SKELETON::LoadSkeletonFrame(FbxSkin* skin,int boneCnt,FbxTime time)
 
 }
 
-BONE* SKELETON::GetBone(int n)
+Bone* Skeleton::GetBone(int n)
 {
 	return &bone[n];
 }
 
-int SKELETON::GetBoneCount(void)
+int Skeleton::GetBoneCount(void)
 {
 	return this->boneCnt;
 }
@@ -193,7 +206,7 @@ SkinMeshData::~SkinMeshData()
 }
 
 
-void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, SKELETON* sp, AssetsManager* ap)
+void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, Skeleton* sp, AssetsManager* ap)
 {
 	this->pSkeleton = sp;
 	this->SetpAssetsManager(ap);
@@ -279,15 +292,18 @@ void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, SKELETON* sp, AssetsManager* 
 
 	}
 
-
-
-
 	bool bIsUnmapped = false;
 
 	int vcnt = 0;
 
 	for (int p = 0; p < PolygonNum; p++)
 	{
+
+		FbxVector4 positions[3];
+		FbxVector4 normals[3];
+		FbxVector2 uvs[3];
+
+
 
 		int IndexNumInPolygon = mesh->GetPolygonSize(p);  // p番目のポリゴンの頂点数
 		for (int n = 0; n < IndexNumInPolygon; n++)
@@ -300,22 +316,29 @@ void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, SKELETON* sp, AssetsManager* 
 				nor);        // FbxVector4& pNormal
 			VertexArray[vcnt].Normal.x = (float)nor[0];
 			VertexArray[vcnt].Normal.y = (float)nor[1];
-			VertexArray[vcnt].Normal.z = (float)nor[2];
+			VertexArray[vcnt].Normal.z = -(float)nor[2];
 
-
+			normals[n] = nor;
 
 			// UV値取得。
 			FbxString name = uvSetNameList.GetStringAt(0);
+
 			mesh->GetPolygonVertexUV(p, n, name, uv[vcnt], bIsUnmapped);
 			VertexArray[vcnt].TexCoord.x = (float)uv[vcnt][0];
 			VertexArray[vcnt].TexCoord.y = 1.0f - (float)uv[vcnt][1];
 
+			uvs[n] = uv[vcnt];
+
+
 
 			// ポリゴンpを構成するn番目の頂点のインデックス番号
 			int IndexNumber = mesh->GetPolygonVertex(p, n);
-			VertexArray[vcnt].Position.x = (float)src[IndexNumber][0];
-			VertexArray[vcnt].Position.y = (float)src[IndexNumber][1];
+			VertexArray[vcnt].Position.x = -(float)src[IndexNumber][0];
+			VertexArray[vcnt].Position.y = -(float)src[IndexNumber][1];
 			VertexArray[vcnt].Position.z = -(float)src[IndexNumber][2];
+
+			positions[n] = src[IndexNumber];
+
 
 			this->controlPointIndexArray[vcnt] = IndexNumber;
 
@@ -326,6 +349,48 @@ void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, SKELETON* sp, AssetsManager* 
 			vcnt++;
 
 		}
+
+		// タンジェントベクトルの計算
+		FbxVector4 edge1 = positions[1] - positions[0];
+		FbxVector4 edge2 = positions[2] - positions[0];
+		FbxVector2 deltaUV1 = uvs[1] - uvs[0];
+		FbxVector2 deltaUV2 = uvs[2] - uvs[0];
+
+		float f = 1.0f /(float) (deltaUV1[0] * deltaUV2[1] - deltaUV2[0] * deltaUV1[1]);
+
+		FbxVector4 tangent;
+		tangent[0] = f * (deltaUV2[1] * edge1[0] - deltaUV1[1] * edge2[0]);
+		tangent[1] = f * (deltaUV2[1] * edge1[1] - deltaUV1[1] * edge2[1]);
+		tangent[2] = f * (deltaUV2[1] * edge1[2] - deltaUV1[1] * edge2[2]);
+		tangent[3] = 0.0f;
+
+		// 各頂点にタンジェントベクトルを設定
+		for (int n = 0; n < IndexNumInPolygon; n++)
+		{
+			VertexArray[vcnt - IndexNumInPolygon + n].Tangent.x = (float)tangent[0];
+			VertexArray[vcnt - IndexNumInPolygon + n].Tangent.y = (float)tangent[1];
+			VertexArray[vcnt - IndexNumInPolygon + n].Tangent.z = (float)tangent[2];
+			VertexArray[vcnt - IndexNumInPolygon + n].Tangent = XMFLOAT3Normalize(VertexArray[vcnt - IndexNumInPolygon + n].Tangent);
+
+
+
+			XMVECTOR nv = XMLoadFloat3(&VertexArray[vcnt - IndexNumInPolygon + n].Normal);
+			XMVECTOR tv = XMLoadFloat3(&VertexArray[vcnt - IndexNumInPolygon + n].Tangent);
+
+			XMVECTOR binv = XMVector3Cross(nv, tv);
+			binv = XMVector3Normalize(binv);
+
+			XMFLOAT3 binor;
+
+			XMStoreFloat3(&binor, binv);
+
+			VertexArray[vcnt - IndexNumInPolygon + n].BiNormal = binor;
+
+		}
+
+
+
+
 	}
 	//インデックス配列を埋める
 	unsigned int* IndexArry = nullptr;
@@ -350,13 +415,13 @@ void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, SKELETON* sp, AssetsManager* 
 
 		// 頂点バッファへのポインタを取得
 		D3D11_MAPPED_SUBRESOURCE msr;
-		this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->Map(this->GetVertexBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->Map(this->GetVertexBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
 		VERTEX_3D* pVtx = (VERTEX_3D*)msr.pData;
 
 		memcpy(pVtx, VertexArray, sizeof(VERTEX_3D) * PolygonVertexNum);
 
-		this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->Unmap(this->GetVertexBuffer(), 0);
+		this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->Unmap(this->GetVertexBuffer(), 0);
 	}
 	// インデックスバッファ生成
 	this->CreateIndexBuffer(indexnum);
@@ -365,7 +430,7 @@ void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, SKELETON* sp, AssetsManager* 
 
 		// インデックスバッファのポインタを取得
 		D3D11_MAPPED_SUBRESOURCE msr;
-		this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->Map(this->GetIndexBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->Map(this->GetIndexBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
 		unsigned int* pIdx = (unsigned int*)msr.pData;
 
@@ -378,7 +443,7 @@ void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, SKELETON* sp, AssetsManager* 
 			n = i;
 		}
 
-		this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->Unmap(this->GetIndexBuffer(), 0);
+		this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->Unmap(this->GetIndexBuffer(), 0);
 	}
 
 
@@ -402,13 +467,13 @@ void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, SKELETON* sp, AssetsManager* 
 	{
 		FbxSurfaceMaterial* fbxmaterial = node->GetMaterial(i);
 
-
 		FbxClassId id = fbxmaterial->GetClassId();
+
 
 		if (fbxmaterial != 0)
 		{
 			MATERIAL material;
-
+			ZeroMemory(&material, sizeof(MATERIAL));
 
 			// マテリアル解析
 			// LambertかPhongか
@@ -504,7 +569,6 @@ void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, SKELETON* sp, AssetsManager* 
 			int fileTextureCount = property.GetSrcObjectCount<FbxFileTexture>();
 			// プロパティが持っているレイヤードテクスチャの枚数をチェック
 			int layerNum = property.GetSrcObjectCount<FbxLayeredTexture>();
-			this->GetSubset()[i].CreateTextureArray(fileTextureCount);
 
 
 			material.noDiffuseTex = true;
@@ -528,10 +592,23 @@ void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, SKELETON* sp, AssetsManager* 
 					//最後に/が出てくる場所
 					const char* last = strrchr(fileName, slush);
 
-					strcpy(path, "data/TEXTURE");
-					strcat(path, last);
+					if (last == nullptr)
+					{
+						strcpy(path, "data/TEXTURE/");
 
-					this->GetSubset()[i].GetTexture()[0].CreateTexture(path);
+						strcat(path, fileName);
+
+					}
+					else
+					{
+						strcpy(path, "data/TEXTURE");
+
+						strcat(path, last);
+
+					}
+
+
+					this->GetSubset()[i].LoadDiffuseTex(path);
 
 
 
@@ -549,13 +626,71 @@ void SkinMeshData::LoadSkinMeshData(FbxMesh* mesh, SKELETON* sp, AssetsManager* 
 					//最後に/が出てくる場所
 					const char* last = strrchr(fileName, slush);
 
-					strcpy(path, "data/TEXTURE");
-					strcat(path, last);
+					if (last == nullptr)
+					{
+						strcpy(path, "data/TEXTURE/");
 
-					this->GetSubset()[i].GetTexture()[1].CreateTexture(path);
+						strcat(path, fileName);
+
+					}
+					else
+					{
+						strcpy(path, "data/TEXTURE");
+
+						strcat(path, last);
+
+					}
+
+
+
+					this->GetSubset()[i].LoadNormalTex(path);
+
+					material.noNormalTex = FALSE;
+				}
+
+
+				// プロパティ取得。
+				const FbxProperty propertynormal = fbxmaterial->FindProperty(
+					FbxSurfaceMaterial::sBump    // const char* pName
+				);                                  // bool pCaseSensitive = true
+
+
+
+				// プロパティが持っているレイヤードテクスチャの枚数をチェック
+				layerNum = propertynormal.GetSrcObjectCount<FbxFileTexture>();
+
+				if (layerNum > 0)
+				{
+					FbxFileTexture* pFileTextureNormal = propertynormal.GetSrcObject<FbxFileTexture>(0);
+
+					FbxFileTexture::ETextureUse m_type = FbxFileTexture::ETextureUse(pFileTextureNormal->GetTextureUse());
+
+
+					if (m_type == FbxFileTexture::ETextureUse::eStandard)
+					{
+
+						const char* fileName1 = pFileTextureNormal->GetFileName();
+						int slush = '/';
+						char* path;
+						path = new char[256];
+
+						//最後に/が出てくる場所
+						const char* last = strrchr(fileName1, slush);
+
+						strcpy(path, "data/TEXTURE");
+						strcat(path, last);
+
+						this->GetSubset()[i].LoadNormalTex(path);
+
+						delete[]path;
+
+						material.noNormalTex = FALSE;
+
+					}
 
 
 				}
+
 
 
 			}
@@ -591,6 +726,10 @@ CONTROLPOINT* SkinMeshData::GetControlPoint(int n)
 {
 	return &this->controlPoint[n];
 }
+CONTROLPOINT* SkinMeshData::GetControlPointArray(void)
+{
+	return this->controlPoint;
+}
 
 int SkinMeshData::GetControlNum(void)
 {
@@ -605,7 +744,7 @@ int* SkinMeshData::GetCPIndexArray(void)
 
 SkinMeshDataList::SkinMeshDataList()
 {
-	skeleton = new SKELETON;
+	skeleton = new Skeleton;
 	skinMeshData = nullptr;
 }
 
@@ -626,6 +765,8 @@ void SkinMeshDataList::LoadSkinMeshDataList(string filepath, AssetsManager* ap)
 	FbxIOSettings* ioSettings;
 	manager = FbxManager::Create();
 	ioSettings = FbxIOSettings::Create(manager, IOSROOT);
+
+
 	// Importerを生成
 	FbxImporter* importer = FbxImporter::Create(manager, "");
 
@@ -644,7 +785,6 @@ void SkinMeshDataList::LoadSkinMeshDataList(string filepath, AssetsManager* ap)
 
 
 	this->skeleton->LoadSkeleton(scene);
-
 
 
 
@@ -673,7 +813,7 @@ SkinMeshData* SkinMeshDataList::GetSkinMeshData(void)
 	return this->skinMeshData;
 }
 
-SKELETON* SkinMeshDataList::GetSkeleton(void)
+Skeleton* SkinMeshDataList::GetSkeleton(void)
 {
 	return this->skeleton;
 }

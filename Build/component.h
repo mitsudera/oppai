@@ -1,6 +1,9 @@
 #pragma once
+#include "Coreminimal.h"
 
+class GameEngine;
 class GameObject;
+class TransformComponent;
 
 class Component
 {

@@ -1,15 +1,44 @@
 #include "AssetsManager.h"
 #include "MeshData.h"
+#include "GameEngine.h"
 #include "MeshAnimData.h"
 #include "SkinMeshDataList.h"
 #include "SkeletonAnimData.h"
-AssetsManager::AssetsManager(Main* main)
+#include "DX11Texture.h"
+
+#define MESH_PATH "data/MODEL/mesh/"
+#define SKINMESH_PATH "data/MODEL/skinmesh/"
+
+#define MESH_ANIM_PATH "data/animation/mesh/"
+#define SKINMESH_ANIM_PATH "data/animation/skinmesh/"
+
+AssetsManager::AssetsManager()
 {
-	this->pMain = main;
+	this->gameEngine = nullptr;
+	this->skinMeshCompute = nullptr;
 }
 
+AssetsManager::AssetsManager(GameEngine* gameEngine)
+{
+	this->gameEngine = gameEngine;
+	this->skinMeshCompute = nullptr;
+
+}
 
 AssetsManager::~AssetsManager()
+{
+
+
+}
+
+void AssetsManager::Init(void)
+{
+	gameEngine->GetRenderer()->CreateCSFile("shaders/CSskinmesh.hlsl", "CSFunc", &skinMeshCompute);
+	
+	
+}
+
+void AssetsManager::Uninit(void)
 {
 
 	for (int i = 0; i < this->MeshDataListArray.size(); i++)
@@ -39,21 +68,14 @@ AssetsManager::~AssetsManager()
 	this->SkeletonAnimDataArray.clear();
 
 
+	for (int i = 0; i < this->TextureArray.size(); i++)
+	{
+		delete this->TextureArray[i];
+	}
+	this->TextureArray.clear();
 
 
-
-
-}
-
-void AssetsManager::Init(void)
-{
-
-}
-
-void AssetsManager::Uninit(void)
-{
-
-
+	if (skinMeshCompute) skinMeshCompute->Release();
 }
 
 int AssetsManager::LoadMesh(string filepath)
@@ -62,7 +84,9 @@ int AssetsManager::LoadMesh(string filepath)
 	BOOL find = FALSE;
 	for (int i = 0; i < MeshDataListArray.size(); i++)
 	{
-		if (filepath == MeshDataListArray[i]->GetFilePath())
+		 
+		string fp = MeshDataListArray[i]->GetFilePath();
+		if ((MESH_PATH+ filepath) == MeshDataListArray[i]->GetFilePath())
 		{
 			p = i;
 			find = TRUE;
@@ -74,8 +98,12 @@ int AssetsManager::LoadMesh(string filepath)
 	{
 
 		MeshDataList* meshdatalist = new MeshDataList;
+
+
+		string path = MESH_PATH+filepath;
+
 		
-		meshdatalist->LoadFbxFile(filepath, this);
+		meshdatalist->LoadFbxFile(path, this);
 
 		this->MeshDataListArray.push_back(meshdatalist);
 		p = (int)MeshDataListArray.size() - 1;
@@ -95,12 +123,11 @@ KeyFrameAnimData* AssetsManager::GetKeyFrameAnimData(int n)
 }
 
 
-
-
-Main* AssetsManager::GetMain(void)
+GameEngine* AssetsManager::GetGameEngine(void)
 {
-	return this->pMain;
+	return this->gameEngine;
 }
+
 
 int AssetsManager::LoadMeshAnim(string filepath)
 {
@@ -108,7 +135,7 @@ int AssetsManager::LoadMeshAnim(string filepath)
 	BOOL find = FALSE;
 	for (int i = 0; i < KeyFrameAnimDataArray.size(); i++)
 	{
-		if (filepath == KeyFrameAnimDataArray[i]->GetFilePath())
+		if ((MESH_ANIM_PATH + filepath) == KeyFrameAnimDataArray[i]->GetFilePath())
 		{
 			p = i;
 			find = TRUE;
@@ -118,8 +145,11 @@ int AssetsManager::LoadMeshAnim(string filepath)
 
 	if (find == FALSE)
 	{
+
+		string path = MESH_ANIM_PATH + filepath;
+
 		KeyFrameAnimData* animdata = new KeyFrameAnimData;
-		animdata->LoadKeyFrameAnim(filepath);
+		animdata->LoadKeyFrameAnim(path);
 
 		this->KeyFrameAnimDataArray.push_back(animdata);
 		p = (int)MeshDataListArray.size() - 1;
@@ -134,7 +164,7 @@ int AssetsManager::LoadSkinMesh(string filepath)
 	BOOL find = FALSE;
 	for (int i = 0; i < SkinMeshDataListArray.size(); i++)
 	{
-		if (filepath == SkinMeshDataListArray[i]->GetFilePath())
+		if ((SKINMESH_PATH + filepath) == SkinMeshDataListArray[i]->GetFilePath())
 		{
 			p = i;
 			find = TRUE;
@@ -144,10 +174,12 @@ int AssetsManager::LoadSkinMesh(string filepath)
 
 	if (find == FALSE)
 	{
+		string path = SKINMESH_PATH + filepath;
+
 
 		SkinMeshDataList* skinmeshdatalist = new SkinMeshDataList;
 
-		skinmeshdatalist->LoadSkinMeshDataList(filepath, this);
+		skinmeshdatalist->LoadSkinMeshDataList(path, this);
 
 		this->SkinMeshDataListArray.push_back(skinmeshdatalist);
 		p = (int)SkinMeshDataListArray.size() - 1;
@@ -156,6 +188,12 @@ int AssetsManager::LoadSkinMesh(string filepath)
 
 	return p;
 }
+
+SkinMeshDataList* AssetsManager::GetSkinMeshDataList(int n)
+{
+	return this->SkinMeshDataListArray[n];
+}
+
 SkeletonAnimData* AssetsManager::GetSkeletonAnimData(int n)
 {
 	return this->SkeletonAnimDataArray[n];
@@ -166,7 +204,45 @@ int AssetsManager::LoadSkeletonAnimData(string filepath)
 	BOOL find = FALSE;
 	for (int i = 0; i < SkeletonAnimDataArray.size(); i++)
 	{
-		if (filepath == SkeletonAnimDataArray[i]->GetFilePath())
+		if ((SKINMESH_ANIM_PATH + filepath) == SkeletonAnimDataArray[i]->GetFilePath())
+		{
+			p = i;
+			find = TRUE;
+			break;
+		}
+	}
+
+	if (find == FALSE)
+	{
+		string path = SKINMESH_ANIM_PATH + filepath;
+
+
+		SkeletonAnimData* skeletonAnimdata = new SkeletonAnimData;
+
+		
+		skeletonAnimdata->LoadSkeletonAnimData(path);
+
+		this->SkeletonAnimDataArray.push_back(skeletonAnimdata);
+		p = (int)SkeletonAnimDataArray.size() - 1;
+
+	}
+
+	return p;
+}
+DX11Texture* AssetsManager::GetTexture(int n)
+{
+
+
+	return this->TextureArray[n];
+}
+int AssetsManager::LoadTexture(string filepath)
+{
+	int p = -1;
+	BOOL find = FALSE;
+	for (int i = 0; i < TextureArray.size(); i++)
+	{
+		string  fp = TextureArray[i]->GetFilePath();
+		if (filepath == TextureArray[i]->GetFilePath())
 		{
 			p = i;
 			find = TRUE;
@@ -177,19 +253,21 @@ int AssetsManager::LoadSkeletonAnimData(string filepath)
 	if (find == FALSE)
 	{
 
-		SkeletonAnimData* skeletonAnimdata = new SkeletonAnimData;
+		DX11Texture* tex = new DX11Texture;
+		tex->SetManager(this);
 
-		
-		skeletonAnimdata->LoadSkeletonAnimData(filepath);
+		tex->CreateSRV(filepath);
 
-		this->SkeletonAnimDataArray.push_back(skeletonAnimdata);
-		p = (int)SkeletonAnimDataArray.size() - 1;
+		this->TextureArray.push_back(tex);
+		p = (int)TextureArray.size() - 1;
 
 	}
 
 	return p;
 }
-SkinMeshDataList* AssetsManager::GetSkinMeshDataList(int n)
+
+void AssetsManager::SetSkinMeshCompute(void)
 {
-	return this->SkinMeshDataListArray[n];
+	GetGameEngine()->GetRenderer()->GetDeviceContext()->CSSetShader(skinMeshCompute, nullptr, 0);
 }
+

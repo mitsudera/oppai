@@ -24,6 +24,7 @@ TransformComponent::TransformComponent()
 	this->mtxroty=XMMatrixRotationQuaternion(qtonY);
 	this->mtxrotz=XMMatrixRotationQuaternion(qtonZ);
 	this->mtxWorld = XMMatrixIdentity();
+	this->fDirection = { 0.0f,0.0f,1.0f };
 
 
 }
@@ -51,6 +52,7 @@ TransformComponent::TransformComponent(GameObject* gameObject)
 	this->mtxrotz = XMMatrixRotationQuaternion(qtonZ);
 	this->mtxWorld = XMMatrixIdentity();
 
+	this->fDirection = { 0.0f,0.0f,1.0f };
 
 	this->pGameObject = gameObject;
 }

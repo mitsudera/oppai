@@ -1,8 +1,10 @@
 #include "component.h"
+#include "transformcomponent.h"
+#include "gameobject.h"
+#include "GameEngine.h"
 
 Component::Component()
 {
-
 }
 Component::Component(GameObject* gameObject)
 {

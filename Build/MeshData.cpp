@@ -5,14 +5,14 @@
 //
 //=============================================================================
 #include "meshdata.h"
+#include "GameEngine.h"
 #include "AssetsManager.h"
-
+#include "DX11Texture.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 #define TEXTURE_PATH	"data/TEXTURE/"
-
 
 //*****************************************************************************
 // 構造体定義
@@ -30,71 +30,27 @@
 //*****************************************************************************
 // クラス関数
 //*****************************************************************************
-DX11_TEXTURE::DX11_TEXTURE()
-{
-	psubset = nullptr;
-	this->Texture = nullptr;
-	
-}
-
-DX11_TEXTURE::~DX11_TEXTURE()
-{
-	if(this->Texture)	Texture->Release();
-}
-
-
-ID3D11ShaderResourceView* DX11_TEXTURE::GetTexture(void)
-{
-	return this->Texture;
-}
-void DX11_TEXTURE::CreateTexture(char* path)
-{
-
-	D3DX11CreateShaderResourceViewFromFile(
-		this->psubset->GetpMeshData()->GetpAssetsManager()->GetMain()->GetRenderer()->GetDevice(),
-		path,
-		NULL,
-		NULL,
-		&Texture,
-		NULL);
-
-}
-void DX11_TEXTURE::SetShaderResource(void)
-{
-	this->psubset->GetpMeshData()->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->PSSetShaderResources(0, 1, &Texture);
-}
-DX11_SUBSET* DX11_TEXTURE::GetpSubset(void)
-{
-	return psubset;
-}
-void DX11_TEXTURE::SetpSubset(DX11_SUBSET* subset)
-{
-	this->psubset = subset;
-}
-
 
 
 DX11_SUBSET::DX11_SUBSET()
 {
 	this->StartIndex = 0;
 	this->IndexNum = 0;
-	this->texnum = 0;
 	this->Material.Ambient = { 0.0f,0.0f,0.0f,0.0f };
 	this->Material.Diffuse = { 0.0f,0.0f,0.0f,0.0f };
 	this->Material.Emission = { 0.0f,0.0f,0.0f,0.0f };
 	this->Material.Specular = { 0.0f,0.0f,0.0f,0.0f };
 	this->Material.Shininess = 0.0f;
 	this->Material.noDiffuseTex = TRUE;
-	this->Material.noNormalTex = FALSE;
-	this->Texture = nullptr;
+	this->Material.noNormalTex = TRUE;
 	this->pmeshdata = nullptr;
+	this->textureDiffuseIndex = -1;
+	this->textureNormalIndex = -1;
+
 }
 DX11_SUBSET::~DX11_SUBSET()
 {
-	for (int i = 0; i < this->texnum; i++)
-	{
-		delete[] Texture;
-	}
+	
 }
 
 void DX11_SUBSET::SetStartIndex(unsigned short n)
@@ -115,14 +71,6 @@ unsigned short DX11_SUBSET::GetIndexNum(void)
 	return this->IndexNum;
 }
 
-void DX11_SUBSET::SetTexNum(int n)
-{
-	this->texnum = n;
-}
-int DX11_SUBSET::GetTexNum(void)
-{
-	return this->texnum;
-}
 
 void DX11_SUBSET::SetMaterial(MATERIAL m)
 {
@@ -134,24 +82,6 @@ MATERIAL DX11_SUBSET::GetMaterial(void)
 }
 
 
-void DX11_SUBSET::CreateTextureArray(int n)
-{
-	this->Texture = new DX11_TEXTURE[n];
-	this->texnum = n;
-	for (int i = 0; i < n; i++)
-	{
-		this->Texture[i].SetpSubset(this);
-	}
-
-
-}
-
-
-DX11_TEXTURE* DX11_SUBSET::GetTexture(void)
-{
-	return this->Texture;
-}
-
 MeshData* DX11_SUBSET::GetpMeshData(void)
 {
 	return this->pmeshdata;
@@ -160,6 +90,45 @@ MeshData* DX11_SUBSET::GetpMeshData(void)
 void DX11_SUBSET::SetpMeshData(MeshData* meshdata)
 {
 	this->pmeshdata = meshdata;
+}
+
+void DX11_SUBSET::LoadDiffuseTex(string filepath)
+{
+	this->textureDiffuseIndex = pmeshdata->GetpAssetsManager()->LoadTexture(filepath);
+
+}
+
+void DX11_SUBSET::LoadNormalTex(string filepath)
+{
+	this->textureNormalIndex = pmeshdata->GetpAssetsManager()->LoadTexture(filepath);
+
+}
+
+int DX11_SUBSET::GetDiffuseIndex(void)
+{
+	return textureDiffuseIndex;
+}
+
+int DX11_SUBSET::GetNormalIndex(void)
+{
+	return textureNormalIndex;
+}
+
+void DX11_SUBSET::SetShaderResouce(void)
+{
+
+	if (Material.noDiffuseTex==FALSE)
+	{
+		pmeshdata->GetpAssetsManager()->GetTexture(textureDiffuseIndex)->SetShaderResource(0);
+
+	}
+
+	if (Material.noNormalTex==FALSE)
+	{
+		pmeshdata->GetpAssetsManager()->GetTexture(textureNormalIndex)->SetShaderResource(1);
+
+	}
+
 }
 
 
@@ -209,7 +178,7 @@ void MeshData::CreateVertexBuffer(int VertNum)
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDevice()->CreateBuffer(&bd, NULL, &this->VertexBuffer);
+	this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDevice()->CreateBuffer(&bd, NULL, &this->VertexBuffer);
 
 
 
@@ -241,7 +210,7 @@ void MeshData::CreateIndexBuffer(int IndexNum)
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDevice()->CreateBuffer(&bd, NULL, &this->IndexBuffer);
+	this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDevice()->CreateBuffer(&bd, NULL, &this->IndexBuffer);
 
 
 }
@@ -320,17 +289,17 @@ void MeshData::BufferSetVertex(void)
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 
-	this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->IASetVertexBuffers(0, 1, &this->VertexBuffer, &stride, &offset);
+	this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->IASetVertexBuffers(0, 1, &this->VertexBuffer, &stride, &offset);
 }
 
 void MeshData::BufferSetIndex(void)
 {
 
 	// プリミティブトポロジ設定
-	this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// インデックスバッファ設定
-	this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->IASetIndexBuffer(this->IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->IASetIndexBuffer(this->IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 }
 
@@ -435,24 +404,25 @@ AssetsManager* MeshDataList::GetpAssetsManager(void)
 
 void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 {
-
+	using namespace fbxsdk;
 	this->pAssetsManager = ap;
 	FbxNode* node = mesh->GetNode();
 	
 
 	int PolygonNum = mesh->GetPolygonCount();               //総ポリゴン数
+	if (PolygonNum==0)
+	{
+		return;
+	}
+	
 	int PolygonVertexNum = mesh->GetPolygonVertexCount();   //ポリゴン頂点インデックス数
-	int* IndexAry = mesh->GetPolygonVertices();             //ポリゴン頂点インデックス配列
 	int controlNum = mesh->GetControlPointsCount();         // 頂点座標数
 	FbxVector4* src = mesh->GetControlPoints();             // 頂点座標配列
 	VERTEX_3D* VertexArray = nullptr;
 	VertexArray = new VERTEX_3D[PolygonVertexNum];
+	ZeroMemory(VertexArray, sizeof(VERTEX_3D) * PolygonVertexNum);
 	unsigned int indexnum = PolygonNum * 3;
 	this->SetIndexNum(indexnum);
-
-	int n = mesh->GetElementTangentCount();
-	FbxGeometryElementTangent* t= mesh->GetElementTangent();
-	//int n=mesh->GetElementPolygonGroupCount();
 	
 	//頂点配列を埋める
 	FbxStringList uvSetNameList;
@@ -464,6 +434,8 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 
 	unsigned int* IndexArry = nullptr;
 	IndexArry = new unsigned int[indexnum];
+
+	ZeroMemory(IndexArry, sizeof(unsigned int) * indexnum);
 	int ic = 0;
 
 
@@ -472,29 +444,39 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 	for (int p = 0; p < PolygonNum; p++)
 	{
 
+
+
 		int IndexNumInPolygon = mesh->GetPolygonSize(p);  // p番目のポリゴンの頂点数
+
+
 
 		if (IndexNumInPolygon==3)
 		{
+			FbxVector4 positions[3];
+			FbxVector4 normals[3];
+			FbxVector2 uvs[3];
+
 			for (int n = 0; n < IndexNumInPolygon; n++)
 			{
 				FbxVector4 nor;
 
 				mesh->GetPolygonVertexNormal(
-					p,				// int pPolyIndex
-					n,				// int pVertexIndex
-					nor);        // FbxVector4& pNormal
+					p,				// ポリゴン番号
+					n,				// 何番目の頂点
+					nor);			// 法線の
 				VertexArray[vcnt].Normal.x = (float)nor[0];
 				VertexArray[vcnt].Normal.y = (float)nor[1];
-				VertexArray[vcnt].Normal.z = (float)nor[2];
+				VertexArray[vcnt].Normal.z = -(float)nor[2];
 
-
+				normals[n] = nor;
 
 				// UV値取得。
 				FbxString name = uvSetNameList.GetStringAt(0);
 				mesh->GetPolygonVertexUV(p, n, name, uv[vcnt], bIsUnmapped);
 				VertexArray[vcnt].TexCoord.x = (float)uv[vcnt][0];
 				VertexArray[vcnt].TexCoord.y = 1.0f - (float)uv[vcnt][1];
+
+				uvs[n] = uv[vcnt];
 
 
 				// ポリゴンpを構成するn番目の頂点のインデックス番号
@@ -503,6 +485,7 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 				VertexArray[vcnt].Position.y = (float)src[IndexNumber][1];
 				VertexArray[vcnt].Position.z = -(float)src[IndexNumber][2];
 
+				positions[n] = src[IndexNumber];
 
 				VertexArray[vcnt].Diffuse = { 1.0f,1.0f,1.0f,1.0f };
 
@@ -510,6 +493,45 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 				ic++;
 				vcnt++;
 
+			}
+
+
+			// タンジェントベクトルの計算
+			FbxVector4 edge1 = positions[1] - positions[0];
+			FbxVector4 edge2 = positions[2] - positions[0];
+			FbxVector2 deltaUV1 = uvs[1] - uvs[0];
+			FbxVector2 deltaUV2 = uvs[2] - uvs[0];
+
+			float f = 1.0f / (float)(deltaUV1[0] * deltaUV2[1] - deltaUV2[0] * deltaUV1[1]);
+
+			FbxVector4 tangent;
+			tangent[0] = f * (deltaUV2[1] * edge1[0] - deltaUV1[1] * edge2[0]);
+			tangent[1] = f * (deltaUV2[1] * edge1[1] - deltaUV1[1] * edge2[1]);
+			tangent[2] = f * (deltaUV2[1] * edge1[2] - deltaUV1[1] * edge2[2]);
+			tangent[3] = 0.0f;
+
+			// 各頂点にタンジェントベクトルを設定
+			for (int n = 0; n < IndexNumInPolygon; n++)
+			{
+				VertexArray[vcnt - IndexNumInPolygon + n].Tangent.x = (float)tangent[0];
+				VertexArray[vcnt - IndexNumInPolygon + n].Tangent.y = (float)tangent[1];
+				VertexArray[vcnt - IndexNumInPolygon + n].Tangent.z = (float)tangent[2];
+				VertexArray[vcnt - IndexNumInPolygon + n].Tangent = XMFLOAT3Normalize(VertexArray[vcnt - IndexNumInPolygon + n].Tangent);
+				
+
+
+				XMVECTOR nv = XMLoadFloat3(&VertexArray[vcnt - IndexNumInPolygon + n].Normal);
+				XMVECTOR tv = XMLoadFloat3(&VertexArray[vcnt - IndexNumInPolygon + n].Tangent);
+
+				XMVECTOR binv = XMVector3Cross(nv, tv);
+				binv = XMVector3Normalize(binv);
+
+				XMFLOAT3 binor;
+
+				XMStoreFloat3(&binor, binv);
+
+				VertexArray[vcnt - IndexNumInPolygon + n].BiNormal=binor;
+			
 			}
 
 		}
@@ -562,8 +584,10 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 					nor);        // FbxVector4& pNormal
 				VertexArray[vcnt].Normal.x = (float)nor[0];
 				VertexArray[vcnt].Normal.y = (float)nor[1];
-				VertexArray[vcnt].Normal.z = (float)nor[2];
+				VertexArray[vcnt].Normal.z = -(float)nor[2];
 
+
+				
 
 
 				// UV値取得。
@@ -571,6 +595,10 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 				mesh->GetPolygonVertexUV(p, n, name, uv[vcnt], bIsUnmapped);
 				VertexArray[vcnt].TexCoord.x = (float)uv[vcnt][0];
 				VertexArray[vcnt].TexCoord.y = 1.0f - (float)uv[vcnt][1];
+
+
+
+
 
 
 				// ポリゴンpを構成するn番目の頂点のインデックス番号
@@ -609,6 +637,7 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 	//	ic++;
 	//}
 
+
 	// 頂点バッファ生成
 	this->CreateVertexBuffer(ic);
 
@@ -616,14 +645,16 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 
 		// 頂点バッファへのポインタを取得
 		D3D11_MAPPED_SUBRESOURCE msr;
-		this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->Map(this->GetVertexBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->Map(this->GetVertexBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
 		VERTEX_3D* pVtx = (VERTEX_3D*)msr.pData;
 
 		memcpy(pVtx, VertexArray, sizeof(VERTEX_3D) * PolygonVertexNum);
 
-		this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->Unmap(this->GetVertexBuffer(), 0);
+		this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->Unmap(this->GetVertexBuffer(), 0);
 	}
+
+
 	// インデックスバッファ生成
 	this->CreateIndexBuffer(indexnum);
 
@@ -631,20 +662,20 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 
 		// インデックスバッファのポインタを取得
 		D3D11_MAPPED_SUBRESOURCE msr;
-		this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->Map(this->GetIndexBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->Map(this->GetIndexBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 
 		unsigned int* pIdx = (unsigned int*)msr.pData;
 
-		memcpy(pIdx, IndexArry, sizeof(unsigned int) * indexnum);
+		//memcpy(pIdx, fbxIndexAry, sizeof(unsigned int) * indexnum);
 
-		//int n;
-		//for (unsigned int i = 0; i < indexnum; i++)
-		//{
-		//	pIdx[i] = IndexArry[i];
-		//	n = i;
-		//}
+		int n;
+		for (unsigned int i = 0; i < indexnum; i++)
+		{
+			pIdx[i] = IndexArry[i];
+			n = i;
+		}
 
-		this->GetpAssetsManager()->GetMain()->GetRenderer()->GetDeviceContext()->Unmap(this->GetIndexBuffer(), 0);
+		this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->Unmap(this->GetIndexBuffer(), 0);
 	}
 
 
@@ -654,9 +685,6 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 
 
 	// マテリアルの数
-	//int materialNum = 1;
-
-
 
 	int mtlcnt = node->GetMaterialCount();
 
@@ -666,26 +694,28 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 	// マテリアル情報を取得
 	for (int i = 0; i < mtlcnt; i++)
 	{
-		FbxSurfaceMaterial* fbxmaterial =node->GetMaterial(i);
+		FbxSurfaceMaterial* fbxmaterial = node->GetMaterial(i);
 		
 		FbxClassId id = fbxmaterial->GetClassId();
 
 		if (fbxmaterial != 0)
 		{
 			MATERIAL material;
+			ZeroMemory(&material, sizeof(MATERIAL));
 
 			// マテリアル解析
 			// LambertかPhongか
 			//lambart
 			material.phong = 0;
 
-			if (id==(FbxSurfaceLambert::ClassId))
+			
+
+			if (id == (FbxSurfaceLambert::ClassId))
 			{
 
 				// Lambertにダウンキャスト
 				FbxSurfaceLambert* lambert = (FbxSurfaceLambert*)fbxmaterial;
 
-				material.phong = 0;
 
 				//アンビエント
 				FbxDouble3 amb = lambert->Ambient;
@@ -716,7 +746,7 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 
 			}
 			//phong
-			else if (id==(FbxSurfacePhong::ClassId))
+			else if (id == (FbxSurfacePhong::ClassId))
 			{
 
 				// Phongにダウンキャスト
@@ -762,13 +792,15 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 			else
 			{
 				material.phong = 0;
-				material.Diffuse.x = (float)1.0f;
-				material.Diffuse.y = (float)1.0f;
-				material.Diffuse.z = (float)1.0f;
+				material.Diffuse.x = 1.0f;
+				material.Diffuse.y = 1.0f;
+				material.Diffuse.z = 1.0f;
 				material.Diffuse.w = 1.0f;
 
 			}
 
+			material.noDiffuseTex = true;
+			material.noNormalTex = true;
 
 
 			// プロパティ取得。
@@ -777,18 +809,13 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 			);                                  // bool pCaseSensitive = true
 
 
-			int fileTextureCount = property.GetSrcObjectCount<FbxFileTexture>();
+
 			// プロパティが持っているレイヤードテクスチャの枚数をチェック
-			int layerNum = property.GetSrcObjectCount<FbxLayeredTexture>();
-			this->GetSubset()[i].CreateTextureArray(fileTextureCount);
+			int layerNum = property.GetSrcObjectCount<FbxFileTexture>();
 
-
-			material.noDiffuseTex = true;
-			material.noNormalTex = true;
-			for (int j = 0; j < fileTextureCount; j++)
+			if (layerNum>0)
 			{
-
-				FbxFileTexture* pFileTexture = mesh->GetScene()->GetSrcObject<FbxFileTexture>(j);
+				FbxFileTexture* pFileTexture = property.GetSrcObject<FbxFileTexture>(0);
 
 				FbxFileTexture::ETextureUse m_type = FbxFileTexture::ETextureUse(pFileTexture->GetTextureUse());
 
@@ -797,6 +824,7 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 				if (m_type == FbxFileTexture::ETextureUse::eStandard)
 				{
 					const char* fileName = pFileTexture->GetFileName();
+
 					int slush = '/';
 					char* path;
 					path = new char[256];
@@ -804,42 +832,90 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 					//最後に/が出てくる場所
 					const char* last = strrchr(fileName, slush);
 
-					strcpy(path, "data/TEXTURE");
-					strcat(path, last);
 
-					this->GetSubset()[i].GetTexture()[0].CreateTexture(path);
+					if (last == nullptr)
+					{
+						strcpy(path, "data/TEXTURE/");
+
+						strcat(path, fileName);
+
+					}
+					else
+					{
+						strcpy(path, "data/TEXTURE");
+
+						strcat(path, last);
+
+					}
+
+					this->GetSubset()[i].LoadDiffuseTex(path);
 
 					delete[]path;
 
 					// マテリアル設定
 					material.noDiffuseTex = false;
 				}
-				if (m_type == FbxFileTexture::ETextureUse::eBumpNormalMap)
+
+			}
+
+
+
+
+
+
+			// プロパティ取得。
+			const FbxProperty propertynormal = fbxmaterial->FindProperty(
+				FbxSurfaceMaterial::sBump    // const char* pName
+			);                                  // bool pCaseSensitive = true
+
+
+
+			// プロパティが持っているレイヤードテクスチャの枚数をチェック
+			layerNum = propertynormal.GetSrcObjectCount<FbxFileTexture>();
+
+			if (layerNum>0)
+			{
+				FbxFileTexture* pFileTextureNormal = propertynormal.GetSrcObject<FbxFileTexture>(0);
+
+				FbxFileTexture::ETextureUse m_type = FbxFileTexture::ETextureUse(pFileTextureNormal->GetTextureUse());
+
+
+				if (m_type == FbxFileTexture::ETextureUse::eStandard)
 				{
 
-					const char* fileName = pFileTexture->GetFileName();
+					const char* fileName1 = pFileTextureNormal->GetFileName();
 					int slush = '/';
 					char* path;
 					path = new char[256];
 
 					//最後に/が出てくる場所
-					const char* last = strrchr(fileName, slush);
+					const char* last = strrchr(fileName1, slush);
 
 					strcpy(path, "data/TEXTURE");
 					strcat(path, last);
 
-					this->GetSubset()[i].GetTexture()[1].CreateTexture(path);
+					this->GetSubset()[i].LoadNormalTex(path);
 
 					delete[]path;
+
+					material.noNormalTex = FALSE;
 
 				}
 
 
 			}
+
+
+
+
+
+
+
+			material.Diffuse.w = 1.0f;
 			this->GetSubset()[i].SetMaterial(material);
 			this->GetSubset()[i].SetpMeshData(this);
 
-			MATERIAL m = this->GetSubset()[i].GetMaterial();
+
 		}
 	}
 

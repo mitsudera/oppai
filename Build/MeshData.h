@@ -11,33 +11,12 @@
 //ƒNƒ‰ƒX’è‹`
 //*********************************************************
 
-class DX11_TEXTURE;
+class DX11Texture;
 class DX11_SUBSET;
 class MeshData;
 class MeshDataList;
 class AssetsManager;
 
-class DX11_TEXTURE
-{
-
-	DX11_SUBSET* psubset;
-	ID3D11ShaderResourceView* Texture;
-
-public:
-	DX11_TEXTURE();
-	~DX11_TEXTURE();
-	
-	ID3D11ShaderResourceView* GetTexture(void);
-	void CreateTexture(char* path);
-
-	void SetShaderResource(void);
-
-	DX11_SUBSET* GetpSubset(void);
-	void SetpSubset(DX11_SUBSET* subset);
-
-private:
-
-};
 
 
 
@@ -47,10 +26,9 @@ class DX11_SUBSET
 	MeshData* pmeshdata;
 	unsigned short	StartIndex;
 	unsigned short	IndexNum;
-	int				texnum;
 	MATERIAL		Material;
-	DX11_TEXTURE*	Texture;
-
+	int textureDiffuseIndex;
+	int textureNormalIndex;
 
 public:
 	DX11_SUBSET();
@@ -64,22 +42,22 @@ public:
 	void SetIndexNum(unsigned short n);
 	unsigned short GetIndexNum(void);
 
-	void SetTexNum(int n);
-	int GetTexNum(void);
 
 	void SetMaterial(MATERIAL m);
 	MATERIAL GetMaterial(void);
 
 
-	void CreateTextureArray(int n);
-	DX11_TEXTURE* GetTexture(void);
-
-
+	void SetpMeshData(MeshData* meshdata);
 	MeshData* GetpMeshData(void);
 
 
+	void LoadDiffuseTex(string filepath);
+	void LoadNormalTex(string filepath);
 
-	void SetpMeshData(MeshData* meshdata);
+	int GetDiffuseIndex(void);
+	int GetNormalIndex(void);
+
+	void SetShaderResouce(void);
 
 };
 
@@ -114,8 +92,6 @@ public:
 	 void SetIndexNum(unsigned int n);
 	 unsigned int GetIndexNum(void);
 
-
-
 	 void CreateIndexBuffer(int n);
 	 ID3D11Buffer* GetIndexBuffer(void);
 
@@ -127,8 +103,6 @@ public:
 
 	 void SetOffset(XMMATRIX offsetmtx);
 	 XMMATRIX GetOffset(void);
-		
-
 
 	 void SetSubsetNum(int n);
 	 unsigned short GetSubsetNum(void);

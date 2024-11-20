@@ -25,9 +25,6 @@
     <Filter Include="misc">
       <UniqueIdentifier>{c7d76af9-1c49-4485-bee2-982201477c30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="level">
-      <UniqueIdentifier>{5e3f07c7-4857-49ac-9634-fef70d5abf26}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Manager">
       <UniqueIdentifier>{70da4c6b-54d9-4707-9895-07d8094c2aa9}</UniqueIdentifier>
     </Filter>
@@ -49,290 +46,174 @@
     <Filter Include="Input">
       <UniqueIdentifier>{a57e3c68-9334-4fae-aa89-3be1329fc009}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{92240370-249c-4cc6-b751-f4db8574ec29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Light">
+      <UniqueIdentifier>{7f67ff35-50c5-4a0a-9602-3a607f746c67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{cb75e590-abba-4ede-8978-6a6eef771ee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{b95820f7-cdb8-472b-9c71-795ab37060c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="collision.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="math.h">
-      <Filter>math</Filter>
-    </ClInclude>
     <ClInclude Include="Coreminimal.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="Main.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="level.h">
-      <Filter>level</Filter>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h">
+    <ClInclude Include="Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
       <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="gameobject.h">
-      <Filter>gameobject</Filter>
+    <ClInclude Include="Buffer.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="component.h">
+    <ClInclude Include="GameEngine.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetsManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComponent.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="primitivecomponent.h">
       <Filter>component</Filter>
     </ClInclude>
     <ClInclude Include="transformcomponent.h">
       <Filter>component</Filter>
     </ClInclude>
-    <ClInclude Include="player.h">
-      <Filter>gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="SkinMeshComponent.h">
+    <ClInclude Include="component.h">
       <Filter>component</Filter>
     </ClInclude>
-    <ClInclude Include="SkinMeshDataList.h">
-      <Filter>ModelAnimation</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetsManager.h">
-      <Filter>Manager</Filter>
+    <ClInclude Include="gameobject.h">
+      <Filter>gameobject</Filter>
     </ClInclude>
     <ClInclude Include="MeshAnimData.h">
-      <Filter>ModelAnimation</Filter>
+      <Filter>Data</Filter>
     </ClInclude>
     <ClInclude Include="MeshData.h">
-      <Filter>ModelAnimation</Filter>
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DX11Texture.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="math.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxConvertDX11.h">
+      <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="SkeletonAnimData.h">
-      <Filter>ModelAnimation</Filter>
+      <Filter>Data</Filter>
     </ClInclude>
-    <ClInclude Include="meshcomponent.h">
-      <Filter>component</Filter>
+    <ClInclude Include="SkinMeshDataList.h">
+      <Filter>Data</Filter>
     </ClInclude>
-    <ClInclude Include="primitivecomponent.h">
-      <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="Title.h">
-      <Filter>level</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraComponent.h">
-      <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="SkySphere.h">
-      <Filter>gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectionalLightComponent.h">
-      <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="LightComponent.h">
-      <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowMapping.h">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="BlueField.h">
-      <Filter>gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="input.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="ColliderComponent.h">
-      <Filter>component</Filter>
+    <ClInclude Include="collision.h">
+      <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="CollisionManger.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="MissileLauncherComponent.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SquareParticle.h">
-      <Filter>gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="Buffer.h">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerBullet.h">
-      <Filter>gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="GunComponent.h">
+    <ClInclude Include="ColliderComponent.h">
       <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="BulletComponent.h">
-      <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="JetEngineComponent.h">
-      <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="BulletList.h">
-      <Filter>gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyStatusComponent.h">
-      <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="Missile.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="MissileComponent.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="MissleList.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Effect.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="EffectList.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Cloud.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CloudComponent.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="collision.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
-    <ClCompile Include="math.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="level.cpp">
-      <Filter>level</Filter>
+    <ClCompile Include="input.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="gameobject.cpp">
-      <Filter>gameobject</Filter>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="component.cpp">
+    <ClCompile Include="GameEngine.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetsManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Light</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraComponent.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="primitivecomponent.cpp">
       <Filter>component</Filter>
     </ClCompile>
     <ClCompile Include="transformcomponent.cpp">
       <Filter>component</Filter>
     </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="SkinMeshComponent.cpp">
+    <ClCompile Include="component.cpp">
       <Filter>component</Filter>
     </ClCompile>
-    <ClCompile Include="SkinMeshDataList.cpp">
-      <Filter>ModelAnimation</Filter>
-    </ClCompile>
-    <ClCompile Include="AssetsManager.cpp">
-      <Filter>Manager</Filter>
+    <ClCompile Include="gameobject.cpp">
+      <Filter>gameobject</Filter>
     </ClCompile>
     <ClCompile Include="MeshAnimData.cpp">
-      <Filter>ModelAnimation</Filter>
+      <Filter>Data</Filter>
     </ClCompile>
     <ClCompile Include="MeshData.cpp">
-      <Filter>ModelAnimation</Filter>
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DX11Texture.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="math.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxConvertDX11.cpp">
+      <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="SkeletonAnimData.cpp">
-      <Filter>ModelAnimation</Filter>
+      <Filter>Data</Filter>
     </ClCompile>
-    <ClCompile Include="meshcomponent.cpp">
-      <Filter>component</Filter>
+    <ClCompile Include="SkinMeshDataList.cpp">
+      <Filter>Data</Filter>
     </ClCompile>
-    <ClCompile Include="primitivecomponent.cpp">
-      <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="Title.cpp">
-      <Filter>level</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraComponent.cpp">
-      <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="SkySphere.cpp">
-      <Filter>gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="Light.cpp">
-      <Filter>gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectionalLightComponent.cpp">
-      <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="LightComponent.cpp">
-      <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadowMapping.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="BlueField.cpp">
-      <Filter>gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="input.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="ColliderComponent.cpp">
-      <Filter>component</Filter>
+    <ClCompile Include="collision.cpp">
+      <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="CollisionManger.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="MissileLauncherComponent.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SquareParticle.cpp">
-      <Filter>gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerBullet.cpp">
-      <Filter>gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="GunComponent.cpp">
+    <ClCompile Include="ColliderComponent.cpp">
       <Filter>component</Filter>
     </ClCompile>
-    <ClCompile Include="BulletComponent.cpp">
-      <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="JetEngineComponent.cpp">
-      <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="BulletList.cpp">
-      <Filter>gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyStatusComponent.cpp">
-      <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="Missile.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="MissileComponent.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="MissleList.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Effect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="EffectList.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Cloud.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CloudComponent.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="shader.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>

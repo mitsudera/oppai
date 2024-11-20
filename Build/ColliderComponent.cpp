@@ -1,7 +1,7 @@
 #include "ColliderComponent.h"
 #include "gameobject.h"
 #include "CollisionManger.h"
-
+#include "Scene.h"
 ColliderComponent::ColliderComponent(GameObject* gameObject)
 {
 	this->pGameObject = gameObject;
@@ -29,7 +29,7 @@ void ColliderComponent::Init(void)
 void ColliderComponent::Uninit(void)
 {
 
-	this->GetGameObject()->GetLevel()->GetCollisionManager()->DeleteCllider(this);
+	this->GetGameObject()->GetScene()->GetCollisionManager()->DeleteCllider(this);
 
 }
 
@@ -267,15 +267,13 @@ XMFLOAT3 ColliderComponent::GetPosition(void)
 void ColliderComponent::onCollider(void)
 {
 	this->Init();
-	this->GetGameObject()->GetLevel()->GetCollisionManager()->AddCollider(this);
-
-
+	this->GetGameObject()->GetScene()->GetCollisionManager()->AddCollider(this);
 }
 
 void ColliderComponent::offCollider(void)
 {
 
-	this->GetGameObject()->GetLevel()->GetCollisionManager()->DeleteCllider(this);
+	this->GetGameObject()->GetScene()->GetCollisionManager()->DeleteCllider(this);
 
 }
 

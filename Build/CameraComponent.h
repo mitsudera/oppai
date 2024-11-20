@@ -42,6 +42,7 @@ public:
 
 
 	void SetViewPort(int m_type);
+	void GetViewPort(XMFLOAT2& size, XMFLOAT2& pos);
 	int GetViewPortType(void);
 
 	virtual void Init(void) override;
@@ -64,6 +65,11 @@ public:
 
 private:
 	void SetCamera(void);
+
+	XMFLOAT2 vpSize;
+	XMFLOAT2 vpPos;
+
+
 
 	XMMATRIX mtxView;
 

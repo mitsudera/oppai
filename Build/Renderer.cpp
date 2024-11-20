@@ -5,15 +5,23 @@
 //
 //=============================================================================
 #include "Renderer.h"
-
+#include "CameraComponent.h"
+#include "GameEngine.h"
 //デバッグ用画面テキスト出力を有効にする
 #define DEBUG_DISP_TEXTOUT
 //シェーダーデバッグ設定を有効にする
 //#define DEBUG_SHADER
 
-Renderer::Renderer(Main*main)
+//*********************************************************
+// 構造体
+//*********************************************************
+
+
+
+
+Renderer::Renderer(GameEngine* gameEngine)
 {
-	this->main = main;
+	this->gameEngine = gameEngine;
 
 
 	FeatureLevel = D3D_FEATURE_LEVEL_11_0;
@@ -52,17 +60,19 @@ Renderer::Renderer(Main*main)
 	RasterStateCullOff;
 	RasterStateCullCW;
 	RasterStateCullCCW;
+	RasterStateFillSOLID;
+	RasterStateFillWIRE;
 
 
 	Material;
-	Light;
 	Fog;
 
 	Fuchi;
 
-	ClearColor[0] = 0.3f;	// 背景色
-	ClearColor[1] = 0.3f;	// 背景色
-	ClearColor[2] = 0.3f;	// 背景色
+	// フェードと同じ色にしないとチカチカするので黒に
+	ClearColor[0] = 0.0f;	// 背景色
+	ClearColor[1] = 0.0f;	// 背景色
+	ClearColor[2] = 0.0f;	// 背景色
 	ClearColor[3] = 1.0f;	// 背景色
 
 
@@ -111,7 +121,6 @@ void Renderer::SetViewMatrix(XMMATRIX* ViewMatrix)
 	view = XMMatrixTranspose(view);
 
 	m_ViewBuffer->SetToBuffer(GetDeviceContext(), &view);
-	//GetDeviceContext()->UpdateSubresource(ViewBuffer, 0, NULL, &view, 0, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -175,6 +184,19 @@ void Renderer::SetCullingMode(CULL_MODE cm)
 		break;
 	case CULL_MODE_BACK:
 		m_ImmediateContext->RSSetState(RasterStateCullCCW);
+		break;
+	}
+}
+
+void Renderer::SetFillMode(FILL_MODE fm)
+{
+	switch (fm)
+	{
+	case FILL_MODE_SOLID:
+		m_ImmediateContext->RSSetState(RasterStateFillSOLID);
+		break;
+	case FILL_MODE_WIREFRAME:
+		m_ImmediateContext->RSSetState(RasterStateFillWIRE);
 		break;
 	}
 }
@@ -254,10 +276,10 @@ void Renderer::SetWorldViewProjection2D( void )
 	m_ViewBuffer->SetToBuffer(m_ImmediateContext, &view);
 	//GetDeviceContext()->UpdateSubresource(ViewBuffer, 0, NULL, &view, 0, 0);
 
-	XMFLOAT2 screen = XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT);
+	XMFLOAT2 screen = gameEngine->GetWindowSize();
 
 	XMMATRIX worldViewProjection;
-	worldViewProjection = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
+	worldViewProjection = XMMatrixOrthographicOffCenterLH(0.0f, screen.x, screen.y, 0.0f, 0.0f, 1.0f);
 	worldViewProjection = XMMatrixTranspose(worldViewProjection);
 
 	m_ProjectionBuffer->SetToBuffer(m_ImmediateContext, &worldViewProjection);
@@ -284,6 +306,7 @@ void Renderer::SetMaterial( MATERIAL material )
 	Material.Shininess = material.Shininess;
 	Material.noDiffuseTex = material.noDiffuseTex;
 	Material.noNormalTex = material.noNormalTex;
+	Material.noArmTex = material.noArmTex;
 	Material.phong = material.phong;
 
 	m_MaterialBuffer->SetToBuffer(m_ImmediateContext, &Material);
@@ -292,60 +315,49 @@ void Renderer::SetMaterial( MATERIAL material )
 
 void Renderer::SetLightBuffer(void)
 {
-	m_LightBuffer->SetToBuffer(m_ImmediateContext,&Light);
-	//GetDeviceContext()->UpdateSubresource(LightBuffer, 0, NULL, &Light, 0, 0);
+	m_LightBuffer->SetToBuffer(m_ImmediateContext,&m_CbLight);
 }
 
-void Renderer::SetLightEnable(BOOL flag)
-{
-	// フラグを更新する
-	Light.Enable = flag;
-
+//ライト使用する？
+void Renderer::SetLightEnable(BOOL useFlag){
+	m_CbLight.m_Enable = useFlag;
 	SetLightBuffer();
 }
 
-void Renderer::SetLight(LightComponent* pLight)
+void Renderer::SetLight(int index,LIGHT_PARAM param)
 {
-	int index = pLight->GetIndex();
-	Light.Position[index] = XMFLOAT4(pLight->GetPosition().x,pLight->GetPosition().y,pLight->GetPosition().z, 0.0f);
-	Light.direction[index] = XMFLOAT4(pLight->GetDirection().x , pLight->GetDirection().y, pLight->GetDirection().z, 0.0f);
-	Light.Diffuse[index] = pLight->GetDiffuse();
-	Light.Ambient[index] = pLight->GetAmbient();
-	Light.Flags[index].Type = pLight->GetType();
-	Light.Flags[index].OnOff = pLight->GetEnable();
-	Light.Attenuation[index].x = pLight->GetAttenuation();
-
-	SetLightBuffer();
+	this->m_CbLight.m_lightParam[index] = param;
+	this->SetLightBuffer();
 }
 
-void Renderer::SetFogBuffer(void)
-{
-	m_FogBuffer->SetToBuffer(m_ImmediateContext, &Fog);
-	//GetDeviceContext()->UpdateSubresource(FogBuffer, 0, NULL, &Fog, 0, 0);
-}
+//void Renderer::SetFogBuffer(void)
+//{
+//	m_FogBuffer->SetToBuffer(m_ImmediateContext, &Fog);
+//	//GetDeviceContext()->UpdateSubresource(FogBuffer, 0, NULL, &Fog, 0, 0);
+//}
 
-void Renderer::SetFogEnable(BOOL flag)
-{
-	// フラグを更新する
-	Fog.Enable = flag;
+//void Renderer::SetFogEnable(BOOL flag)
+//{
+//	// フラグを更新する
+//	Fog.Enable = flag;
+//
+//	SetFogBuffer();
+//}
 
-	SetFogBuffer();
-}
-
-void Renderer::SetFog(FOG* pFog)
-{
-	Fog.Fog.x = pFog->FogStart;
-	Fog.Fog.y = pFog->FogEnd;
-	Fog.FogColor = pFog->FogColor;
-
-	SetFogBuffer();
-}
+//void Renderer::SetFog(FOG* pFog)
+//{
+//	Fog.Fog.x = pFog->FogStart;
+//	Fog.Fog.y = pFog->FogEnd;
+//	Fog.FogColor = pFog->FogColor;
+//
+//	SetFogBuffer();
+//}
 
 void Renderer::SetFuchi(int flag)
 {
 	Fuchi.fuchi = flag;
 	m_FuchiBuffer->SetToBuffer(m_ImmediateContext,&Fuchi);
-	//GetDeviceContext()->UpdateSubresource(FuchiBuffer, 0, NULL, &Fuchi, 0, 0);
+	GetDeviceContext()->UpdateSubresource(m_FuchiBuffer->GetBuffer(), 0, NULL, &Fuchi, 0, 0);
 }
 
 
@@ -357,11 +369,47 @@ void Renderer::SetShaderCamera(XMFLOAT3 pos)
 	//GetDeviceContext()->UpdateSubresource(CameraBuffer, 0, NULL, &tmp, 0, 0);
 }
 
-
 void Renderer::SetShadow(SHADOWMAP_CBUFFER* shadow)
 {
 	m_ShadowBuffer->SetToBuffer(m_ImmediateContext, shadow);
 }
+
+void Renderer::SetGausBuffer(void)
+{
+	GaussianCBuffer gaus;
+
+	ZeroMemory(&gaus, sizeof(gaus));
+	float total = 0;
+	constexpr float disperision = 40.0f;
+	for (int i = 0; i < 8; i++) {
+		float pos = 1.0f + 2.0f * (float)i;
+		gaus.weight[i] = expf(-0.5f * pos * pos / disperision);
+		if (i == 0) {
+			total += gaus.weight[i];
+		}
+		else {
+			total += 2.0f * gaus.weight[i];
+		}
+	}
+
+	for (int i = 0; i < 8; i++) {
+		gaus.weight[i] /= total;
+	}
+
+
+	m_GausBuffer->SetToBuffer(m_ImmediateContext, &gaus);
+}
+
+
+void Renderer::SetTessFacter(float facter)
+{
+	TessellationCBuffer tess;
+	
+	tess.TessellationFacter = facter;
+
+	m_TessellationBuffer->SetToBuffer(m_ImmediateContext, &tess);
+}
+
 
 
 
@@ -371,15 +419,15 @@ void Renderer::SetShadow(SHADOWMAP_CBUFFER* shadow)
 HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	HRESULT hr = S_OK;
-	XMFLOAT2 screen = XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT);
+	XMFLOAT2 screen = gameEngine->GetWindowSize();
 
 	// デバイス、スワップチェーン、コンテキスト生成
 	DWORD deviceFlags = 0;
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory( &sd, sizeof( sd ) );
 	sd.BufferCount = 1;
-	sd.BufferDesc.Width = SCREEN_WIDTH;
-	sd.BufferDesc.Height = SCREEN_HEIGHT;
+	sd.BufferDesc.Width = (UINT)screen.x;
+	sd.BufferDesc.Height = (UINT)screen.y;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
@@ -388,36 +436,31 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
 	sd.Windowed = bWindow;
-	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // モード自動切り替え
 
-	//デバッグ文字出力用設定
-#if defined(_DEBUG) && defined(DEBUG_DISP_TEXTOUT)
+	// 文字出力用設定
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	sd.Flags = DXGI_SWAP_CHAIN_FLAG_GDI_COMPATIBLE;
 	deviceFlags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-#endif
 
-	hr = D3D11CreateDeviceAndSwapChain( NULL,
-										D3D_DRIVER_TYPE_HARDWARE,
-										NULL,
-										deviceFlags,
-										NULL,
-										0,
-										D3D11_SDK_VERSION,
-										&sd,
-										&SwapChain,
-										&m_D3DDevice,
-										&FeatureLevel,
-										&m_ImmediateContext );
-	if( FAILED( hr ) )
-		return hr;
-
-	//デバッグ文字出力用設定
-#if defined(_DEBUG) && defined(DEBUG_DISP_TEXTOUT)
-	hr = SwapChain->ResizeBuffers(0, SCREEN_WIDTH, SCREEN_HEIGHT, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_GDI_COMPATIBLE); // N.B. the GDI compatible flag
+	hr = D3D11CreateDeviceAndSwapChain(NULL,
+		D3D_DRIVER_TYPE_HARDWARE,
+		NULL,
+		deviceFlags,
+		NULL,
+		0,
+		D3D11_SDK_VERSION,
+		&sd,
+		&SwapChain,
+		&m_D3DDevice,
+		&FeatureLevel,
+		&m_ImmediateContext);
 	if (FAILED(hr))
 		return hr;
-#endif
+
+	// 文字出力用設定
+	hr = SwapChain->ResizeBuffers(0, (UINT)screen.x, (UINT)screen.y, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_GDI_COMPATIBLE); // N.B. the GDI compatible flag
+	if (FAILED(hr))
+		return hr;
 
 	// レンダーターゲットビュー生成、設定
 	ID3D11Texture2D* pBackBuffer = NULL;
@@ -428,7 +471,7 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 
 	//ステンシル用テクスチャー作成
-	depthTexture = NULL;
+	ID3D11Texture2D* depthTexture = NULL;
 	D3D11_TEXTURE2D_DESC td;
 	ZeroMemory( &td, sizeof(td) );
 	td.Width			= sd.BufferDesc.Width;
@@ -457,15 +500,14 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// ビューポート設定
 	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)SCREEN_WIDTH;
-	vp.Height = (FLOAT)SCREEN_HEIGHT;
+	vp.Width = (FLOAT)screen.x;
+	vp.Height = (FLOAT)screen.y;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	m_ImmediateContext->RSSetViewports( 1, &vp );
 
-	this->defaultViewPort = vp;
 
 
 	// ラスタライザステート作成
@@ -473,10 +515,10 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	ZeroMemory( &rd, sizeof( rd ) );
 	rd.FillMode = D3D11_FILL_SOLID;
 	rd.CullMode = D3D11_CULL_NONE; 
-
 	rd.DepthClipEnable = TRUE; 
 	rd.MultisampleEnable = FALSE; 
 	m_D3DDevice->CreateRasterizerState( &rd, &RasterStateCullOff);
+	m_D3DDevice->CreateRasterizerState(&rd, &RasterStateFillSOLID);
 
 	rd.CullMode = D3D11_CULL_FRONT;
 	m_D3DDevice->CreateRasterizerState(&rd, &RasterStateCullCW);
@@ -484,6 +526,13 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	rd.CullMode = D3D11_CULL_BACK;
 	m_D3DDevice->CreateRasterizerState(&rd, &RasterStateCullCCW);
 
+	rd.FillMode = D3D11_FILL_WIREFRAME;
+	m_D3DDevice->CreateRasterizerState(&rd, &RasterStateFillWIRE);
+
+	// カリングモード設定（CCW）
+	SetCullingMode(CULL_MODE_BACK);
+	// フィルモード設定
+	SetFillMode(FILL_MODE_SOLID);
 
 
 
@@ -545,6 +594,7 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	m_D3DDevice->CreateDepthStencilState( &depthStencilDesc, &DepthStateEnable );//深度有効ステート
 
+	//depthStencilDesc.DepthEnable = FALSE;
 	depthStencilDesc.DepthWriteMask	= D3D11_DEPTH_WRITE_MASK_ZERO;
 	m_D3DDevice->CreateDepthStencilState( &depthStencilDesc, &DepthStateDisable );//深度無効ステート
 
@@ -552,9 +602,8 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	SetDepthEnable(TRUE);
 
 
-	ID3D11SamplerState* samplerState[2];
 
-	// Wrapサンプラーステート設定
+	// サンプラーステート設定
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory( &samplerDesc, sizeof( samplerDesc ) );
 	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
@@ -567,10 +616,10 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	m_D3DDevice->CreateSamplerState( &samplerDesc, &samplerState[0] );
+	ID3D11SamplerState* samplerState = NULL;
+	m_D3DDevice->CreateSamplerState( &samplerDesc, &samplerState );
 
-	m_ImmediateContext->PSSetSamplers( 0, 1, &samplerState[0] );
-
+	m_ImmediateContext->PSSetSamplers( 0, 1, &samplerState );
 
 	// Borderサンプラーステート設定
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
@@ -580,15 +629,17 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	samplerDesc.BorderColor[1] = 1.0f;
 	samplerDesc.BorderColor[2] = 1.0f;
 	samplerDesc.BorderColor[3] = 1.0f;
-	m_D3DDevice->CreateSamplerState(&samplerDesc, &samplerState[1]);
-	m_ImmediateContext->PSSetSamplers(1, 1, &samplerState[1]);
+
+	samplerState = NULL;
+	m_D3DDevice->CreateSamplerState(&samplerDesc, &samplerState);
+	m_ImmediateContext->PSSetSamplers(1, 1, &samplerState);
 
 
 
 	
 	// 頂点シェーダコンパイル・生成
  
-	ID3DBlob* pVSBlob = this->CreateVSFile("shader.hlsl","VSmain", & m_VertexShader);
+	ID3DBlob* pVSBlob = this->CreateVSFile("shaders/shader.hlsl","VSmain", & m_VertexShader);
 
 	// 入力レイアウト生成
 	D3D11_INPUT_ELEMENT_DESC layout[] =
@@ -596,7 +647,9 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,			0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,			0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT",    0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BINORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	UINT numElements = ARRAYSIZE( layout );
 
@@ -609,38 +662,48 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	(pVSBlob)->Release();
 
 	// ピクセルシェーダコンパイル・生成
-	this->CreatePSFile("shader.hlsl","PSmain", &m_PixelShader);
+	this->CreatePSFile("shaders/shader.hlsl","PSmain", &m_PixelShader);
+
+
+	//this->CreateVSFile("shaders/particleVP.hlsl" , "VSmain", &m_ParticleVS);
+	//this->CreatePSFile("shaders/particleVP.hlsl", "PSmain", &m_ParticlePS);
+
+	this->CreateVSFile("shaders/UIShader.hlsl", "VSmain", &m_UIVS);
+	this->CreatePSFile("shaders/UIShader.hlsl", "PSmain", &m_UIPS);
+
+	this->CreateHSFile("shaders/TerrainShader.hlsl", "HS_Main", &m_TerrainHS);
+	this->CreateDSFile("shaders/TerrainShader.hlsl", "DS_Main", &m_TerrainDS);
+	this->CreateVSFile("shaders/TerrainShader.hlsl", "VS_Main", &m_TerrainVS);
+	this->CreatePSFile("shaders/TerrainShader.hlsl", "PS_Main", &m_TerrainPS);
 
 
 	// 定数バッファ生成
 	InitConstantBuffers();
 
-	SetShaderBuffersMode(DEFAULT_BF);
+	SetShaderBuffersMode(DEFAULT_SMode);
 
 
 	// 入力レイアウト設定
 	m_ImmediateContext->IASetInputLayout( VertexLayout );
 
 	// シェーダ設定
-	m_ImmediateContext->VSSetShader( m_VertexShader, NULL, 0 );
-	m_ImmediateContext->PSSetShader( m_PixelShader, NULL, 0 );
-
-	//ライト初期化
-	ZeroMemory(&Light, sizeof(LIGHT_CBUFFER));
-	Light.direction[0] = XMFLOAT4(1.0f, -1.0f, 1.0f, 0.0f);
-	Light.Diffuse[0] = XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
-	Light.Ambient[0] = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	Light.Flags[0].Type = LIGHT_TYPE_DIRECTIONAL;
-	SetLightBuffer();
+	SetShaderFile(DEFAULT_SMode);
+	//m_ImmediateContext->VSSetShader( m_VertexShader, NULL, 0 );
+	//m_ImmediateContext->PSSetShader( m_PixelShader, NULL, 0 );
 
 
-	//マテリアル初期化
-	MATERIAL material;
-	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	material.Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	SetMaterial(material);
+	{//ライト初期化
+		ZeroMemory(&m_CbLight, sizeof(LIGHT_CBUFFER));
+		SetLightBuffer();
+	}
 
+	{//マテリアル初期化
+		MATERIAL material;
+		ZeroMemory(&material, sizeof(material));
+		material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		material.Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		SetMaterial(material);
+	}
 
 	//ガウシアンブラー用バッファセット
 	SetGausBuffer();
@@ -664,6 +727,8 @@ void Renderer::UninitRenderer(void)
 	if (RasterStateCullOff)	RasterStateCullOff->Release();
 	if (RasterStateCullCW)	RasterStateCullCW->Release();
 	if (RasterStateCullCCW)	RasterStateCullCCW->Release();
+	if (RasterStateFillSOLID) RasterStateFillSOLID->Release();
+	if (RasterStateFillWIRE) RasterStateFillWIRE->Release();
 
 	delete m_WorldBuffer;
 	delete m_ViewBuffer;
@@ -675,25 +740,12 @@ void Renderer::UninitRenderer(void)
 	delete m_CameraBuffer;
 	delete m_ShadowBuffer;
 	delete m_GausBuffer;
-	//m_WorldBuffer.ReleaseBuffer();
-	//m_ViewBuffer.ReleaseBuffer();
-	//m_ProjectionBuffer.ReleaseBuffer();
-	//m_MaterialBuffer.ReleaseBuffer();
-	//m_LightBuffer.ReleaseBuffer();
-	//m_FogBuffer.ReleaseBuffer();
-	//m_FuchiBuffer.ReleaseBuffer();
-	//m_CameraBuffer.ReleaseBuffer();
-
-	/*if (WorldBuffer)			WorldBuffer->Release();
-	if (ViewBuffer)			ViewBuffer->Release();
-	if (ProjectionBuffer)		ProjectionBuffer->Release();
-	if (MaterialBuffer)		MaterialBuffer->Release();
-	if (LightBuffer)			LightBuffer->Release();
-	if (FogBuffer)			FogBuffer->Release();*/
 
 	if (VertexLayout)			VertexLayout->Release();
 	if (m_VertexShader)			m_VertexShader->Release();
 	if (m_PixelShader)			m_PixelShader->Release();
+	if (m_UIVS)					m_UIVS->Release();
+	if (m_UIPS)					m_UIPS->Release();
 
 	if (m_ImmediateContext)		m_ImmediateContext->ClearState();
 	if (RenderTargetView)		RenderTargetView->Release();
@@ -702,80 +754,7 @@ void Renderer::UninitRenderer(void)
 	if (m_D3DDevice)				m_D3DDevice->Release();
 }
 
-//バッファの初期化処理
-void Renderer::InitConstantBuffers(void) {
 
-	m_WorldBuffer = new Buffer<XMMATRIX>(GetDevice());
-	m_ViewBuffer = new Buffer<XMMATRIX>(GetDevice());
-	m_ProjectionBuffer = new Buffer<XMMATRIX>(GetDevice());
-	m_MaterialBuffer = new Buffer<MATERIAL_CBUFFER>(GetDevice());
-	m_LightBuffer = new Buffer<LIGHT_CBUFFER>(GetDevice());
-	m_FogBuffer = new Buffer<FOG_CBUFFER>(GetDevice());
-	m_FuchiBuffer = new Buffer<FUCHI>(GetDevice());
-	m_CameraBuffer = new Buffer<XMFLOAT4>(GetDevice());
-	m_ShadowBuffer = new Buffer<SHADOWMAP_CBUFFER>(GetDevice());
-	m_GausBuffer = new Buffer<GaussianCBuffer>(GetDevice());
-
-}
-
-void Renderer::SetShaderBuffersMode(ShaderBF_MODE bfMode) {
-	switch (bfMode) {
-	case DEFAULT_BF:
-		{//バッファ再設定
-				//ワールドマトリクス
-			m_WorldBuffer->SetVS(m_ImmediateContext, 0);
-			m_WorldBuffer->SetPS(m_ImmediateContext, 0);
-
-			//ビューマトリクス
-			m_ViewBuffer->SetVS(m_ImmediateContext, 1);
-			m_ViewBuffer->SetPS(m_ImmediateContext, 1);
-
-			//プロジェクションマトリクス
-			m_ProjectionBuffer->SetVS(m_ImmediateContext, 2);
-			m_ProjectionBuffer->SetPS(m_ImmediateContext, 2);
-
-			//マテリアル情報
-			m_MaterialBuffer->SetVS(m_ImmediateContext, 3);
-			m_MaterialBuffer->SetPS(m_ImmediateContext, 3);
-
-			//ライト情報
-			m_LightBuffer->SetVS(m_ImmediateContext, 4);
-			m_LightBuffer->SetPS(m_ImmediateContext, 4);
-
-			//フォグ情報
-			m_FogBuffer->SetVS(m_ImmediateContext, 5);
-			m_FogBuffer->SetPS(m_ImmediateContext, 5);
-
-			//縁取り
-			m_FuchiBuffer->SetVS(m_ImmediateContext, 6);
-			m_FuchiBuffer->SetPS(m_ImmediateContext, 6);
-
-			//カメラ
-			m_CameraBuffer->SetVS(m_ImmediateContext, 7);
-			m_CameraBuffer->SetPS(m_ImmediateContext, 7);
-
-			//影
-			m_ShadowBuffer->SetVS(m_ImmediateContext, 8);
-			m_ShadowBuffer->SetPS(m_ImmediateContext, 8);
-			//影
-			m_GausBuffer->SetVS(m_ImmediateContext, 9);
-			m_GausBuffer->SetPS(m_ImmediateContext, 9);
-
-		}
-		break;
-	case PARTICAL_BF:
-		{
-
-		}
-		break;
-	default:
-		{
-
-		}
-		break;
-
-	}
-}
 
 //=============================================================================
 // バックバッファクリア
@@ -788,59 +767,12 @@ void Renderer::Clear(void)
 }
 
 
-void Renderer::SetGausBuffer(void)
-{
-	GaussianCBuffer gaus;
-	ZeroMemory(&gaus, sizeof(gaus));
-	float total = 0;
-	constexpr float disperision = 40.0f;
-	for (int i = 0; i < 8; i++) {
-		float pos = 1.0f + 2.0f * (float)i;
-		gaus.weight[i] = expf(-0.5f * pos * pos / disperision);
-		if (i == 0) {
-			total += gaus.weight[i];
-		}
-		else {
-			total += 2.0f * gaus.weight[i];
-		}
-	}
-
-	for (int i = 0; i < 8; i++) {
-		gaus.weight[i] /= total;
-	}
-
-
-	m_GausBuffer->SetToBuffer(m_ImmediateContext, &gaus);
-}
-
 void Renderer::SetClearColor(float* color4)
 {
 	ClearColor[0] = color4[0];
 	ClearColor[1] = color4[1];
 	ClearColor[2] = color4[2];
 	ClearColor[3] = color4[3];
-}
-
-ID3D11InputLayout** Renderer::GetVertexLayout(void)
-{
-	return &this->VertexLayout;
-}
-
-void Renderer::SetShaderDefault(void)
-{
-	m_ImmediateContext->VSSetShader(m_VertexShader,NULL,0);
-	m_ImmediateContext->PSSetShader(m_PixelShader,NULL,0);
-	// RSにビューポートを設定
-	m_ImmediateContext->RSSetViewports(1, &defaultViewPort);
-	// OMに描画ターゲット ビューと深度/ステンシル・ビューを設定
-	m_ImmediateContext->OMSetRenderTargets(1, &RenderTargetView, DepthStencilView);
-
-}
-
-
-IDXGISwapChain* Renderer::GetSwapChain(void)
-{
-	return this->SwapChain;
 }
 
 
@@ -851,6 +783,7 @@ void Renderer::Present(void)
 {
 	SwapChain->Present( 0, 0 );
 }
+
 
 
 //=============================================================================
@@ -878,13 +811,13 @@ void Renderer::DebugTextOut(char* text, int x, int y)
 			//背景を透明に変更
 			SetBkMode(hdc, TRANSPARENT);
 
-			XMFLOAT2 screen = XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT);
+			XMFLOAT2 screen = gameEngine->GetWindowSize();
 
 			RECT rect;
 			rect.left = 0;
 			rect.top = 0;
-			rect.right = SCREEN_WIDTH;
-			rect.bottom = SCREEN_HEIGHT;
+			rect.right = (LONG)screen.x;
+			rect.bottom = (LONG)screen.y;
 
 			//テキスト出力
 			DrawText(hdc, text, (int)strlen(text), &rect, DT_LEFT);
@@ -904,41 +837,32 @@ void Renderer::DebugTextOut(char* text, int x, int y)
 
 
 
+IDXGISwapChain* Renderer::GetSwapChain(void)
+{
+	return SwapChain;
+}
+
 
 
 //Create Vertex Shader ファイル
 ID3DBlob* Renderer::CreateVSFile(const char* shaderName, char* fName, ID3D11VertexShader** VS){
 
 	// 頂点シェーダコンパイル・生成
-	ID3DBlob* pErrorBlob = NULL;;
-	ID3DBlob* pVSBlob = NULL;//this->CreateVSFile("shader.hlsl", m_VertexShader);
+	ID3DBlob* pErrorBlob = NULL;
+	ID3DBlob* pVSBlob = NULL;
 	DWORD shFlag = D3DCOMPILE_ENABLE_STRICTNESS;
 
 #if defined(_DEBUG) && defined(DEBUG_SHADER)
 	shFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-	HRESULT hr = D3DX11CompileFromFile("shader.hlsl", NULL, NULL, fName, "vs_4_0", shFlag, 0, NULL, &pVSBlob, &pErrorBlob, NULL);
+	HRESULT hr = D3DX11CompileFromFile(shaderName, NULL, NULL, fName, "vs_4_0", shFlag, 0, NULL, &pVSBlob, &pErrorBlob, NULL);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, (char*)pErrorBlob->GetBufferPointer(), "VS", MB_OK | MB_ICONERROR);
 	}
 
 	m_D3DDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), NULL, VS);
-
-	//HRESULT hr = S_OK;
-	//ID3DBlob* pErrorBlob = NULL;
-	//ID3DBlob* pVSBlob = NULL;
-	//DWORD shFlag = D3DCOMPILE_ENABLE_STRICTNESS;
-
-	//hr = D3DX11CompileFromFile(shaderName, NULL, NULL, "VSmain", "vs_4_0", shFlag, 0, NULL, &pVSBlob, &pErrorBlob, NULL);
-	//if (FAILED(hr)){
-	//	if (pErrorBlob){
-	//		MessageBox(NULL, (char*)pErrorBlob->GetBufferPointer(), "VS", MB_OK | MB_ICONERROR);
-	//		pErrorBlob->Release();	//解放
-	//	}
-	//}
-	//GetDevice()->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), NULL, &VS);
 	////解放してはいけない
 	//pVSBlob->Release();
 
@@ -952,7 +876,7 @@ void Renderer::CreatePSFile(char* shaderName, char* fName, ID3D11PixelShader** P
 	ID3DBlob* pPSBlob = NULL;
 	DWORD shFlag = D3DCOMPILE_ENABLE_STRICTNESS;
 
-	HRESULT hr = D3DX11CompileFromFile("shader.hlsl", NULL, NULL, fName, "ps_4_0", shFlag, 0, NULL, &pPSBlob, &pErrorBlob, NULL);
+	HRESULT hr = D3DX11CompileFromFile(shaderName, NULL, NULL, fName, "ps_4_0", shFlag, 0, NULL, &pPSBlob, &pErrorBlob, NULL);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, (char*)pErrorBlob->GetBufferPointer(), "PS", MB_OK | MB_ICONERROR);
@@ -970,7 +894,7 @@ void Renderer::CreateCSFile(char* shaderName, char* fName, ID3D11ComputeShader**
 	ID3DBlob* pErrorBlob = NULL;
 	ID3DBlob* csBlob = NULL;
 
-	hr = D3DX11CompileFromFile(shaderName, 0, 0, "CSFunc", "cs_5_0", 0, 0, 0, &csBlob, &pErrorBlob, 0);
+	hr = D3DX11CompileFromFile(shaderName, 0, 0, fName, "cs_5_0", 0, 0, 0, &csBlob, &pErrorBlob, 0);
 	if (FAILED(hr)){
 		if (pErrorBlob){
 			OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
@@ -980,4 +904,376 @@ void Renderer::CreateCSFile(char* shaderName, char* fName, ID3D11ComputeShader**
 	GetDevice()->CreateComputeShader(csBlob->GetBufferPointer(), csBlob->GetBufferSize(), NULL, CS);
 	//解放
 	csBlob->Release();
+}
+
+void Renderer::CreateHSFile(char* shaderName, char* fName, ID3D11HullShader** HS)
+{
+
+	HRESULT hr = S_OK;
+	ID3DBlob* pErrorBlob = NULL;
+	ID3DBlob* hsBlob = NULL;
+
+	hr = D3DX11CompileFromFile(shaderName, 0, 0, fName, "hs_5_0", 0, 0, 0, &hsBlob, &pErrorBlob, 0);
+	if (FAILED(hr)) {
+		if (pErrorBlob) {
+			OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
+			string c=(char*)pErrorBlob->GetBufferPointer();
+			pErrorBlob->Release();
+		}
+	}
+	GetDevice()->CreateHullShader(hsBlob->GetBufferPointer(), hsBlob->GetBufferSize(), NULL, HS);
+	//解放
+	hsBlob->Release();
+
+}
+
+void Renderer::CreateDSFile(char* shaderName, char* fName, ID3D11DomainShader** DS)
+{
+	HRESULT hr = S_OK;
+	ID3DBlob* pErrorBlob = NULL;
+	ID3DBlob* dsBlob = NULL;
+
+	hr = D3DX11CompileFromFile(shaderName, 0, 0, fName, "ds_5_0", 0, 0, 0, &dsBlob, &pErrorBlob, 0);
+	if (FAILED(hr)) {
+		if (pErrorBlob) {
+			OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
+			string c = (char*)pErrorBlob->GetBufferPointer();
+
+			pErrorBlob->Release();
+		}
+	}
+	GetDevice()->CreateDomainShader(dsBlob->GetBufferPointer(), dsBlob->GetBufferSize(), NULL, DS);
+	//解放
+	dsBlob->Release();
+
+}
+
+void Renderer::CreateUAV(ID3D11Buffer* pBF, ID3D11UnorderedAccessView* pUav, UINT BFnumElements)
+{
+	// UAVを作成
+	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+	uavDesc.Buffer.FirstElement = 0;
+	uavDesc.Buffer.NumElements = BFnumElements;
+
+	HRESULT hr = GetDevice()->CreateUnorderedAccessView(pBF, &uavDesc, &pUav);
+}
+
+void Renderer::SetShaderRender(Shader_Mode mode) {
+
+	this->SetShaderBuffersMode(mode);
+	this->SetShaderFile(mode);
+
+
+}
+
+//バッファの初期化処理
+void Renderer::InitConstantBuffers(void) {
+
+	m_WorldBuffer = new Buffer<XMMATRIX>(GetDevice());
+	m_ViewBuffer = new Buffer<XMMATRIX>(GetDevice());
+	m_ProjectionBuffer = new Buffer<XMMATRIX>(GetDevice());
+	m_MaterialBuffer = new Buffer<MATERIAL_CBUFFER>(GetDevice());
+	m_LightBuffer = new Buffer<LIGHT_CBUFFER>(GetDevice());
+	m_FogBuffer = new Buffer<FOG_CBUFFER>(GetDevice());
+	m_FuchiBuffer = new Buffer<FUCHI>(GetDevice());
+	m_CameraBuffer = new Buffer<XMFLOAT4>(GetDevice());
+	m_ShadowBuffer = new Buffer<SHADOWMAP_CBUFFER>(GetDevice());
+	m_GausBuffer = new Buffer<GaussianCBuffer>(GetDevice());
+	m_TessellationBuffer = new Buffer<TessellationCBuffer>(GetDevice());
+
+	
+}
+
+void Renderer::SetShaderBuffersMode(Shader_Mode bfMode) {
+
+	// null バッファの配列を作成
+	static const UINT MaxSlots = D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT;
+	ID3D11Buffer* nullBuffers[MaxSlots] = { nullptr };
+
+	// 頂点シェーダーのすべてのスロットを null に設定
+	GetDeviceContext()->VSSetConstantBuffers(0, MaxSlots, nullBuffers);
+	// ピクセルシェーダーのすべてのスロットを null に設定
+	GetDeviceContext()->PSSetConstantBuffers(0, MaxSlots, nullBuffers);
+
+
+	switch (bfMode) {
+	case DEFAULT_SMode:
+	case UI_SMode:
+	{//バッファ再設定
+		//ワールドマトリクス
+		m_WorldBuffer->SetVS(m_ImmediateContext, 0);
+		m_WorldBuffer->SetPS(m_ImmediateContext, 0);
+
+		//ビューマトリクス
+		m_ViewBuffer->SetVS(m_ImmediateContext, 1);
+		m_ViewBuffer->SetPS(m_ImmediateContext, 1);
+
+		//プロジェクションマトリクス
+		m_ProjectionBuffer->SetVS(m_ImmediateContext, 2);
+		m_ProjectionBuffer->SetPS(m_ImmediateContext, 2);
+
+		//マテリアル情報
+		m_MaterialBuffer->SetVS(m_ImmediateContext, 3);
+		m_MaterialBuffer->SetPS(m_ImmediateContext, 3);
+
+		//ライト情報
+		m_LightBuffer->SetVS(m_ImmediateContext, 4);
+		m_LightBuffer->SetPS(m_ImmediateContext, 4);
+
+		//フォグ情報
+		m_FogBuffer->SetVS(m_ImmediateContext, 5);
+		m_FogBuffer->SetPS(m_ImmediateContext, 5);
+
+		//縁取り
+		m_FuchiBuffer->SetVS(m_ImmediateContext, 6);
+		m_FuchiBuffer->SetPS(m_ImmediateContext, 6);
+
+		//カメラ
+		m_CameraBuffer->SetVS(m_ImmediateContext, 7);
+		m_CameraBuffer->SetPS(m_ImmediateContext, 7);
+
+		//影
+		m_ShadowBuffer->SetVS(m_ImmediateContext, 8);
+		m_ShadowBuffer->SetPS(m_ImmediateContext, 8);
+		//影
+		m_GausBuffer->SetVS(m_ImmediateContext, 9);
+		m_GausBuffer->SetPS(m_ImmediateContext, 9);
+
+	}
+	break;
+	case PARTICAL_SMode:
+	{
+		//ワールドマトリクス
+		m_WorldBuffer->SetVS(m_ImmediateContext, 0);
+		m_WorldBuffer->SetPS(m_ImmediateContext, 0);
+
+		//ビューマトリクス
+		m_ViewBuffer->SetVS(m_ImmediateContext, 1);
+		m_ViewBuffer->SetPS(m_ImmediateContext, 1);
+
+		//プロジェクションマトリクス
+		m_ProjectionBuffer->SetVS(m_ImmediateContext, 2);
+		m_ProjectionBuffer->SetPS(m_ImmediateContext, 2);
+
+		////エミッターバッファ
+		//m_EmitterParamBF->SetVS(m_ImmediateContext, 3);
+		//m_EmitterParamBF->SetPS(m_ImmediateContext, 3);
+
+		//マテリアルバッファ
+		m_MaterialBuffer->SetVS(m_ImmediateContext, 4);
+		m_MaterialBuffer->SetPS(m_ImmediateContext, 4);
+	}
+	break;
+	case TERRAIN_SMode:
+	{
+		//ワールドマトリクス
+		m_WorldBuffer->SetVS(m_ImmediateContext, 0);
+		m_WorldBuffer->SetPS(m_ImmediateContext, 0);
+
+		//ビューマトリクス
+		m_ViewBuffer->SetVS(m_ImmediateContext, 1);
+		m_ViewBuffer->SetPS(m_ImmediateContext, 1);
+
+		//プロジェクションマトリクス
+		m_ProjectionBuffer->SetVS(m_ImmediateContext, 2);
+		m_ProjectionBuffer->SetPS(m_ImmediateContext, 2);
+
+		//マテリアル情報
+		m_MaterialBuffer->SetVS(m_ImmediateContext, 3);
+		m_MaterialBuffer->SetPS(m_ImmediateContext, 3);
+
+		//ライト情報
+		m_LightBuffer->SetVS(m_ImmediateContext, 4);
+		m_LightBuffer->SetPS(m_ImmediateContext, 4);
+
+		//フォグ情報
+		m_FogBuffer->SetVS(m_ImmediateContext, 5);
+		m_FogBuffer->SetPS(m_ImmediateContext, 5);
+
+		//縁取り
+		m_FuchiBuffer->SetVS(m_ImmediateContext, 6);
+		m_FuchiBuffer->SetPS(m_ImmediateContext, 6);
+
+		//カメラ
+		m_CameraBuffer->SetVS(m_ImmediateContext, 7);
+		m_CameraBuffer->SetPS(m_ImmediateContext, 7);
+
+		//影
+		m_ShadowBuffer->SetVS(m_ImmediateContext, 8);
+		m_ShadowBuffer->SetPS(m_ImmediateContext, 8);
+		//影
+		m_GausBuffer->SetVS(m_ImmediateContext, 9);
+		m_GausBuffer->SetPS(m_ImmediateContext, 9);
+		//Tessellation
+		m_TessellationBuffer->SetVS(m_ImmediateContext, 10);
+		m_TessellationBuffer->SetPS(m_ImmediateContext, 10);
+		m_TessellationBuffer->SetHS(m_ImmediateContext, 10);
+		m_TessellationBuffer->SetDS(m_ImmediateContext, 10);
+
+
+
+
+	}
+	default:
+	{
+
+	}
+	break;
+
+	}
+}
+
+void Renderer::SetShaderFile(Shader_Mode bfMode) {
+
+	// 頂点シェーダーを null に設定
+	GetDeviceContext()->VSSetShader(nullptr, NULL, 0);
+	// ピクセルシェーダーを null に設定
+	GetDeviceContext()->PSSetShader(nullptr, NULL, 0);
+	// コンピュートシェーダーを null に設定
+	GetDeviceContext()->CSSetShader(nullptr, NULL, 0);
+
+	// シェーダ設定
+	switch (bfMode)
+	{
+	case DEFAULT_SMode:
+	{
+		m_ImmediateContext->VSSetShader(m_VertexShader, NULL, 0);
+		m_ImmediateContext->PSSetShader(m_PixelShader, NULL, 0);
+	}
+	break;
+	case PARTICAL_SMode:
+	{
+		//m_ImmediateContext->VSSetShader(m_ParticleVS, NULL, 0);
+		//m_ImmediateContext->PSSetShader(m_ParticlePS, NULL, 0);
+		//m_ImmediateContext->CSsSetShader(m_ParticleCS, NULL, 0);
+	}
+	break;
+	case UI_SMode:
+	{
+		m_ImmediateContext->VSSetShader(m_UIVS, NULL, 0);
+		m_ImmediateContext->PSSetShader(m_UIPS, NULL, 0);
+	}
+	break;
+	case TERRAIN_SMode:
+	{
+		m_ImmediateContext->HSSetShader(m_TerrainHS, NULL, 0);
+		m_ImmediateContext->DSSetShader(m_TerrainDS, NULL, 0);
+		m_ImmediateContext->VSSetShader(m_TerrainVS, NULL, 0);
+		m_ImmediateContext->PSSetShader(m_TerrainPS, NULL, 0);
+	}
+	default:
+	{
+
+	}
+	break;
+
+	}
+}
+
+void Renderer::DrawStringText(string text, float fontSize, XMFLOAT4 color, XMFLOAT2 pos, XMFLOAT2 size, TEXT_ANCHOR anchor, string font)
+{
+	HRESULT hr;
+
+	//バックバッファからサーフェスを取得する
+	IDXGISurface1* pBackSurface = NULL;
+	hr = SwapChain->GetBuffer(0, __uuidof(IDXGISurface1), (void**)&pBackSurface);
+
+	if (SUCCEEDED(hr))
+	{
+		//取得したサーフェスからデバイスコンテキストを取得する
+		HDC hdc;
+		hr = pBackSurface->GetDC(FALSE, &hdc);
+
+		if (SUCCEEDED(hr))
+		{
+			//文字色を変更
+			SetTextColor(hdc, RGB(color.x * 255, color.y * 255, color.z * 255));
+
+			//背景を透明に変更
+			SetBkMode(hdc, TRANSPARENT);
+			XMFLOAT2 vpSize;
+			XMFLOAT2 vpPos;
+			CameraComponent* camComp = gameEngine->GetMainCamera();
+			if (camComp != nullptr)
+			{
+				camComp->GetViewPort(vpSize, vpPos);
+
+
+				XMFLOAT2 resolution = gameEngine->GetWindowSize();
+
+				XMFLOAT2 absoluteSize, absolutePos;
+				absoluteSize.x = vpSize.x / resolution.x;
+				absoluteSize.y = vpSize.y / resolution.y;
+				absolutePos.x = vpPos.x / resolution.x;
+				absolutePos.y = vpPos.y / resolution.y;
+
+
+				//pos.x *= absolutePos.x;
+				//pos.y *= absolutePos.y;
+				//size.x *= absoluteSize.x;
+				//size.y *= absoluteSize.y;
+
+				RECT screenRect;
+				screenRect.left = (LONG)(pos.x - size.x / 2.0f) * absoluteSize.x + vpPos.x;
+				screenRect.top = (LONG)(pos.y - size.y / 2.0f) * absoluteSize.y + vpPos.y;
+				screenRect.right = (LONG)(pos.x + size.x / 2.0f) * absoluteSize.x + vpPos.x;
+				screenRect.bottom = (LONG)(pos.y + size.y / 2.0f) * absoluteSize.y + vpPos.y;
+
+
+				int rectDT = DT_SINGLELINE;	//縦のRECTも有効化する
+
+				switch (anchor % 3)
+				{	//横のRECT
+				case 0:
+					rectDT |= DT_LEFT;
+					break;
+				case 1:
+					rectDT |= DT_CENTER;
+					break;
+				case 2:
+					rectDT |= DT_RIGHT;
+					break;
+				default:
+					break;
+				}
+
+				switch (anchor / 3)
+				{	//縦のRECT
+				case 0:
+					rectDT |= DT_TOP;
+					break;
+				case 1:
+					rectDT |= DT_VCENTER;
+					break;
+				case 2:
+					rectDT |= DT_BOTTOM;
+					break;
+				default:
+					break;
+				}
+
+				LPCSTR lpcwstrFontName = font.c_str();
+				//Font作成 Showcard Gothic
+				HFONT font = CreateFont((int)fontSize, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, lpcwstrFontName);//フォントの指定　引数にできる
+				HGDIOBJ hgdi = SelectObject(hdc, font);
+				//rect.top += DrawText(hdc, str, -1, &rect, DT_WORDBREAK); //縦がずれる？
+
+				//テキスト出力
+				DrawText(hdc, const_cast<char*>(text.c_str()), text.length(), &screenRect, rectDT);
+
+				SelectObject(hdc, hgdi); //フォントを元に戻す
+				DeleteObject(font);	//オブジェクト削除
+			}
+				//デバイスコンテキストを解放する
+				pBackSurface->ReleaseDC(NULL);
+			
+		}
+		//サーフェスを解放する
+		pBackSurface->Release();
+
+		//レンダリングターゲットがリセットされるのでセットしなおす
+		m_ImmediateContext->OMSetRenderTargets(1, &RenderTargetView, DepthStencilView);
+	}
 }

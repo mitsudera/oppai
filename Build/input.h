@@ -47,7 +47,7 @@ class Main;
 class Input
 {
 public:
-	Input(Main* main);
+	Input();
 	~Input();
 	HRESULT Init(HINSTANCE hInst, HWND hWnd);
 	void Uninit(void);

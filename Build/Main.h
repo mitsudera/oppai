@@ -1,16 +1,14 @@
 #pragma once
 #include "Coreminimal.h"
-#include "level.h"
 #include "AssetsManager.h"
-#include "Title.h"
 #include "input.h"
 
-#define SCREEN_WIDTH	(1920)				// 初期化ウィンドウの横幅pixel
-#define SCREEN_HEIGHT	(1080)				// 初期化ウィンドウの縦幅pixel
+constexpr float screenWidth = 1920.0f;
+constexpr float screenHeight = 1080.0f;
 
 
-class Renderer;
-class AssetsManager;
+
+class GameEngine;
 
 class Main
 {
@@ -33,18 +31,7 @@ public:
 	// 前フレームからの経過ミリ秒を取得する
 	float GetDeltaTime(void);
 
-	enum SCENE
-	{
-		TITLE,
-		STAGE1,
-		RESULT,
-	};
-	void SetScene(SCENE scene);
-	SCENE GetScene(void);
 
-	AssetsManager* GetAssetsManager(void);
-	Renderer* GetRenderer(void);
-	Input* GetInput(void);
 
 protected:
 	void Init(void);
@@ -60,15 +47,8 @@ private:
 	float deltaTime;
 	float beforeTime;
 
-	SCENE scene;
 
-	Title* title;
-	
-
-
-	Renderer* renderer;
-	AssetsManager* assetsManager;
-	Input* input;
+	GameEngine* gameEngine;
 
 };
 

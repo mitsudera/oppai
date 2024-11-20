@@ -30,6 +30,8 @@ public:
     void SetPS(ID3D11DeviceContext* context, UINT slot) const;
     void SetVS(ID3D11DeviceContext* context, UINT slot) const;
     void SetCS(ID3D11DeviceContext* context, UINT slot) const;
+    void SetHS(ID3D11DeviceContext* context, UINT slot) const;
+    void SetDS(ID3D11DeviceContext* context, UINT slot) const;
 
     void ReleaseBuffer();
 
@@ -87,6 +89,16 @@ void Buffer<Type>::SetVS(ID3D11DeviceContext* context, UINT slot) const {
 template <typename Type>
 void Buffer<Type>::SetCS(ID3D11DeviceContext* context, UINT slot) const {
     context->CSSetConstantBuffers(slot, 1, &m_buffer);
+}
+
+template <typename Type>
+void Buffer<Type>::SetHS(ID3D11DeviceContext* context, UINT slot) const {
+    context->HSSetConstantBuffers(slot, 1, &m_buffer);
+}
+
+template <typename Type>
+void Buffer<Type>::SetDS(ID3D11DeviceContext* context, UINT slot) const {
+    context->DSSetConstantBuffers(slot, 1, &m_buffer);
 }
 
 template <typename Type>

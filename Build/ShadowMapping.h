@@ -1,10 +1,11 @@
 #pragma once
 #include "Coreminimal.h"
 
-class Level;
 class GameObject;
+class World;
+class TransformComponent;
 
-typedef enum 
+typedef enum
 {
 	NORMAL,
 	VARIANCE,
@@ -23,7 +24,7 @@ struct SHADOWMAP_CBUFFER
 
 
 	int			Enable;
-	BOOL		mode;
+	int			mode;
 	int			Dummy[14];
 };
 
@@ -31,7 +32,7 @@ struct SHADOWMAP_CBUFFER
 class ShadowMapping
 {
 public:
-	ShadowMapping(Level* level);
+	ShadowMapping(World* world);
 	~ShadowMapping();
 
 	void Init(void);
@@ -41,25 +42,27 @@ public:
 
 	void SetShadowMap(XMFLOAT3 pos, XMFLOAT3 at, XMFLOAT3 up);
 	void SetPos(XMFLOAT3 pos);
-	void SetShadowBuffer(void);
-	void SetShaderShadow(void);
-	void SetShaderXpass(void);
-	void SetShaderYpass(void);
 	void SetWorldViewProjection2D(void);
 	void SetShadowMode(SHADOW_MODE mode);
-	void SetTarget(GameObject* gameObject);
-	void SetForward(XMFLOAT3 dir);
+	void SetTarget(TransformComponent* transForm);
+	void SetDirection(XMFLOAT3 dir);
 	void SetLen(float len);
 
 	void SetNear(float f);
 	void SetFar(float f);
 
+
 private:
 
-	GameObject* ShadowTarget;
+	void SetShadowBuffer(void);
+	void SetShaderShadow(void);
+	void SetShaderXpass(void);
+	void SetShaderYpass(void);
+
+	TransformComponent* ShadowTarget;//光視点で描画する時の注視点
 
 
-	Level* pLevel;
+	World* world;
 	XMFLOAT3 dir;
 	float len;
 	XMFLOAT3 pos;
@@ -92,7 +95,7 @@ private:
 	ID3D11ShaderResourceView* ShadowMapSRView;	// シェーダ・リソース・ビュー
 
 	D3D11_VIEWPORT            ViewPortShadowMap[2];       // ビューポート
-	
+
 
 	ID3D11Texture2D* ShadowMapingTextureX;
 	ID3D11RenderTargetView* RenderTargetShadowX;

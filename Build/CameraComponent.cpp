@@ -8,14 +8,13 @@
 #include "CameraComponent.h"
 #include "Renderer.h"
 #include "gameobject.h"
-#include "level.h"
-#include "Main.h"
-
+#include "GameEngine.h"
+#include "Scene.h"
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 #define	VIEW_ANGLE		(XMConvertToRadians(45.0f))						// ビュー平面の視野角
-#define	VIEW_ASPECT		((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT)	// ビュー平面のアスペクト比	
+#define	VIEW_ASPECT		(16.0f/ 9.0f)	// ビュー平面のアスペクト比	
 #define	VIEW_NEAR_Z		(10.0f)											// ビュー平面のNearZ値
 #define	VIEW_FAR_Z		(100000.0f)										// ビュー平面のFarZ値
 
@@ -25,7 +24,7 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static int				g_ViewPortType = TYPE_FULL_SCREEN;
+static int				ViewPortType = TYPE_FULL_SCREEN;
 
 
 CameraComponent::CameraComponent()
@@ -88,7 +87,7 @@ void CameraComponent::Draw(void)
 {
 	PrimitiveComponent::Draw();
 
-	SetViewPort(g_ViewPortType);
+	SetViewPort(ViewPortType);
 	SetCamera();
 
 
@@ -120,7 +119,7 @@ XMMATRIX CameraComponent::GetView(void)
 //=============================================================================
 void CameraComponent::SetCamera(void)
 {
-	Renderer* renderer = GetGameObject()->GetLevel()->GetMain()->GetRenderer();
+	Renderer* renderer = GetGameObject()->GetScene()->GetGameEngine()->GetRenderer();
 	// ビューマトリックス設定
 	XMMATRIX mtxView;
 
@@ -211,20 +210,21 @@ void CameraComponent::SetCamera(void)
 //=============================================================================
 void CameraComponent::SetViewPort(int m_type)
 {
-	Renderer* renderer = GetGameObject()->GetLevel()->GetMain()->GetRenderer();
+	Renderer* renderer = GetGameObject()->GetScene()->GetGameEngine()->GetRenderer();
 	ID3D11DeviceContext *ImmediateContext = renderer->GetDeviceContext();
 	D3D11_VIEWPORT vp;
 
-	g_ViewPortType = m_type;
+	ViewPortType = m_type;
 
+	XMFLOAT2 screenSize = GetGameObject()->GetScene()->GetGameEngine()->GetWindowSize();
 
 
 	// ビューポート設定
-	switch (g_ViewPortType)
+	switch (ViewPortType)
 	{
 	case TYPE_FULL_SCREEN:
-		vp.Width = (FLOAT)SCREEN_WIDTH;
-		vp.Height = (FLOAT)SCREEN_HEIGHT;
+		vp.Width = (FLOAT)screenSize.x;
+		vp.Height = (FLOAT)screenSize.y;
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
 		vp.TopLeftX = 0;
@@ -232,8 +232,8 @@ void CameraComponent::SetViewPort(int m_type)
 		break;
 
 	case TYPE_LEFT_HALF_SCREEN:
-		vp.Width = (FLOAT)SCREEN_WIDTH / 2;
-		vp.Height = (FLOAT)SCREEN_HEIGHT;
+		vp.Width = (FLOAT)screenSize.x / 2;
+		vp.Height = (FLOAT)screenSize.y;
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
 		vp.TopLeftX = 0;
@@ -241,17 +241,17 @@ void CameraComponent::SetViewPort(int m_type)
 		break;
 
 	case TYPE_RIGHT_HALF_SCREEN:
-		vp.Width = (FLOAT)SCREEN_WIDTH / 2;
-		vp.Height = (FLOAT)SCREEN_HEIGHT;
+		vp.Width = (FLOAT)screenSize.x / 2;
+		vp.Height = (FLOAT)screenSize.y;
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
-		vp.TopLeftX = (FLOAT)SCREEN_WIDTH / 2;
+		vp.TopLeftX = (FLOAT)screenSize.x / 2;
 		vp.TopLeftY = 0;
 		break;
 
 	case TYPE_UP_HALF_SCREEN:
-		vp.Width = (FLOAT)SCREEN_WIDTH;
-		vp.Height = (FLOAT)SCREEN_HEIGHT / 2;
+		vp.Width = (FLOAT)screenSize.x;
+		vp.Height = (FLOAT)screenSize.y / 2;
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
 		vp.TopLeftX = 0;
@@ -259,30 +259,43 @@ void CameraComponent::SetViewPort(int m_type)
 		break;
 
 	case TYPE_DOWN_HALF_SCREEN:
-		vp.Width = (FLOAT)SCREEN_WIDTH;
-		vp.Height = (FLOAT)SCREEN_HEIGHT / 2;
+		vp.Width = (FLOAT)screenSize.x;
+		vp.Height = (FLOAT)screenSize.y / 2;
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
 		vp.TopLeftX = 0;
-		vp.TopLeftY = (FLOAT)SCREEN_HEIGHT / 2;
+		vp.TopLeftY = (FLOAT)screenSize.x / 2;
 		break;
 	case TYPE_VIEWPORT:
-		vp.Width = (FLOAT)SCREEN_WIDTH * 0.6f;
-		vp.Height = (FLOAT)SCREEN_HEIGHT * 0.6f + GetSystemMetrics(SM_CYCAPTION);
+		vp.Width = (FLOAT)screenSize.x * 0.6f;
+		vp.Height = (FLOAT)screenSize.y * 0.6f + GetSystemMetrics(SM_CYCAPTION);
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
-		vp.TopLeftX = (FLOAT)SCREEN_WIDTH * 0.2f;
-		vp.TopLeftY = (FLOAT)SCREEN_HEIGHT * 0.1f;
+		vp.TopLeftX = (FLOAT)screenSize.x * 0.2f;
+		vp.TopLeftY = (FLOAT)screenSize.y * 0.1f;
 		break;
 	}
 	ImmediateContext->RSSetViewports(1, &vp);
 
+	vpSize.x = vp.Width;
+	vpSize.y = vp.Height;
+	vpPos.x = vp.TopLeftX;
+	vpPos.y = vp.TopLeftY;
+
+
+}
+
+
+void CameraComponent::GetViewPort(XMFLOAT2& size, XMFLOAT2& pos)
+{
+	size = vpSize;// カメラが表示するスクリーンのサイズをセット
+	pos = vpPos;
 }
 
 
 int CameraComponent::GetViewPortType(void)
 {
-	return g_ViewPortType;
+	return ViewPortType;
 }
 
 

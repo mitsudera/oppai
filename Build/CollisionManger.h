@@ -2,9 +2,8 @@
 #include "Coreminimal.h"
 #include "ColliderComponent.h"
 
-class Level;
 class ColliderComponent;
-
+class Scene;
 struct ColliderPair
 {
 	ColliderComponent* collider1;
@@ -15,7 +14,7 @@ struct ColliderPair
 class CollisionManger
 {
 public:
-	CollisionManger(Level* level);
+	CollisionManger(Scene* scene);
 	~CollisionManger();
 
 	void Init(void);
@@ -31,8 +30,8 @@ public:
 
 
 private:
-	Level* level;
 
+	Scene* pScene;
 	vector<ColliderComponent*> colliderList;
 	vector<ColliderPair> pairList;
 

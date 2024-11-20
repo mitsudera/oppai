@@ -1,9 +1,8 @@
 #include "Main.h"
-#include "renderer.h"
-
+#include "GameEngine.h"
 
 #define CLASS_NAME		"AppClass"				// ウインドウのクラス名
-#define WINDOW_NAME		"SkyFighter"				// ウインドウのキャプション名
+#define WINDOW_NAME		"Game"				// ウインドウのキャプション名
 
 long g_mouseX = 0;
 long g_mouseY = 0;
@@ -82,8 +81,8 @@ int Main::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int
 		WS_OVERLAPPEDWINDOW, //WS_POPUPタイトルバー消す
 		CW_USEDEFAULT,																		// ウィンドウの左座標
 		CW_USEDEFAULT,																		// ウィンドウの上座標
-		SCREEN_WIDTH + GetSystemMetrics(SM_CXDLGFRAME) * 2,									// ウィンドウ横幅
-		SCREEN_HEIGHT + GetSystemMetrics(SM_CXDLGFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION),	// ウィンドウ縦幅
+		screenWidth + GetSystemMetrics(SM_CXDLGFRAME) * 2,									// ウィンドウ横幅
+		screenHeight + GetSystemMetrics(SM_CXDLGFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION),	// ウィンドウ縦幅
 		NULL,
 		NULL,
 		hInstance,
@@ -107,7 +106,7 @@ int Main::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int
 
 	// 経過時間
 	this->deltaTime = 0;
-	this->beforeTime = timeGetTime();
+	this->beforeTime = (float)timeGetTime();
 
 	// メッセージループ
 	while (1)
@@ -141,7 +140,7 @@ int Main::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int
 				dwExecLastTime = dwCurrentTime;	// 処理した時刻を保存
 
 				this->deltaTime = timeGetTime() - this->beforeTime;
-				this->beforeTime = timeGetTime();
+				this->beforeTime = (float)timeGetTime();
 
 				Update();			// 更新処理
 				Draw();				// 描画処理
@@ -173,42 +172,7 @@ float Main::GetDeltaTime(void)
 	return this->deltaTime / 1000.0f;
 }
 
-void Main::SetScene(SCENE scene)
-{
-	this->title->Uninit();
 
-	this->scene = scene;
-	switch (scene)
-	{
-	case TITLE:
-		this->title->Init();
-		break;
-
-	default:
-		break;
-	}
-
-}
-
-Main::SCENE Main::GetScene(void)
-{
-	return this->scene;
-}
-
-AssetsManager* Main::GetAssetsManager(void)
-{
-	return this->assetsManager;
-}
-
-Renderer* Main::GetRenderer(void)
-{
-	return this->renderer;
-}
-
-Input* Main::GetInput(void)
-{
-	return this->input;
-}
 
 void Main::Init(void)
 {
@@ -216,80 +180,26 @@ void Main::Init(void)
 	GetCursorPos(&this->mousePos);
 
 	srand((unsigned)time(NULL));
+	gameEngine = new GameEngine(this);
 
-
-	//Renderer生成
-	this->renderer = new Renderer(this);
-
-	this->renderer->InitRenderer(*GetInstanceHandle(), *GetWindowHangle(), true);
-
-	this->assetsManager = new AssetsManager(this);
-
-	this->input = new Input(this);
-
-	this->input->Init(*GetInstanceHandle(), *GetWindowHangle());
-
-	//各レベルの生成
-
-	this->title = new Title(this);
-
-	SetScene(SCENE::TITLE);
+	gameEngine->Init();
 	
 
 }
 
 void Main::Update(void)
 {
-	this->input->Update();
-	switch (this->scene)
-	{
-	case SCENE::TITLE:
-		this->title->Update();
-		break;
-	case SCENE::STAGE1:
-		break;
-	case SCENE::RESULT:
-		break;
-	default:
-		break;
-	}
+	gameEngine->Update();
 }
 
 void Main::Draw(void)
 {
-	renderer->Clear();
-
-
-	switch (this->scene)
-	{
-	case SCENE::TITLE:
-		this->title->Draw();
-		break;
-	case SCENE::STAGE1:
-		break;
-	case SCENE::RESULT:
-		break;
-	default:
-		break;
-	}
-
-	renderer->Present();
-
+	gameEngine->Draw();
 }
 
 void Main::Uninit(void)
 {
-	this->input->Uninit();
-	this->title->Uninit();
-	this->assetsManager->Uninit();
-	this->renderer->UninitRenderer();
-
-
-	delete input;
-	delete assetsManager;
-	delete title;
-	delete renderer;
-
+	gameEngine->Uninit();
 }
 
 LRESULT Main::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

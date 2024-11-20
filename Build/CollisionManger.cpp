@@ -1,9 +1,10 @@
 #include "CollisionManger.h"
 #include "collision.h"
+#include "Scene.h"
 
-CollisionManger::CollisionManger(Level* level)
+CollisionManger::CollisionManger(Scene* scene)
 {
-	this->level = level;
+	this->pScene = scene;
 
 }
 

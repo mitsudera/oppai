@@ -1,62 +1,89 @@
-//=============================================================================
+ï»¿//=============================================================================
 //
-// ƒŒƒ“ƒ_ƒŠƒ“ƒOˆ— [Renderer.h]
+// ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°å‡¦ç† [Renderer.h]
 // Author : 
 //
 //=============================================================================
 #pragma once
 #include "CoreMinimal.h"
-#include "Main.h"
+
 #include "Buffer.h"
-#include "LightComponent.h"
+#include "Light.h"
 #include "ShadowMapping.h"
+
+
 //*********************************************************
-// ƒ}ƒNƒ’è‹`
+// ãƒã‚¯ãƒ­å®šç¾©
 //*********************************************************
+#define MAX_LIGHT (8)
+
 
 enum LIGHT_TYPE
 {
-	LIGHT_TYPE_NONE,		//ƒ‰ƒCƒg–³‚µ
-	LIGHT_TYPE_DIRECTIONAL,	//ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg
-	LIGHT_TYPE_POINT,		//ƒ|ƒCƒ“ƒgƒ‰ƒCƒg
+	LIGHT_TYPE_NONE,		//ãƒ©ã‚¤ãƒˆç„¡ã—
+	LIGHT_TYPE_DIRECTIONAL,	//ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆ
+	LIGHT_TYPE_POINT,		//ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆ
 
 	LIGHT_TYPE_NUM
 };
 
 enum BLEND_MODE
 {
-	BLEND_MODE_NONE,		//ƒuƒŒƒ“ƒh–³‚µ
-	BLEND_MODE_ALPHABLEND,	//ƒ¿ƒuƒŒƒ“ƒh
-	BLEND_MODE_ADD,			//‰ÁZƒuƒŒƒ“ƒh
-	BLEND_MODE_SUBTRACT,	//Œ¸ZƒuƒŒƒ“ƒh
+	BLEND_MODE_NONE,		//ãƒ–ãƒ¬ãƒ³ãƒ‰ç„¡ã—
+	BLEND_MODE_ALPHABLEND,	//Î±ãƒ–ãƒ¬ãƒ³ãƒ‰
+	BLEND_MODE_ADD,			//åŠ ç®—ãƒ–ãƒ¬ãƒ³ãƒ‰
+	BLEND_MODE_SUBTRACT,	//æ¸›ç®—ãƒ–ãƒ¬ãƒ³ãƒ‰
 
 	BLEDD_MODE_NUM
 };
 
 enum CULL_MODE
 {
-	CULL_MODE_NONE,			//ƒJƒŠƒ“ƒO–³‚µ
-	CULL_MODE_FRONT,		//•\‚Ìƒ|ƒŠƒSƒ“‚ğ•`‰æ‚µ‚È‚¢(CW)
-	CULL_MODE_BACK,			//— ‚Ìƒ|ƒŠƒSƒ“‚ğ•`‰æ‚µ‚È‚¢(CCW)
+	CULL_MODE_NONE,			//ã‚«ãƒªãƒ³ã‚°ç„¡ã—
+	CULL_MODE_FRONT,		//è¡¨ã®ãƒãƒªã‚´ãƒ³ã‚’æç”»ã—ãªã„(CW)
+	CULL_MODE_BACK,			//è£ã®ãƒãƒªã‚´ãƒ³ã‚’æç”»ã—ãªã„(CCW)
 
 	CULL_MODE_NUM
 };
 
+enum FILL_MODE
+{
+	FILL_MODE_SOLID,		// é€šå¸¸(ã‚½ãƒªãƒƒãƒ‰è¡¨ç¤º)
+	FILL_MODE_WIREFRAME,	// ãƒ¯ã‚¤ãƒ¤ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ 
+
+	FILL_MODE_NUM
+};
+
+enum TEXT_ANCHOR
+{
+	TEXT_ANCHOR_TOP_LEFT,		// å·¦ä¸Šæƒãˆ
+	TEXT_ANCHOR_TOP_CENTER,		// ä¸­ä¸Šæƒãˆ
+	TEXT_ANCHOR_TOP_RIGHT,		// å³ä¸Šæƒãˆ
+	TEXT_ANCHOR_CENTER_LEFT,	// å·¦ä¸­å¤®æƒãˆ
+	TEXT_ANCHOR_CENTER_CENTER,	// ä¸­ä¸­å¤®æƒãˆ
+	TEXT_ANCHOR_CENTER_RIGHT,	// å³ä¸­å¤®æƒãˆ
+	TEXT_ANCHOR_BOTTOM_LEFT,	// å·¦ä¸‹æƒãˆ
+	TEXT_ANCHOR_BOTTOM_CENTER,	// ä¸­å¤®ä¸‹æƒãˆ
+	TEXT_ANCHOR_BOTTOM_RIGHT,	// å³ä¸‹æƒãˆ
+	TEXT_ANCHOR_MAX				// æœ€å¤§
+};
 
 //*********************************************************
-// \‘¢‘Ì
+// æ§‹é€ ä½“
 //*********************************************************
 
-// ’¸“_\‘¢‘Ì
+// é ‚ç‚¹æ§‹é€ ä½“
 struct VERTEX_3D
 {
     XMFLOAT3	Position;
     XMFLOAT3	Normal;
     XMFLOAT4	Diffuse;
     XMFLOAT2	TexCoord;
+	XMFLOAT3	Tangent;
+	XMFLOAT3	BiNormal;
 };
 
-// ƒ}ƒeƒŠƒAƒ‹\‘¢‘Ì
+// ãƒãƒ†ãƒªã‚¢ãƒ«æ§‹é€ ä½“
 struct MATERIAL
 {
 	XMFLOAT4	Ambient;
@@ -66,18 +93,39 @@ struct MATERIAL
 	float		Shininess;
 	int			noDiffuseTex;
 	int			noNormalTex;
+	int			noArmTex;
 	int			phong;				//0=lambart,1=phong
 };
 
 
-// ƒtƒHƒO\‘¢‘Ì
-struct FOG {
-	float		FogStart;	// ƒtƒHƒO‚ÌŠJn‹——£
-	float		FogEnd;		// ƒtƒHƒO‚ÌÅ‘å‹——£
-	XMFLOAT4	FogColor;	// ƒtƒHƒO‚ÌF
+struct LIGHT_PARAM
+{
+	XMFLOAT4	m_Position;	    // ãƒ©ã‚¤ãƒˆã®ä½ç½®
+	XMFLOAT4	m_Direction;	    // ãƒ©ã‚¤ãƒˆã®æ–¹å‘
+	XMFLOAT4	m_Diffuse;	        // æ‹¡æ•£å…‰ã®è‰²
+	XMFLOAT4	m_Ambient;		    // ç’°å¢ƒå…‰ã®è‰²
+	XMFLOAT4	m_Attenuation;	    // æ¸›è¡°ç‡    
+	XMFLOAT4    m_intensity;       // ãƒ©ã‚¤ãƒˆã®å¼·åº¦
+	int     	m_Flags;		    // ãƒ©ã‚¤ãƒˆç¨®åˆ¥+OnOff,(0=Off,1=Directional,2=Point)
+	int         dummy[3];
 };
 
-// ƒ}ƒeƒŠƒAƒ‹—p’è”ƒoƒbƒtƒ@\‘¢‘Ì
+// ãƒ©ã‚¤ãƒˆç”¨å®šæ•°ãƒãƒƒãƒ•ã‚¡æ§‹é€ ä½“
+struct LIGHT_CBUFFER
+{
+	LIGHT_PARAM  m_lightParam[MAX_LIGHT];
+	int			m_Enable;					            // ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°æœ‰åŠ¹ãƒ»ç„¡åŠ¹ãƒ•ãƒ©ã‚°
+	int			m_Dummy[3];				                // 16byteå¢ƒç•Œç”¨
+};
+
+// ãƒ•ã‚©ã‚°æ§‹é€ ä½“
+struct FOG {
+	float		FogStart;	// ãƒ•ã‚©ã‚°ã®é–‹å§‹è·é›¢
+	float		FogEnd;		// ãƒ•ã‚©ã‚°ã®æœ€å¤§è·é›¢
+	XMFLOAT4	FogColor;	// ãƒ•ã‚©ã‚°ã®è‰²
+};
+
+// ãƒãƒ†ãƒªã‚¢ãƒ«ç”¨å®šæ•°ãƒãƒƒãƒ•ã‚¡æ§‹é€ ä½“
 struct MATERIAL_CBUFFER
 {
 	XMFLOAT4	Ambient;
@@ -87,41 +135,21 @@ struct MATERIAL_CBUFFER
 	float		Shininess;
 	int			noDiffuseTex;
 	int			noNormalTex;
+	int			noArmTex;
 	int			phong;					//0=lambart,1=phong
+	int			dummy[3];
 };
 
-
-// ƒ‰ƒCƒg—pƒtƒ‰ƒO\‘¢‘Ì
-struct LIGHTFLAGS
-{
-	int			Type;		//ƒ‰ƒCƒgƒ^ƒCƒvienum LIGHT_TYPEj
-	int         OnOff;		//ƒ‰ƒCƒg‚ÌƒIƒ“orƒIƒtƒXƒCƒbƒ`
-	int			Dummy[2];
-};
-
-// ƒ‰ƒCƒg—p’è”ƒoƒbƒtƒ@\‘¢‘Ì
-struct LIGHT_CBUFFER
-{
-	XMFLOAT4	direction[LIGHT_MAX];	// ƒ‰ƒCƒg‚Ì•ûŒü
-	XMFLOAT4	Position[LIGHT_MAX];	// ƒ‰ƒCƒg‚ÌˆÊ’u
-	XMFLOAT4	Diffuse[LIGHT_MAX];		// ŠgUŒõ‚ÌF
-	XMFLOAT4	Ambient[LIGHT_MAX];		// ŠÂ‹«Œõ‚ÌF
-	XMFLOAT4	Attenuation[LIGHT_MAX];	// Œ¸Š—¦
-	LIGHTFLAGS	Flags[LIGHT_MAX];		// ƒ‰ƒCƒgí•Ê
-	int			Enable;					// ƒ‰ƒCƒeƒBƒ“ƒO—LŒøE–³Œøƒtƒ‰ƒO
-	int			Dummy[15];				// 16byte‹«ŠE—p
-};
-
-// ƒtƒHƒO—p’è”ƒoƒbƒtƒ@\‘¢‘Ì
+// ãƒ•ã‚©ã‚°ç”¨å®šæ•°ãƒãƒƒãƒ•ã‚¡æ§‹é€ ä½“
 struct FOG_CBUFFER
 {
-	XMFLOAT4	Fog;					// ƒtƒHƒO—Ê
-	XMFLOAT4	FogColor;				// ƒtƒHƒO‚ÌF
-	int			Enable;					// ƒtƒHƒO—LŒøE–³Œøƒtƒ‰ƒO
-	float		Dummy[3];				// 16byte‹«ŠE—p
+	XMFLOAT4	Fog;					// ãƒ•ã‚©ã‚°é‡
+	XMFLOAT4	FogColor;				// ãƒ•ã‚©ã‚°ã®è‰²
+	int			Enable;					// ãƒ•ã‚©ã‚°æœ‰åŠ¹ãƒ»ç„¡åŠ¹ãƒ•ãƒ©ã‚°
+	float		Dummy[3];				// 16byteå¢ƒç•Œç”¨
 };
 
-// ‰æ‚è—pƒoƒbƒtƒ@
+// ç¸å–ã‚Šç”¨ãƒãƒƒãƒ•ã‚¡
 struct FUCHI
 {
 	int			fuchi;
@@ -132,32 +160,68 @@ struct GaussianCBuffer {
 	float weight[8];
 };
 
+struct TimeCBuffer {
+	UINT fps;
+	float padding[3];
+};
+struct TessellationCBuffer
+{
+	float TessellationFacter;
+	float dummy[3];
+};
 
+struct EmitterParam_CBuffer {
+	XMFLOAT4 m_respawnPos;              //Particleã®ç”Ÿæˆåº§æ¨™
+	XMFLOAT4 m_direction;               //Particleã®ç”Ÿæˆå‘ã
+	XMFLOAT4 m_color;                   //Color
 
-class Main;
+	UINT     m_type;                    //EmitterSystemã®ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚¿ã‚¤ãƒ—ï¼ˆã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ï¼‰
+	UINT     m_particleAmountMax;       //Particleæ•°MAX
+	float    m_particleLifeMax;         //Particleå¯¿å‘½MAX
+	float    m_emissionRate;            //æ¯ç§’Particleã‚’ç”Ÿæˆã™ã‚‹æ•°
+
+	float    m_emissionAccumulator;     //emissionã®è“„ç©å®¹å™¨
+	float    m_particleSize;            //Particleã®Sizeå€ç‡
+	float    m_acc;                     //åŠ é€Ÿåº¦
+	BOOL     m_isGravity;               //é‡åŠ›ä½¿ç”¨ï¼Ÿ
+
+	float    m_gravity;                 //é‡åŠ›å€ç‡
+	BOOL     m_pause;                   //å†ç”Ÿã™ã‚‹ã‹ã„ï¼Ÿ
+	float    m_LifeMax;                 //ã‚¨ãƒŸãƒƒã‚¿ãƒ¼è‡ªèº«ã®å¯¿å‘½
+	float    m_elapsedTime;             //çµŒéæ™‚é–“
+};
+
+class GameEngine;
 
 class Renderer
 {
 public:
 
-	enum ShaderBF_MODE
+	enum Shader_Mode
 	{
-		DEFAULT_BF,
-		PARTICAL_BF,
+		DEFAULT_SMode,
+		PARTICAL_SMode,
+		UI_SMode,
+		TERRAIN_SMode,
 	};
 
-	Renderer(Main*main);
+	Renderer(GameEngine* gameEngine);
 	~Renderer();
 
 	ID3DBlob* CreateVSFile(const char* shaderName, char* fName , ID3D11VertexShader** VS);
 	void CreatePSFile(char* shaderName, char* fName , ID3D11PixelShader** PS);
 	void CreateCSFile(char* shaderName, char* fName , ID3D11ComputeShader** CS);
+	void CreateHSFile(char* shaderName, char* fName , ID3D11HullShader** HS);
+	void CreateDSFile(char* shaderName, char* fName , ID3D11DomainShader** DS);
+	void CreateUAV(ID3D11Buffer* pBF, ID3D11UnorderedAccessView* pUav, UINT BFnumElements);
 
 	XMMATRIX GetViewMatrix(void);
 	XMMATRIX GetProjectionMatrix(void);
 
 	HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
 	void UninitRenderer(void);
+
+	void SetShaderRender(const Shader_Mode mode);
 
 	void Clear(void);
 	void Present(void);
@@ -168,6 +232,7 @@ public:
 	void SetDepthEnable( BOOL Enable );
 	void SetBlendState(BLEND_MODE bm);
 	void SetCullingMode(CULL_MODE cm);
+	void SetFillMode(FILL_MODE fm);
 	void SetAlphaTestEnable(BOOL flag);
 
 	void SetWorldViewProjection2D( void );
@@ -177,55 +242,51 @@ public:
 
 	void SetMaterial( MATERIAL material );
 
-	void SetShaderBuffersMode(ShaderBF_MODE bfMode);
-
+	// ãƒ©ã‚¤ãƒˆ
+	void SetLight(int index, LIGHT_PARAM param);
 	void SetLightBuffer(void); // static
-	void SetLightEnable(BOOL flag);
-	void SetLight(LightComponent* light);
+	void SetLightEnable( BOOL useFlag);				
 
-	void SetFogBuffer(void);
-	void SetFogEnable(BOOL flag);
-	void SetFog(FOG* fog);
+	//void SetTimeBuffer(void);
+	//void SetTime(TimeCBuffer* time);
+
+	void SetTessFacter(float facter);
 
 	void DebugTextOut(char* text, int x, int y);
 
 	void SetFuchi(int flag);
 	void SetShaderCamera(XMFLOAT3 pos);
 
-	void SetShadow(SHADOWMAP_CBUFFER* shadow);
-	
-	void SetGausBuffer(void);
 	void SetClearColor(float* color4);
 
-	ID3D11InputLayout** GetVertexLayout(void);
-
-	void SetShaderDefault(void);
 
 
 	IDXGISwapChain* GetSwapChain(void);
 
+	void DrawStringText(string text, float fontSize, XMFLOAT4 color, XMFLOAT2 pos, XMFLOAT2 size, TEXT_ANCHOR anchor, string font);
+	void SetShadow(SHADOWMAP_CBUFFER* shadow);
+
+	void SetGausBuffer(void);
+	// Particle
+
+	void ComputeCSparticle(UINT numGroups);
+
+	ID3D11UnorderedAccessView* GetParticleDataBfUAV(void);
+
 private:
 
-	Main* main;
+	GameEngine* gameEngine;
 
-	D3D_FEATURE_LEVEL       FeatureLevel;
+	D3D_FEATURE_LEVEL			FeatureLevel;
 
-	ID3D11Device* m_D3DDevice ;
-	ID3D11DeviceContext* m_ImmediateContext;
-	IDXGISwapChain* SwapChain;
-	ID3D11RenderTargetView* RenderTargetView;
-	ID3D11DepthStencilView* DepthStencilView;
-	ID3D11Texture2D* depthTexture;
-
-	D3D11_VIEWPORT defaultViewPort;
-
-	void	InitConstantBuffers(void);
-
-
-
-	ID3D11VertexShader* m_VertexShader;
-	ID3D11PixelShader* m_PixelShader;
-	ID3D11InputLayout* VertexLayout;
+	ID3D11Device*				m_D3DDevice ;
+	ID3D11DeviceContext*		m_ImmediateContext;
+	IDXGISwapChain*				SwapChain;
+	ID3D11RenderTargetView*		RenderTargetView;
+	ID3D11DepthStencilView*		DepthStencilView;
+	ID3D11VertexShader*			m_VertexShader;
+	ID3D11PixelShader*			m_PixelShader;
+	ID3D11InputLayout*			VertexLayout;
 
 	Buffer<XMMATRIX>			*m_WorldBuffer;
 	Buffer<XMMATRIX>			*m_ViewBuffer;
@@ -237,39 +298,60 @@ private:
 	Buffer<XMFLOAT4>			*m_CameraBuffer;
 	Buffer<SHADOWMAP_CBUFFER>	*m_ShadowBuffer;
 	Buffer<GaussianCBuffer>		*m_GausBuffer;
-	
+	Buffer<TimeCBuffer>			*m_TimeBuffer;
+	Buffer<TessellationCBuffer>* m_TessellationBuffer;
 
-	ID3D11DepthStencilState* DepthStateEnable;
-	ID3D11DepthStencilState* DepthStateDisable;
+	ID3D11DepthStencilState*	DepthStateEnable;
+	ID3D11DepthStencilState*	DepthStateDisable;
 
-	ID3D11BlendState* BlendStateNone;
-	ID3D11BlendState* BlendStateAlphaBlend;
-	ID3D11BlendState* BlendStateAdd;
-	ID3D11BlendState* BlendStateSubtract;
-	BLEND_MODE				BlendStateParam;
+	ID3D11BlendState*			BlendStateNone;
+	ID3D11BlendState*			BlendStateAlphaBlend;
+	ID3D11BlendState*			BlendStateAdd;
+	ID3D11BlendState*			BlendStateSubtract;
+	BLEND_MODE					BlendStateParam;
 
 
-	ID3D11RasterizerState* RasterStateCullOff;
-	ID3D11RasterizerState* RasterStateCullCW;
-	ID3D11RasterizerState* RasterStateCullCCW;
+	ID3D11RasterizerState*		RasterStateCullOff;
+	ID3D11RasterizerState*		RasterStateCullCW;
+	ID3D11RasterizerState*		RasterStateCullCCW;
+	ID3D11RasterizerState*		RasterStateFillSOLID;
+	ID3D11RasterizerState*		RasterStateFillWIRE;
 
-	MATERIAL_CBUFFER	Material;
-	LIGHT_CBUFFER		Light;
-	FOG_CBUFFER			Fog;
+	MATERIAL_CBUFFER			Material;
+	FOG_CBUFFER					Fog;
+	LIGHT_CBUFFER				m_CbLight;
+	FUCHI						Fuchi;
+	TimeCBuffer					m_CbTime;
 
-	FUCHI				Fuchi;
 
-	GaussianCBuffer		Gaus;
-
-	float ClearColor[4] ;	// ”wŒiF
+	float ClearColor[4] ;	// èƒŒæ™¯è‰²
 
 	//////////////////////////////////////////
-	// •ÏX‚µ‚Ü‚µ‚½							//
+	// å¤‰æ›´ã—ã¾ã—ãŸ						//
 	//////////////////////////////////////////
-	//‰¼
+	// ä»®
 	XMMATRIX projection;
 	XMMATRIX view;
 
+	//Particleç”¨å¤‰æ•°
+
+
+	// UI
+	ID3D11VertexShader* m_UIVS;
+	ID3D11PixelShader* m_UIPS;
+
+	//trrain
+	ID3D11HullShader* m_TerrainHS;
+	ID3D11DomainShader* m_TerrainDS;
+	ID3D11VertexShader* m_TerrainVS;
+	ID3D11PixelShader* m_TerrainPS;
+
+
+
+	void InitConstantBuffers(void);
+
+	void SetShaderBuffersMode(Shader_Mode bfMode);
+	void SetShaderFile(Shader_Mode bfMode);
 
 };
 

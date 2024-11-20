@@ -7,13 +7,13 @@ public:
 	SkeletonAnimData();
 	~SkeletonAnimData();
 	void CreateSkeleton(int frameN);
-	SKELETON* GetFrameSkeleton(int frame);
+	Skeleton* GetFrameSkeleton(int frame);
 	void LoadSkeletonAnimData(string path);
 	string GetFilePath(void);
 	int GetFrameNum(void);
 
 private:
-	SKELETON* frameSkeleton;
+	Skeleton* frameSkeleton;
 	int frameNum;
 	string filePath;
 	

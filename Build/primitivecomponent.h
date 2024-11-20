@@ -1,23 +1,24 @@
 #pragma once
-#include "transformcomponent.h"
-class PrimitiveComponent :public TransformComponent
+#include "TransformComponent.h"
+
+class PrimitiveComponent : public TransformComponent
 {
 public:
 	PrimitiveComponent();
-	PrimitiveComponent(GameObject* gameObject);
 	~PrimitiveComponent();
 
-	virtual void Init(void) override=0;
+	BOOL GetHasShadow(void);
+	void SetHasShadow(BOOL b);
 
-	virtual void Uninit(void) override=0;
-
-	virtual void Update(void) override=0;
-
-	virtual void Draw(void) = 0;
+	BOOL GetDrawShadow(void);
+	void SetDrawShadow(BOOL b);
 
 protected:
+	virtual void Init(void) override;
+	virtual void Update(void) override;
+	virtual void Uninit(void) override;
+	virtual void Draw(void);
 
-
-
+	BOOL hasShadow;
+	BOOL drawShadow;
 };
-

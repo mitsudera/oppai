@@ -1,19 +1,23 @@
 #include "gameobject.h"
-
+#include "GameEngine.h"
+#include "transformcomponent.h"
+#include "Scene.h"
+#include "ColliderComponent.h"
 
 GameObject::GameObject()
 {
-	pLevel=nullptr;
+	pScene =nullptr;
 	this->transformComponent = new TransformComponent(this);
 
 	tag = ObjectTag::TagNone;
 }
 
-GameObject::GameObject(Level* level)
+
+GameObject::GameObject(Scene* scene)
 {
-	this->pLevel = level;
+	this->pScene = scene;
 	this->transformComponent = new TransformComponent(this);
-	
+	this->collider = new ColliderComponent(this);
 }
 
 GameObject::~GameObject()
@@ -37,9 +41,9 @@ void GameObject::Draw(void)
 {
 }
 
-Level* GameObject::GetLevel(void)
+Scene* GameObject::GetScene(void)
 {
-	return this->pLevel;
+	return this->pScene;
 }
 
 TransformComponent* GameObject::GetTransFormComponent(void)

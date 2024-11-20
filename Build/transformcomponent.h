@@ -17,6 +17,8 @@ public:
 
 
 	virtual XMFLOAT3 GetPosition(void);
+
+
 	XMFLOAT3 GetOldPosition(void);
 	XMFLOAT3 GetRotation(void);
 	XMFLOAT3 GetOldRotation(void);

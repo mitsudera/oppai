@@ -25,7 +25,7 @@
 
 
 
-Input::Input(Main* main)
+Input::Input()
 {
 }
 

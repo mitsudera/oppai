@@ -1,8 +1,6 @@
 #pragma once
-#include"transformcomponent.h"
-#include"main.h"
 
-
+#include "Coreminimal.h"
 
 typedef enum
 {
@@ -20,12 +18,14 @@ typedef enum
 
 class MeshComponent;
 class ColliderComponent;
+class Scene;
+class TransformComponent;
 
 class GameObject
 {
 public:
 	GameObject();
-	GameObject(Level* level);
+	GameObject(Scene* scene);
 	~GameObject();
 
 	virtual void Init(void)=0;
@@ -33,7 +33,7 @@ public:
 	virtual void Update(void)=0;
 	virtual void Draw(void)=0;
 
-	Level* GetLevel(void);
+	Scene* GetScene(void);
 	TransformComponent* GetTransFormComponent(void);
 	ColliderComponent* GetCollider(void);
 
@@ -44,7 +44,7 @@ public:
 
 
 protected:
-	Level* pLevel;
+	Scene* pScene;
 	TransformComponent* transformComponent;
 	ColliderComponent* collider;
 

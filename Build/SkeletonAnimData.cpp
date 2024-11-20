@@ -13,14 +13,15 @@ SkeletonAnimData::~SkeletonAnimData()
 
 void SkeletonAnimData::CreateSkeleton(int frameN)
 {
-	this->frameSkeleton = new SKELETON[frameN];
+	this->frameSkeleton = new Skeleton[frameN];
 	frameNum = frameN;
 }
 
-SKELETON* SkeletonAnimData::GetFrameSkeleton(int frame)
+Skeleton* SkeletonAnimData::GetFrameSkeleton(int frame)
 {
 	return &this->frameSkeleton[frame];
 }
+
 
 void SkeletonAnimData::LoadSkeletonAnimData(string path)
 {
@@ -96,7 +97,6 @@ void SkeletonAnimData::LoadSkeletonAnimData(string path)
 		FbxTime time = start_time + oneFrameValue * i;
 
 		frameSkeleton[i].LoadSkeletonFrame(skin, bonecount, time);
-
 
 
 	}

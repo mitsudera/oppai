@@ -18,42 +18,45 @@ struct CONTROLPOINT
 
 
 
-class BONE
+class Bone
 {
 public:
-	BONE();
-	~BONE();
+	Bone();
+	~Bone();
 	void LoadBone(FbxCluster* cluster);
-	void LoadBone(FbxNode* node, BONE* parent);
+	void LoadBone(FbxNode* node, Bone* parent);
 	void LoadBoneFrame(FbxCluster* cluster,FbxTime time);
 	void SetInitMtx(XMMATRIX Mtx);
 	XMMATRIX GetMtx(void);
 	XMMATRIX GetInitMtxInverse(void);
 	void CreateChildArray(int n);
-
+	int GetIndex(void);
+	void SetIndex(int n);
 
 private:
 	XMMATRIX mtx;
 	XMMATRIX initMtxInverse;
 	int childCnt;
-	BONE* child;
-	BONE* parent;
+	Bone* child;
+	Bone* parent;
 	BOOL isRootBone;
+	int index;
+
 };
 
-class SKELETON
+class Skeleton
 {
 public:
-	SKELETON();
-	~SKELETON();
+	Skeleton();
+	~Skeleton();
 	void CreateBoneArray(int n);
 	void LoadSkeleton(FbxScene* scene);
 	void LoadSkeletonFrame(FbxSkin* skin, int boneCnt, FbxTime time);
-	BONE* GetBone(int n);
+	Bone* GetBone(int n);
 	int GetBoneCount(void);
 
 private:
-	BONE* bone;
+	Bone* bone;
 	int boneCnt;
 };
 
@@ -63,25 +66,25 @@ class SkinMeshData:public MeshData
 public:
 	SkinMeshData();
 	~SkinMeshData();
-	void LoadSkinMeshData(FbxMesh* mesh,SKELETON* sp,AssetsManager* ap);
+	void LoadSkinMeshData(FbxMesh* mesh,Skeleton* sp,AssetsManager* ap);
 	int GetVertNum(void);
 	VERTEX_3D GetVertex(int n);
 	CONTROLPOINT GetControlPointVertex(int n);//頂点番号からコントロールポイント取得
 	CONTROLPOINT* GetControlPoint(int n);
+	CONTROLPOINT* GetControlPointArray(void);
 	int GetControlNum(void);
 	int* GetCPIndexArray(void);
 
 
 private:
 
-	SKELETON *pSkeleton;
+	Skeleton *pSkeleton;
 	int controlPointNum;
 	CONTROLPOINT* controlPoint;
 	VERTEX_3D* VertexArray;
 	int* controlPointIndexArray;
 	int indexNum;
 	int vertNum;
-
 
 };
 
@@ -96,13 +99,13 @@ public:
 	void LoadSkinMeshDataList(string filepath,AssetsManager* ap);
 	void CreateSkinMeshDataArray(int n);
 	SkinMeshData* GetSkinMeshData(void);
-	SKELETON* GetSkeleton(void);
+	Skeleton* GetSkeleton(void);
 
 
 private:
 	SkinMeshData* skinMeshData;
 	
-	SKELETON* skeleton;
+	Skeleton* skeleton;
 
 };
 

@@ -1,13 +1,38 @@
 #include "ShadowMapping.h"
 #include "level.h"
 #include "gameobject.h"
-#include "Main.h"
 #include "Renderer.h"
-
-ShadowMapping::ShadowMapping(Level* level)
+#include "GameEngine.h"
+#include "World.h"
+#include "CameraComponent.h"
+#include "TransformComponent.h"
+ShadowMapping::ShadowMapping(World* world)
 {
-	this->pLevel = level;
-	this->quarity = 1024.0f*4.0f;
+	this->world = world;
+
+#ifdef EPIC
+	this->quarity = 1024.0 * 4.0f;
+	this->quarityblur = 1024.0f * 2.0f * 4.0f;
+	this->hw = 64 * 4.0f;
+#endif // EPIC
+#ifdef HIGH
+	this->quarity = 1024.0 * 2.0f;
+	this->quarityblur = 1024.0f * 2.0f * 2.0f;
+	this->hw = 64 * 2.0f;
+#endif // HIGH
+#ifdef MIDLE
+	this->quarity = 1;
+	this->quarityblur = 1;
+	this->hw = 1;
+#endif // MIDLE
+#ifdef LOW
+	this->quarity = 1;
+	this->quarityblur = 1;
+	this->hw = 1;
+#endif // HIGH
+
+
+	this->quarity = 1024.0*2.0f;
 	this->quarityblur = 1024.0f*4.0f;
 	this->hw = 128.0f;
 
@@ -25,10 +50,15 @@ ShadowMapping::ShadowMapping(Level* level)
 
 	this->ShadowTarget = nullptr;
 
-	this->dir=XMFLOAT3(0.0f, 1.0f, 0.0f);
-	this->len = 100.0f;
+	this->dir = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	this->len = 50.0f;
 	this->vNear = 10.0f;
-	this->vFar = 1000.0f;
+	this->vFar = 100.0f;
+	SetDirection(XMFLOAT3(0.5f, 1.0f, 0.5f));
+	SetLen(100.0f);
+	SetNear(30.0f);
+	SetFar(300.0f);
+
 }
 
 ShadowMapping::~ShadowMapping()
@@ -37,16 +67,16 @@ ShadowMapping::~ShadowMapping()
 
 void ShadowMapping::Init(void)
 {
-	Renderer* renderer = this->pLevel->GetMain()->GetRenderer();
+	Renderer* renderer = this->world->GetGameEngine()->GetRenderer();
 
 	HRESULT hr;
 
-	renderer->CreateVSFile("shader.hlsl", "VS_SM", &m_VertexShaderShadow);
-	renderer->CreatePSFile("shader.hlsl", "PS_SM", &m_PixelShaderShadow);
+	renderer->CreateVSFile("shaders/ShadowShader.hlsl", "VS_SM", &m_VertexShaderShadow);
+	renderer->CreatePSFile("shaders/ShadowShader.hlsl", "PS_SM", &m_PixelShaderShadow);
 
-	renderer->CreateVSFile("shader.hlsl", "VS_2D", &m_VertexShaderShadow2D);
-	renderer->CreatePSFile("shader.hlsl", "xpass", &m_PixelShaderShadowX);
-	renderer->CreatePSFile("shader.hlsl", "ypass", &m_PixelShaderShadowY);
+	renderer->CreateVSFile("shaders/ShadowShader.hlsl", "VS_2D", &m_VertexShaderShadow2D);
+	renderer->CreatePSFile("shaders/ShadowShader.hlsl", "xpass", &m_PixelShaderShadowX);
+	renderer->CreatePSFile("shaders/ShadowShader.hlsl", "ypass", &m_PixelShaderShadowY);
 
 
 	// シャドウ マップの作成
@@ -111,7 +141,7 @@ void ShadowMapping::Init(void)
 	memset(&rtvDesc, 0, sizeof(rtvDesc));
 	rtvDesc.Format = DXGI_FORMAT_R32G32_FLOAT;
 	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	
+
 	// レンダーターゲットビューの生成
 
 
@@ -122,7 +152,7 @@ void ShadowMapping::Init(void)
 	srDesc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;  // 2Dテクスチャ
 	srDesc.Texture2D.MostDetailedMip = 0;   // 最初のミップマップ レベル
 	srDesc.Texture2D.MipLevels = -1;  // すべてのミップマップ レベル
-	
+
 	// シェーダ リソース ビューの作成
 	hr = renderer->GetDevice()->CreateShaderResourceView(
 		ShadowMapingTexture,          // アクセスするテクスチャ リソース
@@ -133,8 +163,8 @@ void ShadowMapping::Init(void)
 
 
 	// Xシャドウ マップの作成
-	descDepth.Width = quarityblur;
-	descDepth.Height = quarityblur;
+	descDepth.Width = (UINT)quarityblur;
+	descDepth.Height = (UINT)quarityblur;
 
 	descDepth.Format = DXGI_FORMAT_R32G32_TYPELESS;  // フォーマット
 	descDepth.Usage = D3D11_USAGE_DEFAULT;      // デフォルト使用法
@@ -160,8 +190,8 @@ void ShadowMapping::Init(void)
 
 
 	// Yシャドウ マップの作成
-	descDepth.Width = quarityblur;
-	descDepth.Height = quarityblur;
+	descDepth.Width = (UINT)quarityblur;
+	descDepth.Height = (UINT)quarityblur;
 
 	descDepth.Format = DXGI_FORMAT_R32G32_TYPELESS;  // フォーマット
 	descDepth.Usage = D3D11_USAGE_DEFAULT;      // デフォルト使用法
@@ -173,7 +203,7 @@ void ShadowMapping::Init(void)
 
 
 
-	
+
 
 	// レンダーターゲットビューの生成
 
@@ -229,7 +259,7 @@ void ShadowMapping::Init(void)
 	// 頂点０番（左上の頂点）
 	vertex[0].Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	vertex[0].TexCoord = XMFLOAT2(0.0f,0.0f);
+	vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
 
 	// 頂点１番（右上の頂点）
 	vertex[1].Position = XMFLOAT3(quarityblur, 0.0f, 0.0f);
@@ -245,7 +275,7 @@ void ShadowMapping::Init(void)
 	vertex[3].Position = XMFLOAT3(quarityblur, quarityblur, 0.0f);
 	vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
-	
+
 	renderer->GetDeviceContext()->Unmap(VertexBuffer, 0);
 
 
@@ -278,23 +308,57 @@ void ShadowMapping::Uninit(void)
 
 void ShadowMapping::Update(void)
 {
-	Renderer* renderer= this->pLevel->GetMain()->GetRenderer();
-	if (ShadowTarget!=nullptr)
+	Renderer* renderer = this->world->GetGameEngine()->GetRenderer();
+
+	ShadowTarget = world->GetMainCamera();
+
+	if (ShadowTarget != nullptr)
 	{
-		this->at = ShadowTarget->GetTransFormComponent()->GetPosition();
+		this->at = ShadowTarget->GetWorldLocation();
 		this->pos.x = at.x + dir.x * len;
 		this->pos.y = at.y + dir.y * len;
 		this->pos.z = at.z + dir.z * len;
 	}
-	
-	
+
+
 }
 
 void ShadowMapping::Draw(void)
 {
-	Renderer* renderer = pLevel->GetMain()->GetRenderer();
-	this->SetShaderShadow();
+	Renderer* renderer = world->GetGameEngine()->GetRenderer();
+
 	
+
+	D3D11_VIEWPORT vpd;
+	UINT numViewports = 1;
+	renderer->GetDeviceContext()->RSGetViewports(&numViewports, &vpd);
+
+	ID3D11RenderTargetView* rtvd;
+	ID3D11DepthStencilView* dsvd;
+
+	renderer->GetDeviceContext()->OMGetRenderTargets(1, &rtvd, &dsvd);
+
+	XMMATRIX viewd = XMMatrixTranspose(renderer->GetViewMatrix());
+	XMMATRIX projd = XMMatrixTranspose(renderer->GetProjectionMatrix());
+
+	XMFLOAT4X4 ff;
+
+	XMStoreFloat4x4(&ff, viewd);
+
+
+
+	XMFLOAT3 vz = { ff._13,0.0f,ff._33 };
+	vz = XMFLOAT3Normalize(vz);
+
+
+
+	XMFLOAT3 vpos = { this->pos.x + (vz.x * hw * 0.5f),this->pos.y,this->pos.z + (vz.z * hw * 0.5f) };
+
+	XMFLOAT3 vat= { this->at.x + (vz.x * hw * 0.5f),this->at.y,this->at.z + (vz.z * hw * 0.5f) };
+	
+	
+	this->SetShaderShadow();
+
 	// 描画ターゲットのクリア
 	float ClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };	// 背景色
 	renderer->GetDeviceContext()->ClearRenderTargetView(
@@ -315,11 +379,7 @@ void ShadowMapping::Draw(void)
 	//アルファ値も使う場合
 	renderer->GetDeviceContext()->OMSetRenderTargets(1, &RenderTargetShadow, ShadowMapDSView);
 
-	//デプスステンシルバッファのみでシャドウマッピングする場合
-	//ID3D11RenderTargetView* pRender[1] = { NULL };
-	//renderer->GetDeviceContext()->OMSetRenderTargets(1, pRender, ShadowMapDSView);
-
-	XMMATRIX mtxShadowMapView = XMMatrixLookAtLH(XMLoadFloat3(&this->pos), XMLoadFloat3(&this->at), XMLoadFloat3(&this->up));
+	XMMATRIX mtxShadowMapView = XMMatrixLookAtLH(XMLoadFloat3(&vpos), XMLoadFloat3(&vat), XMLoadFloat3(&this->up));
 	renderer->SetViewMatrix(&mtxShadowMapView);
 	XMMATRIX mtxShadowMapProj = XMMatrixOrthographicLH(hw, hw, vNear, vFar);
 	renderer->SetProjectionMatrix(&mtxShadowMapProj);
@@ -332,16 +392,29 @@ void ShadowMapping::Draw(void)
 
 	renderer->SetShadow(&this->ShadowMap);
 
-	pLevel->DrawShadowObject();
+	for (GameObject* gameObject:world->GetCurrentLevel()->GetAllGameObjects())
+	{
+		for (Component* component : gameObject->GetAllComponents())
+		{
+			//重たい
+			PrimitiveComponent* primitiveComponent = dynamic_cast<PrimitiveComponent*>(component);  // ダウンキャスト
+			if (primitiveComponent == nullptr) continue;
 
+			if (primitiveComponent->GetHasShadow())
+			{
+				primitiveComponent->Draw();
 
-	
+			}
+
+		}
+
+	}
 
 	////レンダーターゲットから外さないとシェーダーリソースにバインドできない
 	renderer->GetDeviceContext()->OMSetRenderTargets(0, nullptr, nullptr);
 
 
-	renderer->GetDeviceContext()->PSSetShaderResources(1, 1, &this->ShadowMapDSSRView);
+	renderer->GetDeviceContext()->PSSetShaderResources(2, 1, &this->ShadowMapDSSRView);
 
 
 	// RSにビューポートを設定
@@ -394,6 +467,7 @@ void ShadowMapping::Draw(void)
 
 		this->SetShaderYpass();
 
+
 		// 描画ターゲットのクリア
 		renderer->GetDeviceContext()->ClearRenderTargetView(
 			RenderTargetShadowY, // クリアする描画ターゲット
@@ -425,7 +499,25 @@ void ShadowMapping::Draw(void)
 	////レンダーターゲットから外さないとシェーダーリソースにバインドできない
 	renderer->GetDeviceContext()->OMSetRenderTargets(0, nullptr, nullptr);
 
-	renderer->GetDeviceContext()->PSSetShaderResources(2, 1, &this->ShadowMapSRViewY);
+	renderer->GetDeviceContext()->PSSetShaderResources(3, 1, &this->ShadowMapSRViewY);
+
+
+
+	renderer->SetShaderRender(Renderer::Shader_Mode::DEFAULT_SMode);
+
+
+	renderer->SetViewMatrix(&viewd);
+	renderer->SetProjectionMatrix(&projd);
+
+	
+
+	// RSにビューポートを設定
+	renderer->GetDeviceContext()->RSSetViewports(1, &vpd);
+	// OMに描画ターゲット ビューと深度/ステンシル・ビューを設定
+	renderer->GetDeviceContext()->OMSetRenderTargets(1, &rtvd, dsvd);
+
+	rtvd->Release();
+	dsvd->Release();
 
 }
 
@@ -443,14 +535,14 @@ void ShadowMapping::SetPos(XMFLOAT3 pos)
 
 void ShadowMapping::SetShadowBuffer(void)
 {
-	
-	this->pLevel->GetMain()->GetRenderer()->SetShadow(&this->ShadowMap);
+
+	this->world->GetGameEngine()->GetRenderer()->SetShadow(&this->ShadowMap);
 
 
 }
 void ShadowMapping::SetShaderShadow(void)
 {
-	Renderer* renderer = pLevel->GetMain()->GetRenderer();
+	Renderer* renderer = world->GetGameEngine()->GetRenderer();
 
 	renderer->GetDeviceContext()->VSSetShader(m_VertexShaderShadow, NULL, 0);
 	renderer->GetDeviceContext()->PSSetShader(m_PixelShaderShadow, NULL, 0);
@@ -458,7 +550,7 @@ void ShadowMapping::SetShaderShadow(void)
 }
 void ShadowMapping::SetShaderXpass(void)
 {
-	Renderer* renderer = pLevel->GetMain()->GetRenderer();
+	Renderer* renderer = world->GetGameEngine()->GetRenderer();
 
 	renderer->GetDeviceContext()->VSSetShader(m_VertexShaderShadow2D, NULL, 0);
 	renderer->GetDeviceContext()->PSSetShader(m_PixelShaderShadowX, NULL, 0);
@@ -466,7 +558,7 @@ void ShadowMapping::SetShaderXpass(void)
 }
 void ShadowMapping::SetShaderYpass(void)
 {
-	Renderer* renderer = pLevel->GetMain()->GetRenderer();
+	Renderer* renderer = world->GetGameEngine()->GetRenderer();
 
 	renderer->GetDeviceContext()->VSSetShader(m_VertexShaderShadow2D, NULL, 0);
 	renderer->GetDeviceContext()->PSSetShader(m_PixelShaderShadowY, NULL, 0);
@@ -474,7 +566,7 @@ void ShadowMapping::SetShaderYpass(void)
 }
 void ShadowMapping::SetWorldViewProjection2D(void)
 {
-	Renderer* renderer = this->pLevel->GetMain()->GetRenderer();
+	Renderer* renderer = this->world->GetGameEngine()->GetRenderer();
 
 	XMMATRIX world = XMMatrixIdentity();
 	renderer->SetWorldMatrix(&world);
@@ -494,16 +586,16 @@ void ShadowMapping::SetShadowMode(SHADOW_MODE mode)
 	this->ShadowMap.mode = mode;
 }
 
-void ShadowMapping::SetTarget(GameObject* gameObject)
+void ShadowMapping::SetTarget(TransformComponent* transForm)
 {
-	this->ShadowTarget = gameObject;
+	this->ShadowTarget = transForm;
 }
 
-void ShadowMapping::SetForward(XMFLOAT3 dir)
+void ShadowMapping::SetDirection(XMFLOAT3 dir)
 {
 
 	this->dir = XMFLOAT3Normalize(dir);
-	
+
 
 }
 
@@ -522,3 +614,4 @@ void ShadowMapping::SetFar(float f)
 	this->vFar = f;
 
 }
+

@@ -1,5 +1,5 @@
 #pragma once
-#include "main.h"
+#include "CoreMinimal.h"
 
 
 class MeshDataList;
@@ -10,13 +10,18 @@ class SkinMeshDataList;
 
 class SkeletonAnimData;
 
+class DX11Texture;
+
+
+class GameEngine;
 
 class AssetsManager
 {
 
 
 public:
-	AssetsManager(Main* main);
+	AssetsManager();
+	AssetsManager(GameEngine* gameEngine);
 	~AssetsManager();
 
 	void Init(void);
@@ -32,7 +37,7 @@ public:
 	KeyFrameAnimData* GetKeyFrameAnimData(int n);
 
 
-	Main* GetMain(void);
+	GameEngine* GetGameEngine(void);
 
 	int LoadMeshAnim(string filepath);
 
@@ -42,15 +47,23 @@ public:
 	SkeletonAnimData* GetSkeletonAnimData(int n);
 	int LoadSkeletonAnimData(string filepath);
 
-	
 
+	DX11Texture* GetTexture(int n);
+	int LoadTexture(string filepath);
+
+	void SetSkinMeshCompute(void);
 
 private:
 
-	Main* pMain;
+	GameEngine* gameEngine;
 	vector<MeshDataList*> MeshDataListArray;
 	vector<KeyFrameAnimData*>  KeyFrameAnimDataArray;
 	vector<SkinMeshDataList*> SkinMeshDataListArray;
 	vector<SkeletonAnimData*> SkeletonAnimDataArray;
+
+	vector<DX11Texture*> TextureArray;
+
+	ID3D11ComputeShader* skinMeshCompute;
+
 };
 
