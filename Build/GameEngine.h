@@ -6,11 +6,12 @@ class Renderer;
 class Input;
 class Main;
 class CameraComponent;
+class SceneManager;
+class Scene;
 
 class GameEngine
 {
 public:
-	GameEngine();
 	GameEngine(Main* main);
 	~GameEngine();
 
@@ -33,6 +34,9 @@ public:
 
 	CameraComponent* GetMainCamera(void);
 
+	Scene* GetActiveScene(void);
+	void SetActiveScene(Scene* scene);
+
 private:
 
 	Main* main;
@@ -40,7 +44,8 @@ private:
 	Renderer* renderer;
 	Input* input;
 	CameraComponent* mainCamera;
-
+	SceneManager* sceneManager;
+	Scene* activeScene;
 	XMFLOAT2 windowSize;
 };
 

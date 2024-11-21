@@ -3,7 +3,8 @@
 #include "renderer.h"
 #include "AssetsManager.h"
 #include "input.h"
-
+#include "SceneManager.h"
+#include "Scene.h"
 
 
 GameEngine::GameEngine(Main* main)
@@ -34,11 +35,16 @@ void GameEngine::Init()
 
 	this->input->Init(*main->GetInstanceHandle(), *main->GetWindowHangle());
 
+	this->sceneManager = new SceneManager(this);
+	this->sceneManager->SetDefaultScene();
+	this->activeScene->Init();
 }
 
 void GameEngine::Update()
 {
 	this->input->Update();
+	this->activeScene->Update();
+
 
 }
 
@@ -46,6 +52,7 @@ void GameEngine::Draw()
 {
 	renderer->Clear();
 
+	this->activeScene->Draw();
 
 
 	renderer->Present();
@@ -54,6 +61,9 @@ void GameEngine::Draw()
 
 void GameEngine::Uninit()
 {
+
+	this->activeScene->Uninit();
+
 	this->input->Uninit();
 	this->assetsManager->Uninit();
 	this->renderer->UninitRenderer();
@@ -105,4 +115,15 @@ CameraComponent* GameEngine::GetMainCamera(void)
 {
 	return mainCamera;
 }
+
+Scene* GameEngine::GetActiveScene(void)
+{
+	return this->activeScene;
+}
+
+void GameEngine::SetActiveScene(Scene* scene)
+{
+	this->activeScene = scene;
+}
+
 

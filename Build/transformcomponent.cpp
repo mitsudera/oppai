@@ -121,6 +121,10 @@ void TransformComponent::Update(void)
 
 }
 
+void TransformComponent::Draw(void)
+{
+}
+
 XMFLOAT3 TransformComponent::GetPosition(void)
 {
 	return this->pos;

@@ -7,17 +7,18 @@ class CollisionManger;
 class Scene
 {
 public:
+	Scene();
 	Scene(GameEngine* gameEngine);
 	~Scene();
 
-	void Init();
+	virtual void Init();
 	void Update();
 	void Draw();
 	void Uninit();
 
 	GameEngine* GetGameEngine(void);
 	CollisionManger* GetCollisionManager(void);
-private:
+protected:
 	GameEngine* gameEngine;
 	vector <GameObject*> gameObjectList;
 	CollisionManger* coliisionManager;

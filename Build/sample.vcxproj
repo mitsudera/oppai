@@ -160,6 +160,7 @@
     <ClInclude Include="FbxConvertDX11.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="gameobject.h" />
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightManager.h" />
@@ -173,6 +174,9 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SkeletonAnimData.h" />
     <ClInclude Include="SkinMeshDataList.h" />
+    <ClInclude Include="SpriteComponent.h" />
+    <ClInclude Include="TitleLogo.h" />
+    <ClInclude Include="TitleScene.h" />
     <ClInclude Include="transformcomponent.h" />
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +191,7 @@
     <ClCompile Include="FbxConvertDX11.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="gameobject.cpp" />
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightManager.cpp" />
@@ -200,6 +205,9 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SkeletonAnimData.cpp" />
     <ClCompile Include="SkinMeshDataList.cpp" />
+    <ClCompile Include="SpriteComponent.cpp" />
+    <ClCompile Include="TitleLogo.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="transformcomponent.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

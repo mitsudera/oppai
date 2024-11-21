@@ -16,10 +16,10 @@ typedef enum
 }ObjectTag;
 
 
-class MeshComponent;
 class ColliderComponent;
 class Scene;
 class TransformComponent;
+class Component;
 
 class GameObject
 {
@@ -28,10 +28,10 @@ public:
 	GameObject(Scene* scene);
 	~GameObject();
 
-	virtual void Init(void)=0;
-	virtual void Uninit(void)=0;
-	virtual void Update(void)=0;
-	virtual void Draw(void)=0;
+	virtual void Init(void);
+	virtual void Uninit(void);
+	virtual void Update(void);
+	virtual void Draw(void);
 
 	Scene* GetScene(void);
 	TransformComponent* GetTransFormComponent(void);
@@ -39,8 +39,8 @@ public:
 
 	ObjectTag GetTag(void);
 
-	BOOL GetUse(void);
-	void SetUse(BOOL use);
+	BOOL GetActive(void);
+	void SetActive(BOOL isActive);
 
 
 protected:
@@ -48,9 +48,11 @@ protected:
 	TransformComponent* transformComponent;
 	ColliderComponent* collider;
 
+	vector<Component*> componentList;
+
 	ObjectTag tag;
 
-	BOOL use;
+	BOOL isActive;
 
 
 };

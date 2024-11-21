@@ -3,19 +3,26 @@
 #include "gameobject.h"
 #include "CollisionManger.h"
 
+Scene::Scene()
+{
+}
+
 Scene::Scene(GameEngine* gameEngine)
 {
 	this->gameEngine = gameEngine;
 	this->coliisionManager = new CollisionManger(this);
+
 }
 
 Scene::~Scene()
 {
+	delete this->coliisionManager;
+
 }
 
 void Scene::Init()
 {
-
+	this->coliisionManager->Init();
 
 	for (int i = 0; i < gameObjectList.size(); i++)
 	{
@@ -47,6 +54,8 @@ void Scene::Uninit()
 	{
 		gameObjectList[i]->Uninit();
 	}
+
+	this->coliisionManager->Uninit();
 
 }
 

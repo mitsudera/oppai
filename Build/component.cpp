@@ -28,6 +28,10 @@ void Component::Update(void)
 {
 }
 
+void Component::Draw(void)
+{
+}
+
 GameObject* Component::GetGameObject(void)
 {
 	return this->pGameObject;

@@ -12,26 +12,24 @@ class SceneManager
 	enum SCENE
 	{
 		TITLE,
-
-		MAX_SCENE
+		GAME,
+		MAX_SCENE,
 	};
 
 
 public:
 	SceneManager(GameEngine* gameEngine);
 	~SceneManager();
-	void Init();
-	void Update();
-	void Draw();
-	void Uninit();
 
 	void SetScene(SCENE scene);
+	void SetDefaultScene(void);
 
 private:
 	
+	
 	GameEngine* pGameEngine;
 	vector<Scene*> SceneList;
-	Scene* activeScene;
-	
+	SCENE defaultScene;
+
 };
 

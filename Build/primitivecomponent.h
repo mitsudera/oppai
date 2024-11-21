@@ -13,11 +13,13 @@ public:
 	BOOL GetDrawShadow(void);
 	void SetDrawShadow(BOOL b);
 
-protected:
 	virtual void Init(void) override;
 	virtual void Update(void) override;
 	virtual void Uninit(void) override;
-	virtual void Draw(void);
+	virtual void Draw(void) override;
+
+
+protected:
 
 	BOOL hasShadow;
 	BOOL drawShadow;

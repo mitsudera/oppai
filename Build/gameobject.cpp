@@ -3,6 +3,7 @@
 #include "transformcomponent.h"
 #include "Scene.h"
 #include "ColliderComponent.h"
+#include "component.h"
 
 GameObject::GameObject()
 {
@@ -16,8 +17,6 @@ GameObject::GameObject()
 GameObject::GameObject(Scene* scene)
 {
 	this->pScene = scene;
-	this->transformComponent = new TransformComponent(this);
-	this->collider = new ColliderComponent(this);
 }
 
 GameObject::~GameObject()
@@ -27,18 +26,42 @@ GameObject::~GameObject()
 
 void GameObject::Init(void)
 {
+	this->transformComponent = new TransformComponent(this);
+	componentList.push_back(transformComponent);
+	this->collider = nullptr;
+
+
+	for (int i = 0; i < this->componentList.size(); i++)
+	{
+		componentList[i]->Init();
+	}
 }
 
 void GameObject::Uninit(void)
 {
+	for (int i = 0; i < this->componentList.size(); i++)
+	{
+		componentList[i]->Uninit();
+	}
+
 }
 
 void GameObject::Update(void)
 {
+	for (int i = 0; i < this->componentList.size(); i++)
+	{
+		componentList[i]->Update();
+	}
+
 }
 
 void GameObject::Draw(void)
 {
+	for (int i = 0; i < this->componentList.size(); i++)
+	{
+		componentList[i]->Draw();
+	}
+
 }
 
 Scene* GameObject::GetScene(void)
@@ -61,12 +84,12 @@ ObjectTag GameObject::GetTag(void)
 	return tag;
 }
 
-BOOL GameObject::GetUse(void)
+BOOL GameObject::GetActive(void)
 {
-	return use;
+	return isActive;
 }
 
-void GameObject::SetUse(BOOL use)
+void GameObject::SetActive(BOOL isActive)
 {
-	this->use = use;
+	this->isActive = isActive;
 }

@@ -15,6 +15,8 @@ public:
 
 	virtual void Update(void) override;
 
+	virtual void Draw(void) override;
+
 
 	virtual XMFLOAT3 GetPosition(void);
 

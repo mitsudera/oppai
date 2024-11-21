@@ -58,6 +58,12 @@
     <Filter Include="Data">
       <UniqueIdentifier>{b95820f7-cdb8-472b-9c71-795ab37060c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="gameobject\2D">
+      <UniqueIdentifier>{c26b9ac7-10bb-4165-99f0-99337180336d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject\3D">
+      <UniqueIdentifier>{233867e5-5d59-42a6-89ab-d1c7ee8f58a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coreminimal.h">
@@ -138,6 +144,18 @@
     <ClInclude Include="ColliderComponent.h">
       <Filter>component</Filter>
     </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleLogo.h">
+      <Filter>gameobject\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteComponent.h">
+      <Filter>component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -213,6 +231,18 @@
       <Filter>Manager</Filter>
     </ClCompile>
     <ClCompile Include="ColliderComponent.cpp">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleLogo.cpp">
+      <Filter>gameobject\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteComponent.cpp">
       <Filter>component</Filter>
     </ClCompile>
   </ItemGroup>
