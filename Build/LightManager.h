@@ -1,9 +1,9 @@
 #pragma once
 #include "Coreminimal.h"
+#include "renderer.h"
 
 class LightComponent;
 class GameEngine;
-
 
 
 
@@ -21,6 +21,10 @@ public:
 
 private:
     GameEngine* gameEngine;
+
+    LightComponent* activeLight;
+
+    vector<LightComponent*> lightList;
 
 };
 

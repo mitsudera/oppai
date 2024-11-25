@@ -1,6 +1,7 @@
 #include "LightManager.h"
 #include "GameEngine.h"
 #include "renderer.h"
+#include "ligh"
 
 LightManager::LightManager(GameEngine* gameEngine)
 {
@@ -14,6 +15,8 @@ LightManager::~LightManager()
 
 void LightManager::Init()
 {
+	activeLight = new LightComponent[MAX_LIGHT];
+
 }
 
 void LightManager::Update()

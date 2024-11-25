@@ -156,6 +156,9 @@
     <ClInclude Include="SpriteComponent.h">
       <Filter>component</Filter>
     </ClInclude>
+    <ClInclude Include="LightComponent.h">
+      <Filter>component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -243,6 +246,9 @@
       <Filter>gameobject\2D</Filter>
     </ClCompile>
     <ClCompile Include="SpriteComponent.cpp">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="LightComponent.cpp">
       <Filter>component</Filter>
     </ClCompile>
   </ItemGroup>
