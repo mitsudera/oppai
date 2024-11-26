@@ -5,6 +5,7 @@
 #include "SkinMeshDataList.h"
 #include "SkeletonAnimData.h"
 #include "DX11Texture.h"
+#include "LambartShader.h"
 
 #define MESH_PATH "data/MODEL/mesh/"
 #define SKINMESH_PATH "data/MODEL/skinmesh/"
@@ -35,6 +36,7 @@ void AssetsManager::Init(void)
 {
 	pGameEngine->GetRenderer()->CreateCSFile("shaders/CSskinmesh.hlsl", "CSFunc", &skinMeshCompute);
 	
+
 	
 }
 
@@ -269,5 +271,17 @@ int AssetsManager::LoadTexture(string filepath)
 void AssetsManager::SetSkinMeshCompute(void)
 {
 	GetGameEngine()->GetRenderer()->GetDeviceContext()->CSSetShader(skinMeshCompute, nullptr, 0);
+}
+
+void AssetsManager::CreateAllShader(void)
+{
+	lambartShader = new LambartShader(this->pGameEngine->GetRenderer());
+	
+
+}
+
+LambartShader* AssetsManager::GetLambartShader(void)
+{
+	return this->lambartShader;
 }
 

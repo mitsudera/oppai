@@ -165,10 +165,13 @@
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="LambartMaterial.h" />
+    <ClInclude Include="LambartShader.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightComponent.h" />
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="MeshAnimData.h" />
     <ClInclude Include="MeshComponent.h" />
@@ -178,6 +181,7 @@
     <ClInclude Include="Robot.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ShaderSet.h" />
     <ClInclude Include="SkeletonAnimData.h" />
     <ClInclude Include="SkinMeshDataList.h" />
     <ClInclude Include="SpriteComponent.h" />
@@ -205,10 +209,13 @@
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="LambartMaterial.cpp" />
+    <ClCompile Include="LambartShader.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="math.cpp" />
     <ClCompile Include="MeshAnimData.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
@@ -218,6 +225,7 @@
     <ClCompile Include="Robot.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ShaderSet.cpp" />
     <ClCompile Include="SkeletonAnimData.cpp" />
     <ClCompile Include="SkinMeshDataList.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
@@ -229,16 +237,7 @@
     <ClCompile Include="UIManagerComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders\CSparticle.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="shaders\CSparticleVP.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="shaders\CSskinmesh.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="shaders\particleVP.hlsl">
+    <FxCompile Include="shaders\LambartShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="shaders\shader.hlsl">

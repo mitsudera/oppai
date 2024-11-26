@@ -69,10 +69,7 @@ public:
 private:
 	void SetCamera(void);
 
-	XMFLOAT2 vpSize;
-	XMFLOAT2 vpPos;
-
-
+	D3D11_VIEWPORT vp;
 
 	XMMATRIX mtxView;
 

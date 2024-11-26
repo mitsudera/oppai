@@ -40,31 +40,24 @@ cbuffer MaterialBuffer : register( b3 )
 	MATERIAL	Material;
 }
 
-#define MAX_LIGHT (8)
-
 // ライト用バッファ
 struct LIGHT
 {
-    float4 Position;
-    float4 Direction;
+    float4      Position[5];
+    float4      Direction[5];
 
-    float4 Diffuse;
-    float4 Ambient;
-    float4 Attenuation;
-    float4 Intensity;
-    int Flags;
-    int Enable;
-    int Dummy[2]; //16byte境界用
+	float4		Diffuse[5];
+	float4		Ambient[5];
+	float4		Attenuation[5];
+    float4		Intensity[5];
+	int4		Flags[5];
+	int			Enable;
+	int			Dummy[3];//16byte境界用
 };
 
-cbuffer LightBuffer : register(b4)
+cbuffer LightBuffer : register( b4 )
 {
-    LIGHT Light[MAX_LIGHT];
-    
-    int Enable;
-    int Dummy[3]; //16byte境界用
-
-    
+	LIGHT		Light;
 }
 
 struct FOG

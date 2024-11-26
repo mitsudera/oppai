@@ -96,6 +96,8 @@ void CameraComponent::Draw(void)
 
 	renderer->GetDeviceContext()->ClearRenderTargetView(this->renderTarget, cc);
 
+
+
 	SetViewPort(ViewPortType);
 	SetCamera();
 

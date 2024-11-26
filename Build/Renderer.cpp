@@ -525,7 +525,7 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	rd.CullMode = D3D11_CULL_NONE; 
 	rd.DepthClipEnable = TRUE; 
 	rd.MultisampleEnable = FALSE; 
-	m_D3DDevice->CreateRasterizerState( &rd, &RasterStateCullOff);
+	m_D3DDevice->CreateRasterizerState(&rd, &RasterStateCullOff);
 	m_D3DDevice->CreateRasterizerState(&rd, &RasterStateFillSOLID);
 
 	rd.CullMode = D3D11_CULL_FRONT;
@@ -759,7 +759,7 @@ void Renderer::UninitRenderer(void)
 	if (RenderTargetView)		RenderTargetView->Release();
 	if (SwapChain)				SwapChain->Release();
 	if (m_ImmediateContext)		m_ImmediateContext->Release();
-	if (m_D3DDevice)				m_D3DDevice->Release();
+	if (m_D3DDevice)			m_D3DDevice->Release();
 }
 
 
@@ -871,8 +871,8 @@ ID3DBlob* Renderer::CreateVSFile(const char* shaderName, char* fName, ID3D11Vert
 	}
 
 	m_D3DDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), NULL, VS);
-	////‰ð•ú‚µ‚Ä‚Í‚¢‚¯‚È‚¢
-	//pVSBlob->Release();
+
+
 
 	return pVSBlob;
 }

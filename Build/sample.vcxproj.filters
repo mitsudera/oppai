@@ -70,6 +70,18 @@
     <Filter Include="component\Camera">
       <UniqueIdentifier>{cb75e590-abba-4ede-8978-6a6eef771ee8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Material">
+      <UniqueIdentifier>{dbfbc113-a982-4060-8483-73027d192393}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\hlsl">
+      <UniqueIdentifier>{166ee2d2-b3d3-4b85-8570-010e5c888e2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\ShaderSet">
+      <UniqueIdentifier>{6b75ec5c-2e21-409d-be60-63459b6fbe8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\LambartShader">
+      <UniqueIdentifier>{b6d26cf5-a07a-407c-a6f8-ad279c85c9ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coreminimal.h">
@@ -189,6 +201,18 @@
     <ClInclude Include="Camera.h">
       <Filter>gameobject\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Shader\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderSet.h">
+      <Filter>Shader\ShaderSet</Filter>
+    </ClInclude>
+    <ClInclude Include="LambartMaterial.h">
+      <Filter>Shader\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="LambartShader.h">
+      <Filter>Shader\LambartShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -305,31 +329,34 @@
     <ClCompile Include="Camera.cpp">
       <Filter>gameobject\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Shader\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderSet.cpp">
+      <Filter>Shader\ShaderSet</Filter>
+    </ClCompile>
+    <ClCompile Include="LambartMaterial.cpp">
+      <Filter>Shader\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="LambartShader.cpp">
+      <Filter>Shader\LambartShader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders\CSparticle.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="shaders\CSparticleVP.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="shaders\CSskinmesh.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="shaders\particleVP.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="shaders\shader.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="shaders\ShadowShader.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="shaders\TerrainShader.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="shaders\UIShader.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\LambartShader.hlsl">
+      <Filter>Shader\LambartShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

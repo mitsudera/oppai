@@ -12,6 +12,7 @@ class SkeletonAnimData;
 
 class DX11Texture;
 
+class LambartShader;
 
 class GameEngine;
 
@@ -53,6 +54,10 @@ public:
 
 	void SetSkinMeshCompute(void);
 
+	void CreateAllShader(void);
+
+	LambartShader* GetLambartShader(void);
+
 private:
 
 	GameEngine* pGameEngine;
@@ -64,6 +69,8 @@ private:
 	vector<DX11Texture*> TextureArray;
 
 	ID3D11ComputeShader* skinMeshCompute;
+
+	LambartShader* lambartShader;
 
 };
 
