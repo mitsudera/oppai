@@ -206,7 +206,7 @@ public:
 		TERRAIN_SMode,
 	};
 
-	Renderer(GameEngine* gameEngine);
+	Renderer(GameEngine* pGameEngine);
 	~Renderer();
 
 	ID3DBlob* CreateVSFile(const char* shaderName, char* fName , ID3D11VertexShader** VS);
@@ -268,15 +268,13 @@ public:
 	void SetShadow(SHADOWMAP_CBUFFER* shadow);
 
 	void SetGausBuffer(void);
-	// Particle
 
-	void ComputeCSparticle(UINT numGroups);
-
-	ID3D11UnorderedAccessView* GetParticleDataBfUAV(void);
+	ID3D11RenderTargetView* GetBackBuffer(void);
+	ID3D11DepthStencilView* GetBackBufferDSV(void);
 
 private:
 
-	GameEngine* gameEngine;
+	GameEngine* pGameEngine;
 
 	D3D_FEATURE_LEVEL			FeatureLevel;
 

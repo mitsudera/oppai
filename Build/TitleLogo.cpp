@@ -11,7 +11,9 @@ TitleLogo::~TitleLogo()
 
 void TitleLogo::Init(void)
 {
-	
+	GameObject::Init();
+
+
 	SpriteComponent* logo = new SpriteComponent(this);
 	logo->Init();
 	logo->CreateVertexBuffer();

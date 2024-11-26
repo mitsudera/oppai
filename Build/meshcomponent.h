@@ -25,14 +25,12 @@ public:
 	};
 
 	MeshComponent();
+	MeshComponent(GameObject* gameObject);
 	~MeshComponent();
 
 	virtual void Init(void) override;
 	virtual void Update(void) override;
 	virtual void Uninit(void) override;
-	virtual void BeginPlay(void) override;
-	virtual void UpdatePlay(void) override;
-	virtual void EndPlay(void) override;
 
 	virtual void Draw(void) override;
 

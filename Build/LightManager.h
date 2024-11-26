@@ -11,7 +11,7 @@ class LightManager
 {
 
 public:
-    LightManager(GameEngine* gameEngine);
+    LightManager(GameEngine* pGameEngine);
     ~LightManager();
 
     void Init();
@@ -20,7 +20,7 @@ public:
     void Uninit();
 
 private:
-    GameEngine* gameEngine;
+    GameEngine* pGameEngine;
 
     LightComponent** activeLight;
 

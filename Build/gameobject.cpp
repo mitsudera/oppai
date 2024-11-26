@@ -16,7 +16,14 @@ GameObject::GameObject()
 
 GameObject::GameObject(Scene* scene)
 {
+	this->parent = nullptr;
 	this->pScene = scene;
+}
+
+GameObject::GameObject(GameObject* parent)
+{
+	this->parent = parent;
+	this->pScene = parent->GetScene();
 }
 
 GameObject::~GameObject()
@@ -31,10 +38,13 @@ void GameObject::Init(void)
 	this->collider = nullptr;
 
 
-	for (int i = 0; i < this->componentList.size(); i++)
-	{
-		componentList[i]->Init();
-	}
+
+
+	//child
+
+
+
+
 }
 
 void GameObject::Uninit(void)
@@ -42,6 +52,10 @@ void GameObject::Uninit(void)
 	for (int i = 0; i < this->componentList.size(); i++)
 	{
 		componentList[i]->Uninit();
+	}
+	for (int i = 0; i < child.size(); i++)
+	{
+		child[i]->Uninit();
 	}
 
 }
@@ -52,6 +66,10 @@ void GameObject::Update(void)
 	{
 		componentList[i]->Update();
 	}
+	for (int i = 0; i < child.size(); i++)
+	{
+		child[i]->Update();
+	}
 
 }
 
@@ -61,11 +79,16 @@ void GameObject::Draw(void)
 	{
 		componentList[i]->Draw();
 	}
+	for (int i = 0; i < child.size(); i++)
+	{
+		child[i]->Draw();
+	}
 
 }
 
 Scene* GameObject::GetScene(void)
 {
+
 	return this->pScene;
 }
 
@@ -92,4 +115,14 @@ BOOL GameObject::GetActive(void)
 void GameObject::SetActive(BOOL isActive)
 {
 	this->isActive = isActive;
+}
+
+GameObject* GameObject::GetParent(void)
+{
+	return this->parent;
+}
+
+GameObject* GameObject::GetChild(int index)
+{
+	return this->child[index];
 }

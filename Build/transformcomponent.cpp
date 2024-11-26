@@ -23,14 +23,17 @@ TransformComponent::TransformComponent()
 	this->mtxrotx=XMMatrixRotationQuaternion(qtonX);
 	this->mtxroty=XMMatrixRotationQuaternion(qtonY);
 	this->mtxrotz=XMMatrixRotationQuaternion(qtonZ);
-	this->mtxWorld = XMMatrixIdentity();
+	this->lMtx = XMMatrixIdentity();
+	this->wMtx = XMMatrixIdentity();
 	this->fDirection = { 0.0f,0.0f,1.0f };
 
-
+	isTransformComponent = TRUE;
 }
 
 TransformComponent::TransformComponent(GameObject* gameObject)
 {
+
+	attribute = Attribute::Transform;
 	this->pos = { 0.0f,0.0f,0.0f };
 	this->oldPos = { 0.0f, 0.0f, 0.0f };
 	this->rot = { 0.0f,0.0f,0.0f };
@@ -50,11 +53,13 @@ TransformComponent::TransformComponent(GameObject* gameObject)
 	this->mtxrotx = XMMatrixRotationQuaternion(qtonX);
 	this->mtxroty = XMMatrixRotationQuaternion(qtonY);
 	this->mtxrotz = XMMatrixRotationQuaternion(qtonZ);
-	this->mtxWorld = XMMatrixIdentity();
-
+	this->lMtx = XMMatrixIdentity();
+	this->wMtx = XMMatrixIdentity();
 	this->fDirection = { 0.0f,0.0f,1.0f };
 
 	this->pGameObject = gameObject;
+
+	isTransformComponent = TRUE;
 }
 
 TransformComponent::~TransformComponent()
@@ -84,7 +89,8 @@ void TransformComponent::Init(void)
 	this->mtxrotx = XMMatrixRotationQuaternion(qtonX);
 	this->mtxroty = XMMatrixRotationQuaternion(qtonY);
 	this->mtxrotz = XMMatrixRotationQuaternion(qtonZ);
-	this->mtxWorld = XMMatrixIdentity();
+	this->lMtx = XMMatrixIdentity();
+	this->wMtx = XMMatrixIdentity();
 
 }
 
@@ -96,13 +102,11 @@ void TransformComponent::Update(void)
 {
 
 
-	XMMATRIX world;
-	world = XMMatrixIdentity();
-	world = XMMatrixMultiply(world, mtxscl);
-	world = XMMatrixMultiply(world, mtxrot);
-	world = XMMatrixMultiply(world, mtxpos);
+	lMtx = XMMatrixIdentity();
+	lMtx = XMMatrixMultiply(lMtx, mtxscl);
+	lMtx = XMMatrixMultiply(lMtx, mtxrot);
+	lMtx = XMMatrixMultiply(lMtx, mtxpos);
 
-	this->mtxWorld = world;
 
 	XMVECTOR v = XMLoadFloat3(&fDirection);
 
@@ -205,20 +209,36 @@ XMMATRIX TransformComponent::GetMtxRotZ(void)
 	return this->mtxrotz;
 }
 
+XMMATRIX TransformComponent::GetWorldMtx(XMMATRIX mtx)
+{
+	XMMATRIX ans = XMMatrixMultiply(mtx,lMtx);
+
+
+	if (this->attribute != Attribute::Transform)
+	{
+		ans = pGameObject->GetTransFormComponent()->GetWorldMtx(ans);
+	}
+	if (pGameObject->GetParent() != nullptr)
+	{
+		ans = pGameObject->GetParent()->GetTransFormComponent()->GetWorldMtx(ans);
+
+	}
+
+
+
+	return ans;
+}
+
 XMMATRIX TransformComponent::GetWorldMtx(void)
 {
-	return this->mtxWorld;
+	return GetWorldMtx(XMMatrixIdentity());
 }
 
-XMMATRIX TransformComponent::GetWorldMtxWithParent(void)
+XMMATRIX TransformComponent::GetLocalMtx(void)
 {
-	XMMATRIX pMtx = this->GetGameObject()->GetTransFormComponent()->GetWorldMtx();
-	XMMATRIX lMtx = this->GetWorldMtx();
-
-	lMtx = XMMatrixMultiply(lMtx, pMtx);
-	
-	return lMtx;
+	return this->lMtx;
 }
+
 
 void TransformComponent::SetPosition(XMFLOAT3 pos)
 {
@@ -334,7 +354,7 @@ void TransformComponent::SetMtxRotZ(XMMATRIX mtx)
 
 void TransformComponent::SetWorldMtx(XMMATRIX mtx)
 {
-	this->mtxWorld = mtx;
+	this->wMtx = mtx;
 }
 
 void TransformComponent::SetTransForm(XMFLOAT3 pos, XMFLOAT3 rot, XMFLOAT3 scl)
@@ -346,11 +366,10 @@ void TransformComponent::SetTransForm(XMFLOAT3 pos, XMFLOAT3 rot, XMFLOAT3 scl)
 
 XMFLOAT3 TransformComponent::GetWorldPos(void)
 {
-	XMMATRIX pMtx = this->GetGameObject()->GetTransFormComponent()->GetWorldMtx();
-	XMFLOAT3 lPos = this->pos;
+	XMFLOAT3 lPos = XMFLOAT3(0.0f,0.0f,0.0f);
 
 	XMVECTOR wPos = XMLoadFloat3(&lPos);
-	wPos = XMVector3Transform(wPos,pMtx);
+	wPos = XMVector3Transform(wPos,GetWorldMtx());
 
 	XMStoreFloat3(&lPos, wPos);
 	

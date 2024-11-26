@@ -19,9 +19,9 @@
 
 
 
-Renderer::Renderer(GameEngine* gameEngine)
+Renderer::Renderer(GameEngine* pGameEngine)
 {
-	this->gameEngine = gameEngine;
+	this->pGameEngine = pGameEngine;
 
 
 	FeatureLevel = D3D_FEATURE_LEVEL_11_0;
@@ -276,7 +276,7 @@ void Renderer::SetWorldViewProjection2D( void )
 	m_ViewBuffer->SetToBuffer(m_ImmediateContext, &view);
 	//GetDeviceContext()->UpdateSubresource(ViewBuffer, 0, NULL, &view, 0, 0);
 
-	XMFLOAT2 screen = gameEngine->GetWindowSize();
+	XMFLOAT2 screen = pGameEngine->GetWindowSize();
 
 	XMMATRIX worldViewProjection;
 	worldViewProjection = XMMatrixOrthographicOffCenterLH(0.0f, screen.x, screen.y, 0.0f, 0.0f, 1.0f);
@@ -400,6 +400,11 @@ void Renderer::SetGausBuffer(void)
 	m_GausBuffer->SetToBuffer(m_ImmediateContext, &gaus);
 }
 
+ID3D11RenderTargetView* Renderer::GetBackBuffer(void)
+{
+	return this->RenderTargetView;
+}
+
 
 void Renderer::SetTessFacter(float facter)
 {
@@ -419,7 +424,7 @@ void Renderer::SetTessFacter(float facter)
 HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	HRESULT hr = S_OK;
-	XMFLOAT2 screen = gameEngine->GetWindowSize();
+	XMFLOAT2 screen = pGameEngine->GetWindowSize();
 
 	// デバイス、スワップチェーン、コンテキスト生成
 	DWORD deviceFlags = 0;
@@ -441,6 +446,9 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	sd.Flags = DXGI_SWAP_CHAIN_FLAG_GDI_COMPATIBLE;
 	deviceFlags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+
+
+
 
 	hr = D3D11CreateDeviceAndSwapChain(NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -811,7 +819,7 @@ void Renderer::DebugTextOut(char* text, int x, int y)
 			//背景を透明に変更
 			SetBkMode(hdc, TRANSPARENT);
 
-			XMFLOAT2 screen = gameEngine->GetWindowSize();
+			XMFLOAT2 screen = pGameEngine->GetWindowSize();
 
 			RECT rect;
 			rect.left = 0;
@@ -1195,13 +1203,13 @@ void Renderer::DrawStringText(string text, float fontSize, XMFLOAT4 color, XMFLO
 			SetBkMode(hdc, TRANSPARENT);
 			XMFLOAT2 vpSize;
 			XMFLOAT2 vpPos;
-			CameraComponent* camComp = gameEngine->GetMainCamera();
+			CameraComponent* camComp = pGameEngine->GetMainCamera();
 			if (camComp != nullptr)
 			{
 				camComp->GetViewPort(vpSize, vpPos);
 
 
-				XMFLOAT2 resolution = gameEngine->GetWindowSize();
+				XMFLOAT2 resolution = pGameEngine->GetWindowSize();
 
 				XMFLOAT2 absoluteSize, absolutePos;
 				absoluteSize.x = vpSize.x / resolution.x;

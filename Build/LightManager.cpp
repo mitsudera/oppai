@@ -4,9 +4,9 @@
 #include "light.h"
 #include "LightComponent.h"
 
-LightManager::LightManager(GameEngine* gameEngine)
+LightManager::LightManager(GameEngine* pGameEngine)
 {
-	this->gameEngine = gameEngine;
+	this->pGameEngine = pGameEngine;
 }
 
 LightManager::~LightManager()
@@ -31,14 +31,14 @@ void LightManager::Update()
 
 	for (int i = 0; i < MAX_LIGHT; i++)
 	{
-		gameEngine->GetRenderer()->SetLight(i,activeLight[i]->GetLightParam());
+		pGameEngine->GetRenderer()->SetLight(i,activeLight[i]->GetLightParam());
 	}
 
 }
 
 void LightManager::Draw()
 {
-	Renderer* renderer = gameEngine->GetRenderer();
+	Renderer* renderer = pGameEngine->GetRenderer();
 
 }
 

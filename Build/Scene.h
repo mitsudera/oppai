@@ -4,11 +4,13 @@
 class SceneManager;
 class GameEngine;
 class CollisionManger;
+class CameraComponent;
+
 class Scene
 {
 public:
 	Scene();
-	Scene(GameEngine* gameEngine);
+	Scene(GameEngine* pGameEngine);
 	~Scene();
 
 	virtual void Init();
@@ -19,8 +21,9 @@ public:
 	GameEngine* GetGameEngine(void);
 	CollisionManger* GetCollisionManager(void);
 protected:
-	GameEngine* gameEngine;
+	GameEngine* pGameEngine;
 	vector <GameObject*> gameObjectList;
 	CollisionManger* coliisionManager;
+	CameraComponent* mainCamera;
 };
 

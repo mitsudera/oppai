@@ -20,7 +20,7 @@ class SceneManager
 
 
 public:
-	SceneManager(GameEngine* gameEngine);
+	SceneManager(GameEngine* pGameEngine);
 	~SceneManager();
 
 	void SetScene(SCENE scene);

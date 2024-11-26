@@ -6,6 +6,10 @@ class LightComponent:public TransformComponent
 {
 public:
 
+	LightComponent();
+	LightComponent(GameObject* gameObject);
+	~LightComponent();
+
 	// Component ‚ğ‰î‚µ‚ÄŒp³‚³‚ê‚Ü‚µ‚½
 	virtual void Init(void) override;
 

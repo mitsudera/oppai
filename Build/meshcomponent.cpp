@@ -5,8 +5,9 @@
 #include "AssetsManager.h"
 #include "MeshData.h"
 #include "MeshAnimData.h"
-#include "World.h"
 #include "DX11Texture.h"
+#include "gameobject.h"
+#include "GameScene.h"
 
 #define TEXTURE_PATH	"data/TEXTURE/"
 
@@ -36,6 +37,39 @@ MeshComponent::MeshComponent()
 	//shader
 	this->alphaTest = FALSE;
 	m_fuchi = FALSE;
+
+}
+
+MeshComponent::MeshComponent(GameObject* gameObject)
+{
+	pGameObject = gameObject;
+	attribute = Attribute::Primitive;
+
+	BlendMeshMtxArray = nullptr;
+	MeshMtxArray = nullptr;
+	animation = FALSE;
+	animindex = 0;
+	animstate = ANIM_STATE::NO_ANIM;
+	blendcnt = 0;
+	blendcntmax = 0;
+	framecnt = 0;
+	framenum = 0;
+	lastanimindex = 0;
+	meshNum = 0;
+	MeshDataListIndex = 0;
+	frameBlendMode = TRUE;
+	cullMode = CULL_MODE::CULL_MODE_FRONT;
+	defaultAnimIndex = 0;
+
+	crossFadeMode = TRUE;
+	motionblend = FALSE;
+
+
+	//shader
+	this->alphaTest = FALSE;
+	m_fuchi = FALSE;
+
+
 }
 
 MeshComponent::~MeshComponent()
@@ -63,14 +97,15 @@ void MeshComponent::Init(void)
 	hasShadow = TRUE;
 
 
-	SetName("Mesh");
 }
 
 void MeshComponent::Update(void)
 {
 	PrimitiveComponent::Update();
 
-	float dTime = GetWorld()->GetGameEngine()->GetDeltaTime();//1.0=1秒
+	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
+
+	float dTime = pGameEngine->GetDeltaTime();//1.0=1秒
 	float dFrame = dTime * 60.0f;
 
 	if (animstate==ANIM_STATE::NO_ANIM)
@@ -90,8 +125,8 @@ void MeshComponent::Update(void)
 			float w2 = framecnt - (float)(int)(framecnt);
 			float w1 = 1.0f - w2;
 
-			XMMATRIX mtx1 = this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i);
-			XMMATRIX mtx2 = this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i);
+			XMMATRIX mtx1 = pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i);
+			XMMATRIX mtx2 = pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i);
 
 
 
@@ -142,8 +177,8 @@ void MeshComponent::Update(void)
 			float w2 = framecnt - (float)(int)(framecnt);
 			float w1 = 1.0f - w2;
 
-			XMMATRIX mtx1= (this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i) * blendweight1) + (this->BlendMeshMtxArray[i] * blendweight2);
-			XMMATRIX mtx2= (this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i) * blendweight1) + (this->BlendMeshMtxArray[i] * blendweight2);
+			XMMATRIX mtx1= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i) * blendweight1) + (this->BlendMeshMtxArray[i] * blendweight2);
+			XMMATRIX mtx2= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i) * blendweight1) + (this->BlendMeshMtxArray[i] * blendweight2);
 
 
 
@@ -180,8 +215,8 @@ void MeshComponent::Update(void)
 			float w2 = framecnt - (float)(int)(framecnt);
 			float w1 = 1.0f - w2;
 
-			XMMATRIX mtx1= (this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i) * blendweight1) + (this->BlendMeshMtxArray[i] * blendweight2);
-			XMMATRIX mtx2= (this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i) * blendweight1) + (this->BlendMeshMtxArray[i] * blendweight2);
+			XMMATRIX mtx1= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i) * blendweight1) + (this->BlendMeshMtxArray[i] * blendweight2);
+			XMMATRIX mtx2= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i) * blendweight1) + (this->BlendMeshMtxArray[i] * blendweight2);
 
 
 
@@ -216,26 +251,6 @@ void MeshComponent::Uninit(void)
 
 }
 
-void MeshComponent::BeginPlay(void)
-{
-	PrimitiveComponent::BeginPlay();
-	isShow = true;
-}
-
-void MeshComponent::UpdatePlay(void)
-{
-	PrimitiveComponent::UpdatePlay();
-
-
-
-
-}
-
-void MeshComponent::EndPlay(void)
-{
-	PrimitiveComponent::EndPlay();
-
-}
 
 void MeshComponent::Draw(void)
 {
@@ -243,28 +258,34 @@ void MeshComponent::Draw(void)
 
 	if (!isShow) return;
 
-	GetWorldMatrix();
+	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
+
+	Renderer* renderer = pGameEngine->GetRenderer();
+
+
 
 	if (this->alphaTest==TRUE)
 	{
-		this->GetWorld()->GetGameEngine()->GetRenderer()->SetAlphaTestEnable(TRUE);
+		renderer->SetAlphaTestEnable(TRUE);
 	}
 	
-	Renderer* renderer = this->GetWorld()->GetGameEngine()->GetRenderer();
 	for (int i = 0; i < this->meshNum; i++)
 	{
 		renderer->SetFuchi(m_fuchi);
 		this->DrawMesh(i);
 	}
 	renderer->SetFuchi(FALSE);
-	this->GetWorld()->GetGameEngine()->GetRenderer()->SetAlphaTestEnable(FALSE);
+	renderer->SetAlphaTestEnable(FALSE);
 
 }
 
 void MeshComponent::DrawMesh(int n)
 {
-	Renderer* renderer = this->GetWorld()->GetGameEngine()->GetRenderer();
-	MeshDataList* list = this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex);
+	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
+
+	Renderer* renderer = pGameEngine->GetRenderer();
+
+	MeshDataList* list = pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex);
 
 
 	renderer->SetCullingMode((CULL_MODE)cullMode);
@@ -272,9 +293,11 @@ void MeshComponent::DrawMesh(int n)
 	list->GetMeshData()[n].BufferSetIndex();
 
 
+	TransformComponent*trans= this->pGameObject->GetTransFormComponent();
+
 	XMMATRIX world = XMMatrixIdentity();
 	world = XMMatrixMultiply(world, this->MeshMtxArray[n]);
-	world = XMMatrixMultiply(world, GetWorldMatrix());
+	world = GetWorldMtx(world);
 	renderer->SetWorldMatrix(&world);
 
 
@@ -295,7 +318,7 @@ void MeshComponent::DrawMesh(int n)
 		
 		if (isOriginalDiffuse)
 		{
-			this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetTexture(diffuseIndex)->SetShaderResource(0);
+			pGameEngine->GetAssetsManager()->GetTexture(diffuseIndex)->SetShaderResource(0);
 		}
 
 		renderer->GetDeviceContext()->DrawIndexed(list->GetMeshData()[n].GetIndexNum(), 0, 0);
@@ -340,7 +363,7 @@ void MeshComponent::SetDiffuseTex(string texName)
 
 	string path = TEXTURE_PATH + texName;
 
-	diffuseIndex= GetWorld()->GetGameEngine()->GetAssetsManager()->LoadTexture(path);
+	diffuseIndex = pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->LoadTexture(path);
 	
 }
 
@@ -350,7 +373,7 @@ string MeshComponent::GetDiffuseTex(void)
 	{
 		return "\0";
 	}
-	return GetWorld()->GetGameEngine()->GetAssetsManager()->GetTexture(diffuseIndex)->GetFilePath();
+	return pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->GetTexture(diffuseIndex)->GetFilePath();
 }
 
 
@@ -469,6 +492,8 @@ void MeshComponent::SetMeshComponent(
 	animation = TRUE;
 	animstate = ANIM_STATE::DATA_ANIM;
 
+	SetMeshDataList();
+	SetAnimationArray();
 }
 
 
@@ -476,6 +501,7 @@ void MeshComponent::SetMeshComponent(string meshFilePath)		//メッシュデー�
 {
 	SetMeshFilePath(meshFilePath);
 	animation = FALSE;
+	SetMeshDataList();
 
 }
 
@@ -489,11 +515,16 @@ void MeshComponent::SetBlendFrame(int frame)
 
 void MeshComponent::SetMeshDataList(void)
 {
-	this->MeshDataListIndex = this->GetWorld()->GetGameEngine()->GetAssetsManager()->LoadMesh(this->meshFilePath);
-	this->CreateMeshMtxArray(this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshDataNum());
+
+	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
+
+	Renderer* renderer = pGameEngine->GetRenderer();
+
+	this->MeshDataListIndex = pGameEngine->GetAssetsManager()->LoadMesh(this->meshFilePath);
+	this->CreateMeshMtxArray(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshDataNum());
 	for (int i = 0; i < this->meshNum; i++)
 	{
-		MeshMtxArray[i] = this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()[i].GetOffset();
+		MeshMtxArray[i] = pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()[i].GetOffset();
 
 	}
 	this->SetBlendMtxArray();
@@ -502,13 +533,17 @@ void MeshComponent::SetMeshDataList(void)
 
 void MeshComponent::SetAnimationArray(void)
 {
+	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
+
+	Renderer* renderer = pGameEngine->GetRenderer();
+
 	for (int i = 0; i < this->animFilePath.size(); i++)
 	{
-		int n = this->GetWorld()->GetGameEngine()->GetAssetsManager()->LoadMeshAnim(this->animFilePath[i]);
+		int n = pGameEngine->GetAssetsManager()->LoadMeshAnim(this->animFilePath[i]);
 		this->AnimDataIndexArray.push_back(n);
 	}
 	framecnt = 0;
-	framenum = this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetKeyFrameAnimData(AnimDataIndexArray[0])->GetFrameNum();
+	framenum = pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(AnimDataIndexArray[0])->GetFrameNum();
 	
 
 }
@@ -538,9 +573,13 @@ void MeshComponent::SetBlendMtxArray(void)
 
 void MeshComponent::SwichAnimIndex(int n)
 {
+	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
+
+	Renderer* renderer = pGameEngine->GetRenderer();
+
 	animindex = n;
 	framecnt = 0;
-	framenum = this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetKeyFrameAnimData(AnimDataIndexArray[n])->GetFrameNum();
+	framenum = pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(AnimDataIndexArray[n])->GetFrameNum();
 	if (motionblend)
 	{
 		SetBlendMtxArray();
@@ -552,9 +591,13 @@ void MeshComponent::SwichAnimIndex(int n)
 
 void MeshComponent::StartOneTimeAnimIndex(int n)
 {
+	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
+
+	Renderer* renderer = pGameEngine->GetRenderer();
+
 	animindex = n;
 	framecnt = 0;
-	framenum = this->GetWorld()->GetGameEngine()->GetAssetsManager()->GetKeyFrameAnimData(AnimDataIndexArray[n])->GetFrameNum();
+	framenum = pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(AnimDataIndexArray[n])->GetFrameNum();
 	SetBlendMtxArray();
 	blendcnt = 0;
 

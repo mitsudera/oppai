@@ -5,6 +5,7 @@
 
 Component::Component()
 {
+	attribute = Attribute::Component;
 }
 Component::Component(GameObject* gameObject)
 {
@@ -35,5 +36,10 @@ void Component::Draw(void)
 GameObject* Component::GetGameObject(void)
 {
 	return this->pGameObject;
+}
+
+Component::Attribute Component::GetAttribute(void)
+{
+	return this->attribute;
 }
 

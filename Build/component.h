@@ -8,6 +8,17 @@ class TransformComponent;
 class Component
 {
 public:
+
+	enum class Attribute
+	{
+		Component,
+		Transform,
+		Collider,
+		Primitive,
+		Light,
+		Manager,
+	};
+
 	Component();
 	Component(GameObject* gameObject);
 	~Component();
@@ -19,8 +30,12 @@ public:
 
 	GameObject* GetGameObject(void);
 
+	Component::Attribute GetAttribute(void);
+
+
 protected:
 	GameObject* pGameObject;
+	Attribute attribute;
 
 };
 

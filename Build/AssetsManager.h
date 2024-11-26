@@ -21,7 +21,7 @@ class AssetsManager
 
 public:
 	AssetsManager();
-	AssetsManager(GameEngine* gameEngine);
+	AssetsManager(GameEngine* pGameEngine);
 	~AssetsManager();
 
 	void Init(void);
@@ -55,7 +55,7 @@ public:
 
 private:
 
-	GameEngine* gameEngine;
+	GameEngine* pGameEngine;
 	vector<MeshDataList*> MeshDataListArray;
 	vector<KeyFrameAnimData*>  KeyFrameAnimDataArray;
 	vector<SkinMeshDataList*> SkinMeshDataListArray;

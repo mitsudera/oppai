@@ -37,7 +37,6 @@ void GameEngine::Init()
 
 	this->sceneManager = new SceneManager(this);
 	this->sceneManager->SetDefaultScene();
-	this->activeScene->Init();
 }
 
 void GameEngine::Update()
@@ -51,6 +50,8 @@ void GameEngine::Update()
 void GameEngine::Draw()
 {
 	renderer->Clear();
+
+	
 
 	this->activeScene->Draw();
 
@@ -116,6 +117,11 @@ CameraComponent* GameEngine::GetMainCamera(void)
 	return mainCamera;
 }
 
+void GameEngine::SetMainCamera(CameraComponent* cam)
+{
+	this->mainCamera = cam;
+}
+
 Scene* GameEngine::GetActiveScene(void)
 {
 	return this->activeScene;
@@ -123,7 +129,10 @@ Scene* GameEngine::GetActiveScene(void)
 
 void GameEngine::SetActiveScene(Scene* scene)
 {
+	//this->activeScene->Uninit();
 	this->activeScene = scene;
+	activeScene->Init();
+
 }
 
 SceneManager* GameEngine::GetSceneManager(void)

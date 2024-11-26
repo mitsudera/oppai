@@ -7,9 +7,9 @@ Scene::Scene()
 {
 }
 
-Scene::Scene(GameEngine* gameEngine)
+Scene::Scene(GameEngine* pGameEngine)
 {
-	this->gameEngine = gameEngine;
+	this->pGameEngine = pGameEngine;
 	this->coliisionManager = new CollisionManger(this);
 
 }
@@ -36,11 +36,12 @@ void Scene::Update()
 	{
 		gameObjectList[i]->Update();
 	}
-
 }
 
 void Scene::Draw()
 {
+	pGameEngine->SetMainCamera(this->mainCamera);
+	
 	for (int i = 0; i < gameObjectList.size(); i++)
 	{
 		gameObjectList[i]->Draw();
@@ -61,7 +62,7 @@ void Scene::Uninit()
 
 GameEngine* Scene::GetGameEngine(void)
 {
-	return this->gameEngine;
+	return this->pGameEngine;
 }
 
 CollisionManger* Scene::GetCollisionManager(void)

@@ -37,9 +37,11 @@ public:
 	XMMATRIX GetMtxRotY(void);
 	XMMATRIX GetMtxRotZ(void);
 
-	XMMATRIX GetWorldMtx(void);
-	XMMATRIX GetWorldMtxWithParent(void);
 
+
+	XMMATRIX GetWorldMtx(XMMATRIX mtx);
+	XMMATRIX GetWorldMtx(void);
+	XMMATRIX GetLocalMtx(void);
 
 	void SetPosition(XMFLOAT3 pos);
 	void SetRotation(XMFLOAT3 rot);
@@ -114,9 +116,10 @@ protected:
 	XMMATRIX		mtxrotz;		//回転行列
 
 
-	XMMATRIX		mtxWorld;	// ワールドマトリックス
+	XMMATRIX		lMtx;
+	XMMATRIX		wMtx;	// ワールドマトリックス
 
 
-
+	BOOL isTransformComponent;
 };
 

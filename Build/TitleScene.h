@@ -4,7 +4,7 @@ class TitleScene :public Scene
 {
 public:
 	
-	TitleScene(GameEngine* gameEngine);
+	TitleScene(GameEngine* pGameEngine);
 	~TitleScene();
 
 	virtual void Init() override;

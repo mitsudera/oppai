@@ -3,6 +3,8 @@
 
 PrimitiveComponent::PrimitiveComponent()
 {
+	attribute = Attribute::Primitive;
+
 }
 
 PrimitiveComponent::~PrimitiveComponent()

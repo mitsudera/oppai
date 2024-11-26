@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="AssetsManager.h" />
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ColliderComponent.h" />
     <ClInclude Include="collision.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="MeshAnimData.h" />
+    <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="primitivecomponent.h" />
     <ClInclude Include="renderer.h" />
@@ -189,6 +191,7 @@
   <ItemGroup>
     <ClCompile Include="AssetsManager.cpp" />
     <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="ColliderComponent.cpp" />
     <ClCompile Include="collision.cpp" />
@@ -208,6 +211,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="math.cpp" />
     <ClCompile Include="MeshAnimData.cpp" />
+    <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="MeshData.cpp" />
     <ClCompile Include="primitivecomponent.cpp" />
     <ClCompile Include="renderer.cpp" />

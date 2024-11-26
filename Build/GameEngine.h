@@ -33,6 +33,7 @@ public:
 	Input* GetInput(void);
 
 	CameraComponent* GetMainCamera(void);
+	void SetMainCamera(CameraComponent* cam);
 
 	Scene* GetActiveScene(void);
 	void SetActiveScene(Scene* scene);

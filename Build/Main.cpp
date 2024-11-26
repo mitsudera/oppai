@@ -180,26 +180,26 @@ void Main::Init(void)
 	GetCursorPos(&this->mousePos);
 
 	srand((unsigned)time(NULL));
-	gameEngine = new GameEngine(this);
+	pGameEngine = new GameEngine(this);
 
-	gameEngine->Init();
+	pGameEngine->Init();
 	
 
 }
 
 void Main::Update(void)
 {
-	gameEngine->Update();
+	pGameEngine->Update();
 }
 
 void Main::Draw(void)
 {
-	gameEngine->Draw();
+	pGameEngine->Draw();
 }
 
 void Main::Uninit(void)
 {
-	gameEngine->Uninit();
+	pGameEngine->Uninit();
 }
 
 LRESULT Main::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

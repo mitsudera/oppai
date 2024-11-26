@@ -48,7 +48,7 @@ private:
 	float beforeTime;
 
 
-	GameEngine* gameEngine;
+	GameEngine* pGameEngine;
 
 };
 

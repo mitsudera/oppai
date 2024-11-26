@@ -8,6 +8,7 @@
 SpriteComponent::SpriteComponent(GameObject* gameObject)
 {
 	this->pGameObject = gameObject;
+	attribute = Attribute::Primitive;
 }
 
 SpriteComponent::~SpriteComponent()

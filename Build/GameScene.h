@@ -3,7 +3,7 @@
 class GameScene : public Scene
 {
 public:
-	GameScene(GameEngine* gameEngine);
+	GameScene(GameEngine* pGameEngine);
 	~GameScene();
 
 	virtual void Init() override;

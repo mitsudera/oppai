@@ -5,7 +5,7 @@
 ColliderComponent::ColliderComponent(GameObject* gameObject)
 {
 	this->pGameObject = gameObject;
-
+	this->attribute = Component::Attribute::Collider;
 	
 }
 

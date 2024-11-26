@@ -6,6 +6,7 @@
 TitleManagerComponent::TitleManagerComponent(GameObject* gameObject)
 {
 	this->pGameObject = gameObject;
+	attribute = Attribute::Component;
 }
 
 TitleManagerComponent::~TitleManagerComponent()

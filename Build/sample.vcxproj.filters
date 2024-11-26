@@ -49,9 +49,6 @@
     <Filter Include="Light">
       <UniqueIdentifier>{7f67ff35-50c5-4a0a-9602-3a607f746c67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Camera">
-      <UniqueIdentifier>{cb75e590-abba-4ede-8978-6a6eef771ee8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Data">
       <UniqueIdentifier>{b95820f7-cdb8-472b-9c71-795ab37060c0}</UniqueIdentifier>
     </Filter>
@@ -66,6 +63,12 @@
     </Filter>
     <Filter Include="gameobject\NotDraw">
       <UniqueIdentifier>{269e4b1f-069c-4450-a34c-3c3397ead6ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject\Camera">
+      <UniqueIdentifier>{96a44aaa-7a14-4ae0-934b-6e84a0a4ca49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="component\Camera">
+      <UniqueIdentifier>{cb75e590-abba-4ede-8978-6a6eef771ee8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -103,7 +106,7 @@
       <Filter>Light</Filter>
     </ClInclude>
     <ClInclude Include="CameraComponent.h">
-      <Filter>Camera</Filter>
+      <Filter>component\Camera</Filter>
     </ClInclude>
     <ClInclude Include="primitivecomponent.h">
       <Filter>component</Filter>
@@ -177,8 +180,14 @@
     <ClInclude Include="TitleManagerComponent.h">
       <Filter>component</Filter>
     </ClInclude>
+    <ClInclude Include="MeshComponent.h">
+      <Filter>component</Filter>
+    </ClInclude>
     <ClInclude Include="Robot.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>gameobject\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>gameobject\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -213,7 +222,7 @@
       <Filter>Light</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
-      <Filter>Camera</Filter>
+      <Filter>component\Camera</Filter>
     </ClCompile>
     <ClCompile Include="primitivecomponent.cpp">
       <Filter>component</Filter>
@@ -287,8 +296,14 @@
     <ClCompile Include="TitleManagerComponent.cpp">
       <Filter>component</Filter>
     </ClCompile>
+    <ClCompile Include="MeshComponent.cpp">
+      <Filter>component</Filter>
+    </ClCompile>
     <ClCompile Include="Robot.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>gameobject\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>gameobject\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

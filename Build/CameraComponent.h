@@ -62,6 +62,9 @@ public:
 
 	XMMATRIX GetView(void);
 
+	ID3D11RenderTargetView* GetRenderTarget(void);
+	void SetRenderTarget(ID3D11RenderTargetView* rtv);
+
 
 private:
 	void SetCamera(void);
@@ -87,5 +90,7 @@ private:
 
 	MODE				mode;
 
+	ID3D11RenderTargetView* renderTarget;
+	XMFLOAT4 clearColor;	// îwåiêF
 
 };

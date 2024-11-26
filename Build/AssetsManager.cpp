@@ -14,13 +14,13 @@
 
 AssetsManager::AssetsManager()
 {
-	this->gameEngine = nullptr;
+	this->pGameEngine = nullptr;
 	this->skinMeshCompute = nullptr;
 }
 
-AssetsManager::AssetsManager(GameEngine* gameEngine)
+AssetsManager::AssetsManager(GameEngine* pGameEngine)
 {
-	this->gameEngine = gameEngine;
+	this->pGameEngine = pGameEngine;
 	this->skinMeshCompute = nullptr;
 
 }
@@ -33,7 +33,7 @@ AssetsManager::~AssetsManager()
 
 void AssetsManager::Init(void)
 {
-	gameEngine->GetRenderer()->CreateCSFile("shaders/CSskinmesh.hlsl", "CSFunc", &skinMeshCompute);
+	pGameEngine->GetRenderer()->CreateCSFile("shaders/CSskinmesh.hlsl", "CSFunc", &skinMeshCompute);
 	
 	
 }
@@ -125,7 +125,7 @@ KeyFrameAnimData* AssetsManager::GetKeyFrameAnimData(int n)
 
 GameEngine* AssetsManager::GetGameEngine(void)
 {
-	return this->gameEngine;
+	return this->pGameEngine;
 }
 
 

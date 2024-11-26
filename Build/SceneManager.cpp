@@ -3,11 +3,11 @@
 #include "GameEngine.h"
 #include "TitleScene.h"
 #include "GameScene.h"
-SceneManager::SceneManager(GameEngine* gameEngine)
+SceneManager::SceneManager(GameEngine* pGameEngine)
 {
-	this->pGameEngine = gameEngine;
+	this->pGameEngine = pGameEngine;
 
-	this->defaultScene = SCENE::TITLE;
+	this->defaultScene = SCENE::GAME;
 
 	TitleScene* titleScene = new TitleScene(pGameEngine);
 
@@ -28,6 +28,7 @@ SceneManager::~SceneManager()
 void SceneManager::SetScene(SCENE scene)
 {
 	this->pGameEngine->SetActiveScene(this->SceneList[scene]);
+	
 
 }
 

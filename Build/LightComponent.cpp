@@ -1,5 +1,21 @@
 #include "LightComponent.h"
 
+LightComponent::LightComponent()
+{
+    attribute = Attribute::Light;
+}
+
+LightComponent::LightComponent(GameObject* gameObject)
+{
+    this->pGameObject = gameObject;
+    attribute = Attribute::Light;
+
+}
+
+LightComponent::~LightComponent()
+{
+}
+
 void LightComponent::Init(void)
 {
 }

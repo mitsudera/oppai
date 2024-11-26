@@ -71,6 +71,9 @@ void CameraComponent::Init(void)
 
 	this->mode = MODE::WORLD;
 
+
+	this->clearColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
 	// ビューポートタイプの初期化
 	//SetViewPort(g_ViewPortType);
 }
@@ -86,6 +89,12 @@ void CameraComponent::Update(void)
 void CameraComponent::Draw(void)
 {
 	PrimitiveComponent::Draw();
+	Renderer* renderer = GetGameObject()->GetScene()->GetGameEngine()->GetRenderer();
+
+	const float cc[4] = { 1.0f,1.0f,1.0f,1.0f };
+
+
+	renderer->GetDeviceContext()->ClearRenderTargetView(this->renderTarget, cc);
 
 	SetViewPort(ViewPortType);
 	SetCamera();
@@ -112,6 +121,16 @@ void CameraComponent::SetMode(MODE mode)
 XMMATRIX CameraComponent::GetView(void)
 {
 	return this->mtxView;
+}
+
+ID3D11RenderTargetView* CameraComponent::GetRenderTarget(void)
+{
+	return this->renderTarget;
+}
+
+void CameraComponent::SetRenderTarget(ID3D11RenderTargetView* rtv)
+{
+	this->renderTarget = rtv;
 }
 
 //=============================================================================

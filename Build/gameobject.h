@@ -26,6 +26,7 @@ class GameObject
 public:
 	GameObject();
 	GameObject(Scene* scene);
+	GameObject(GameObject* parent);
 	~GameObject();
 
 	virtual void Init(void);
@@ -42,6 +43,8 @@ public:
 	BOOL GetActive(void);
 	void SetActive(BOOL isActive);
 
+	GameObject* GetParent(void);
+	GameObject* GetChild(int index);
 
 protected:
 	Scene* pScene;
@@ -54,6 +57,8 @@ protected:
 
 	BOOL isActive;
 
+	GameObject* parent;
+	vector <GameObject*> child;
 
 };
 
