@@ -22,7 +22,7 @@ public:
 private:
     GameEngine* gameEngine;
 
-    LightComponent* activeLight;
+    LightComponent** activeLight;
 
     vector<LightComponent*> lightList;
 

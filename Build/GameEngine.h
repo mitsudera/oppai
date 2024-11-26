@@ -36,7 +36,7 @@ public:
 
 	Scene* GetActiveScene(void);
 	void SetActiveScene(Scene* scene);
-
+	SceneManager* GetSceneManager(void);
 private:
 
 	Main* main;

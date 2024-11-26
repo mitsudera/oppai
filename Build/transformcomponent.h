@@ -84,6 +84,7 @@ public:
 
 	void RotAxisAngle(XMVECTOR axis, float angle);
 	
+	float Length(TransformComponent* transform);
 protected:
 
 	

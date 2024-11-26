@@ -1,7 +1,8 @@
 #include "LightManager.h"
 #include "GameEngine.h"
 #include "renderer.h"
-#include "ligh"
+#include "light.h"
+#include "LightComponent.h"
 
 LightManager::LightManager(GameEngine* gameEngine)
 {
@@ -15,12 +16,24 @@ LightManager::~LightManager()
 
 void LightManager::Init()
 {
-	activeLight = new LightComponent[MAX_LIGHT];
 
 }
 
 void LightManager::Update()
 {
+	XMFLOAT3 mainCamPos;
+
+
+	for (int i = 0; i < MAX_LIGHT; i++)
+	{
+		activeLight[i] = lightList[i];
+	}
+
+	for (int i = 0; i < MAX_LIGHT; i++)
+	{
+		gameEngine->GetRenderer()->SetLight(i,activeLight[i]->GetLightParam());
+	}
+
 }
 
 void LightManager::Draw()

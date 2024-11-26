@@ -16,3 +16,4 @@ XMVECTOR xonevec(void);
 XMVECTOR yonevec(void);
 XMVECTOR zonevec(void);
 
+float XMFLOAT3Length(XMFLOAT3 p1, XMFLOAT3 p2);

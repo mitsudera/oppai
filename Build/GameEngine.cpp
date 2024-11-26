@@ -126,4 +126,9 @@ void GameEngine::SetActiveScene(Scene* scene)
 	this->activeScene = scene;
 }
 
+SceneManager* GameEngine::GetSceneManager(void)
+{
+	return this->sceneManager;
+}
+
 

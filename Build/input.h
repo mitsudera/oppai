@@ -47,6 +47,13 @@ class Main;
 class Input
 {
 public:
+
+	enum class KeyCode
+	{
+
+	};
+
+
 	Input();
 	~Input();
 	HRESULT Init(HINSTANCE hInst, HWND hWnd);

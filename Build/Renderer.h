@@ -100,6 +100,7 @@ struct MATERIAL
 
 struct LIGHT_PARAM
 {
+	XMFLOAT2 aa;
 	XMFLOAT4	m_Position;	    // ライトの位置
 	XMFLOAT4	m_Direction;	    // ライトの方向
 	XMFLOAT4	m_Diffuse;	        // 拡散光の色

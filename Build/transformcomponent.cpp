@@ -450,6 +450,11 @@ void TransformComponent::RotAxisAngle(XMVECTOR axis, float angle)
 	mtxrot = XMMatrixMultiply(mtxrot, XMMatrixRotationQuaternion(qton));
 }
 
+float TransformComponent::Length(TransformComponent* transform)
+{
+	return XMFLOAT3Length(this->GetWorldPos(), transform->GetWorldPos());
+}
+
 
 
 

@@ -1,6 +1,14 @@
 #pragma once
 #include"Coreminimal.h"
 
+enum SCENE
+{
+	TITLE,
+	GAME,
+	MAX_SCENE,
+};
+
+
 class GameEngine;
 class Scene;
 
@@ -9,12 +17,6 @@ class Scene;
 class SceneManager
 {
 
-	enum SCENE
-	{
-		TITLE,
-		GAME,
-		MAX_SCENE,
-	};
 
 
 public:

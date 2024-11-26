@@ -159,6 +159,8 @@
     <ClInclude Include="DX11Texture.h" />
     <ClInclude Include="FbxConvertDX11.h" />
     <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameManagerComponent.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="input.h" />
@@ -171,14 +173,18 @@
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="primitivecomponent.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="Robot.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SkeletonAnimData.h" />
     <ClInclude Include="SkinMeshDataList.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TitleLogo.h" />
+    <ClInclude Include="TitleManager.h" />
+    <ClInclude Include="TitleManagerComponent.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="transformcomponent.h" />
+    <ClInclude Include="UIManagerComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssetsManager.cpp" />
@@ -191,6 +197,8 @@
     <ClCompile Include="DX11Texture.cpp" />
     <ClCompile Include="FbxConvertDX11.cpp" />
     <ClCompile Include="GameEngine.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameManagerComponent.cpp" />
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="input.cpp" />
@@ -203,14 +211,44 @@
     <ClCompile Include="MeshData.cpp" />
     <ClCompile Include="primitivecomponent.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="Robot.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SkeletonAnimData.cpp" />
     <ClCompile Include="SkinMeshDataList.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TitleLogo.cpp" />
+    <ClCompile Include="TitleManager.cpp" />
+    <ClCompile Include="TitleManagerComponent.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="transformcomponent.cpp" />
+    <ClCompile Include="UIManagerComponent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders\CSparticle.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shaders\CSparticleVP.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shaders\CSskinmesh.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shaders\particleVP.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shaders\shader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shaders\ShadowShader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shaders\TerrainShader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shaders\UIShader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

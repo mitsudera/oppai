@@ -40,9 +40,6 @@
     <Filter Include="ModelAnimation">
       <UniqueIdentifier>{068f0cf0-e300-4e51-9f3d-ce27d8a92a2e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader">
-      <UniqueIdentifier>{71882956-d0f8-44de-b497-d9d029decca4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Input">
       <UniqueIdentifier>{a57e3c68-9334-4fae-aa89-3be1329fc009}</UniqueIdentifier>
     </Filter>
@@ -63,6 +60,12 @@
     </Filter>
     <Filter Include="gameobject\3D">
       <UniqueIdentifier>{233867e5-5d59-42a6-89ab-d1c7ee8f58a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{db177042-e70f-495d-bdd0-2ec6b0140e75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject\NotDraw">
+      <UniqueIdentifier>{269e4b1f-069c-4450-a34c-3c3397ead6ac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -111,9 +114,6 @@
     <ClInclude Include="component.h">
       <Filter>component</Filter>
     </ClInclude>
-    <ClInclude Include="gameobject.h">
-      <Filter>gameobject</Filter>
-    </ClInclude>
     <ClInclude Include="MeshAnimData.h">
       <Filter>Data</Filter>
     </ClInclude>
@@ -159,6 +159,27 @@
     <ClInclude Include="LightComponent.h">
       <Filter>component</Filter>
     </ClInclude>
+    <ClInclude Include="UIManagerComponent.h">
+      <Filter>component</Filter>
+    </ClInclude>
+    <ClInclude Include="gameobject.h">
+      <Filter>gameobject\NotDraw</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManagerComponent.h">
+      <Filter>component</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>gameobject\NotDraw</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleManager.h">
+      <Filter>gameobject\NotDraw</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleManagerComponent.h">
+      <Filter>component</Filter>
+    </ClInclude>
+    <ClInclude Include="Robot.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -202,9 +223,6 @@
     </ClCompile>
     <ClCompile Include="component.cpp">
       <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="gameobject.cpp">
-      <Filter>gameobject</Filter>
     </ClCompile>
     <ClCompile Include="MeshAnimData.cpp">
       <Filter>Data</Filter>
@@ -251,5 +269,52 @@
     <ClCompile Include="LightComponent.cpp">
       <Filter>component</Filter>
     </ClCompile>
+    <ClCompile Include="UIManagerComponent.cpp">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="gameobject.cpp">
+      <Filter>gameobject\NotDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManagerComponent.cpp">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>gameobject\NotDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleManager.cpp">
+      <Filter>gameobject\NotDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleManagerComponent.cpp">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="Robot.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders\CSparticle.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\CSparticleVP.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\CSskinmesh.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\particleVP.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\shader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\ShadowShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\TerrainShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\UIShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

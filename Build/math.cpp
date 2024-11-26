@@ -165,3 +165,16 @@ XMVECTOR zonevec(void)
 	return vec;
 }
 
+float XMFLOAT3Length(XMFLOAT3 p1, XMFLOAT3 p2)
+{
+	XMVECTOR p1v = XMLoadFloat3(&p1);
+	XMVECTOR p2v = XMLoadFloat3(&p2);
+	XMVECTOR lenV = p2v - p1v;
+	XMVECTOR len = XMVector3Length(lenV);
+	float ans;
+	XMStoreFloat(&ans, len);
+
+	return ans;
+}
+
+

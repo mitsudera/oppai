@@ -1,22 +1,15 @@
 #pragma once
-#include "transformcomponent.h"
-#include"renderer.h"
-
-class LightComponent:public TransformComponent
+#include "component.h"
+class GameManagerComponent :public Component
 {
 public:
-
+	GameManagerComponent(GameObject* gameObject);
+	~GameManagerComponent();
 	// Component ÇâÓÇµÇƒåpè≥Ç≥ÇÍÇ‹ÇµÇΩ
 	virtual void Init(void) override;
-
 	virtual void Uninit(void) override;
-
 	virtual void Update(void) override;
-
-	virtual LIGHT_PARAM GetLightParam(void);
-
 private:
-	LIGHT_PARAM lightParam;
 
 };
 
