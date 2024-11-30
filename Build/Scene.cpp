@@ -42,6 +42,7 @@ void Scene::Draw()
 {
 	pGameEngine->SetMainCamera(this->mainCamera);
 	
+
 	for (int i = 0; i < gameObjectList.size(); i++)
 	{
 		gameObjectList[i]->Draw();
@@ -68,4 +69,9 @@ GameEngine* Scene::GetGameEngine(void)
 CollisionManger* Scene::GetCollisionManager(void)
 {
 	return this->coliisionManager;
+}
+
+vector<GameObject*>& Scene::GetGameObject(void)
+{
+	return this->gameObjectList;
 }

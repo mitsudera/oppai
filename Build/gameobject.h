@@ -15,6 +15,16 @@ typedef enum
 	ObjectTagMax,
 }ObjectTag;
 
+typedef enum
+{
+	Default,
+	Field,
+	Water,
+	UI,
+	Player,
+
+	LayerMax,
+}Layer;
 
 class ColliderComponent;
 class Scene;
@@ -39,6 +49,7 @@ public:
 	ColliderComponent* GetCollider(void);
 
 	ObjectTag GetTag(void);
+	Layer GetLayer(void);
 
 	BOOL GetActive(void);
 	void SetActive(BOOL isActive);
@@ -46,6 +57,7 @@ public:
 	GameObject* GetParent(void);
 	GameObject* GetChild(int index);
 
+	vector<Component*>& GetComponentList(void);
 protected:
 	Scene* pScene;
 	TransformComponent* transformComponent;
@@ -54,6 +66,7 @@ protected:
 	vector<Component*> componentList;
 
 	ObjectTag tag;
+	Layer layer;
 
 	BOOL isActive;
 

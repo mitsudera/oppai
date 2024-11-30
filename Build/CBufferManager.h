@@ -1,0 +1,78 @@
+#pragma once
+#include "Coreminimal.h"
+
+#define MAX_LIGHT (8)
+
+
+class Renderer;
+
+class CBufferManager
+{
+public:
+	CBufferManager(Renderer* renderer);
+	~CBufferManager();
+
+	enum class BufferSlot :unsigned int
+	{
+		World,
+		View,
+		Projection,
+		Material,
+		Light,
+		Camera,
+		Shadow,
+		Free1,
+		Free2,
+		Free3,
+		Free4,
+		Free5,
+		Free6,
+		Free7,
+	};
+	struct LIGHT_PARAM
+	{
+		XMFLOAT4	m_Position;	    // ライトの位置
+		XMFLOAT4	m_Direction;	    // ライトの方向
+		XMFLOAT4	m_Diffuse;	        // 拡散光の色
+		XMFLOAT4	m_Ambient;		    // 環境光の色
+		XMFLOAT4	m_Attenuation;	    // 減衰率    
+		XMFLOAT4    m_intensity;       // ライトの強度
+		int     	m_Flags;		    // ライト種別
+		int			m_Enable;
+		int         dummy[2];
+	};
+	// ライト用定数バッファ構造体
+	struct LIGHT_CBUFFER
+	{
+		LIGHT_PARAM  m_lightParam[MAX_LIGHT];
+		int			m_Enable;					            // ライティング有効・無効フラグ
+		int			m_Dummy[3];				                // 16byte境界用
+	};
+
+	void SetCBufferOtherCS(ID3D11Buffer* buffer, BufferSlot slot);//コンピュートシェーダー以外の定数バッファ
+	void SetCBufferVSPS(ID3D11Buffer* buffer, BufferSlot slot);//頂点シェーダーとピ
+	void SetCBufferCS(ID3D11Buffer* buffer, BufferSlot slot);//コンピュートシェーダーの定数バッファ
+
+	void SetWorldMtx(XMMATRIX* world);
+	void SetViewMtx(XMMATRIX* view);
+	void SetProjectionMtx(XMMATRIX* projection);
+
+	//バッファを直接セットする
+	void SetWorldBuffer(ID3D11Buffer* world);
+	void SetViewBuffer(ID3D11Buffer* view);
+	void SetProjectionBuffer(ID3D11Buffer* projection);
+	void SetMaterialBuffer(ID3D11Buffer* material);
+	void SetLightBuffer(ID3D11Buffer* light);
+	void SetCameraBuffer(ID3D11Buffer* camera);
+	void SetShadowBuffer(ID3D11Buffer* shadow);
+private:
+	Renderer* pRenderer;
+	ID3D11DeviceContext* pDeviceContext;
+
+	ID3D11Buffer* WorldBuffer;
+	ID3D11Buffer* ViewBuffer;
+	ID3D11Buffer* ProjectionBuffer;
+
+
+};
+

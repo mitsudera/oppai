@@ -8,6 +8,7 @@ class Main;
 class CameraComponent;
 class SceneManager;
 class Scene;
+class CBufferManager;
 
 class GameEngine
 {
@@ -30,6 +31,7 @@ public:
 
 	AssetsManager* GetAssetsManager(void);
 	Renderer* GetRenderer(void);
+	CBufferManager* GetCBufferManager(void);
 	Input* GetInput(void);
 
 	CameraComponent* GetMainCamera(void);
@@ -43,10 +45,12 @@ private:
 	Main* main;
 	AssetsManager* assetsManager;
 	Renderer* renderer;
+	CBufferManager* cBufferManager;
 	Input* input;
 	CameraComponent* mainCamera;
 	SceneManager* sceneManager;
 	Scene* activeScene;
+
 	XMFLOAT2 windowSize;
 };
 

@@ -5,7 +5,10 @@
 //
 //=============================================================================
 #pragma once
-#include "PrimitiveComponent.h"
+#include "TransformComponent.h"
+#include "gameobject.h"
+
+class Renderer;
 
 //*****************************************************************************
 // マクロ定義
@@ -25,12 +28,15 @@ enum VIEWPORT_TYPE
 };
 
 
-//*****************************************************************************
-// プロトタイプ宣言
-//*****************************************************************************
-class CameraComponent : public PrimitiveComponent
+class CameraComponent : public TransformComponent
 {
 public:
+
+	struct CameraCBuffer
+	{
+		XMFLOAT4 camPos;
+	};
+
 	CameraComponent();
 	CameraComponent(GameObject* gameObject);
 	~CameraComponent();
@@ -50,6 +56,8 @@ public:
 	virtual void Draw(void) override;
 	virtual void Uninit(void) override;
 
+	void Render(void);
+
 	enum class MODE
 	{
 		TRACKING,
@@ -64,6 +72,8 @@ public:
 
 	ID3D11RenderTargetView* GetRenderTarget(void);
 	void SetRenderTarget(ID3D11RenderTargetView* rtv);
+	ID3D11DepthStencilView* GetDepthStencilView(void);
+	void SetDepthStencilView(ID3D11DepthStencilView* dsv);
 
 
 private:
@@ -72,6 +82,7 @@ private:
 	D3D11_VIEWPORT vp;
 
 	XMMATRIX mtxView;
+	XMMATRIX mtxProj;
 
 	XMFLOAT3			at;				// カメラの注視点
 	XMFLOAT3			up;				// カメラの上方向ベクトル
@@ -83,11 +94,16 @@ private:
 	float				farZ;			// カメラのクリッピング最大値Z
 
 
+	BOOL layerCulling[Layer::LayerMax];
+
 	GameObject*			lookObject;
+	Renderer* pRenderer;
 
 	MODE				mode;
+	ID3D11Buffer* cameraBuffer;
 
 	ID3D11RenderTargetView* renderTarget;
+	ID3D11DepthStencilView* depthTarget;
 	XMFLOAT4 clearColor;	// 背景色
 
 };

@@ -23,7 +23,8 @@ void TitleManagerComponent::Uninit(void)
 
 void TitleManagerComponent::Update(void)
 {
-	
+	Component::Update();
+
 	Input* input= pGameObject->GetScene()->GetGameEngine()->GetInput();
 	SceneManager* sceneManager= pGameObject->GetScene()->GetGameEngine()->GetSceneManager();
 	if (input->GetKeyboardTrigger(DIK_SPACE))

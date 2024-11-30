@@ -10,6 +10,11 @@
 #include "gameobject.h"
 #include "GameEngine.h"
 #include "Scene.h"
+#include "CBufferManager.h"
+#include "ShaderSet.h"
+#include "primitivecomponent.h"
+#include "Material.h"
+#include "AssetsManager.h"
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -29,13 +34,33 @@ static int				ViewPortType = TYPE_FULL_SCREEN;
 
 CameraComponent::CameraComponent()
 {
-
+	for (int i = 0; i < Layer::LayerMax; i++)
+	{
+		layerCulling[i] = FALSE;
+	}
 
 }
 
 CameraComponent::CameraComponent(GameObject* gameObject)
 {
+	for (int i = 0; i < Layer::LayerMax; i++)
+	{
+		layerCulling[i] = FALSE;
+	}
+
+	// カメラバッファ生成
+	D3D11_BUFFER_DESC hBufferDesc;
+	hBufferDesc.ByteWidth = sizeof(CameraCBuffer);
+	hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	hBufferDesc.CPUAccessFlags = 0;
+	hBufferDesc.MiscFlags = 0;
+	hBufferDesc.StructureByteStride = sizeof(float);
+
+	pRenderer->GetDevice()->CreateBuffer(&hBufferDesc, nullptr, &this->cameraBuffer);
+
 	this->pGameObject = gameObject;
+	this->pRenderer = gameObject->GetScene()->GetGameEngine()->GetRenderer();
 }
 
 CameraComponent::~CameraComponent()
@@ -45,7 +70,7 @@ CameraComponent::~CameraComponent()
 
 void CameraComponent::Init(void)
 {
-	PrimitiveComponent::Init();
+	TransformComponent::Init();
 
 	this->SetTransForm(XMFLOAT3(0.0f, 0.0f, 0.0f),XMFLOAT3(0.0f, 0.0f, 0.0f),XMFLOAT3(1.0f, 1.0f, 1.0f));
 
@@ -80,7 +105,7 @@ void CameraComponent::Init(void)
 
 void CameraComponent::Update(void)
 {
-	PrimitiveComponent::Update();
+	TransformComponent::Update();
 
 
 
@@ -88,13 +113,9 @@ void CameraComponent::Update(void)
 
 void CameraComponent::Draw(void)
 {
-	PrimitiveComponent::Draw();
+	TransformComponent::Draw();
 	Renderer* renderer = GetGameObject()->GetScene()->GetGameEngine()->GetRenderer();
 
-	const float cc[4] = { 1.0f,1.0f,1.0f,1.0f };
-
-
-	renderer->GetDeviceContext()->ClearRenderTargetView(this->renderTarget, cc);
 
 
 
@@ -107,8 +128,58 @@ void CameraComponent::Draw(void)
 
 void CameraComponent::Uninit(void)
 {
-	PrimitiveComponent::Uninit();
+	TransformComponent::Uninit();
 
+
+}
+
+void CameraComponent::Render(void)
+{
+
+
+	//描画ターゲットのクリア
+	const float cc[4] = { 1.0f,1.0f,1.0f,1.0f };
+	pRenderer->GetDeviceContext()->ClearRenderTargetView(this->renderTarget, cc);
+	pRenderer->GetDeviceContext()->ClearDepthStencilView(this->depthTarget, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	//ビューポートセット
+	pRenderer->GetDeviceContext()->RSSetViewports(1, &vp);
+
+	//描画ターゲットのセット
+	pRenderer->GetDeviceContext()->OMSetRenderTargets(1, &this->renderTarget, this->depthTarget);
+
+	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetViewMtx(&this->mtxView);
+	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetCameraBuffer(cameraBuffer);
+	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetProjectionMtx(&this->mtxProj);
+	
+	for (int i = 0; i < ShaderSet::ShaderIndex::MAX; i++)
+	{
+		pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->SetShader((ShaderSet::ShaderIndex)i);
+
+
+		//描画処理
+		for (GameObject* gameObject : pGameObject->GetScene()->GetGameObject())
+		{
+			
+
+			//カリングがtrueの場合は描画しない
+			if (layerCulling[gameObject->GetLayer()] != TRUE)
+			{
+				for (Component* component : gameObject->GetComponentList())
+				{
+					PrimitiveComponent* primitiveComponent = dynamic_cast<PrimitiveComponent*>(component);  // ダウンキャスト
+					if (primitiveComponent == nullptr) continue;
+
+					if (primitiveComponent->GetMaterial()->GetShaderSet()->GetShaderIndex() == i)
+					{
+						primitiveComponent->Draw();
+
+					}
+				}
+			}
+		}
+
+	}
 
 }
 
@@ -133,6 +204,16 @@ ID3D11RenderTargetView* CameraComponent::GetRenderTarget(void)
 void CameraComponent::SetRenderTarget(ID3D11RenderTargetView* rtv)
 {
 	this->renderTarget = rtv;
+}
+
+ID3D11DepthStencilView* CameraComponent::GetDepthStencilView(void)
+{
+	return this->depthTarget;
+}
+
+void CameraComponent::SetDepthStencilView(ID3D11DepthStencilView* dsv)
+{
+	this->depthTarget = dsv;
 }
 
 //=============================================================================
@@ -210,7 +291,6 @@ void CameraComponent::SetCamera(void)
 	XMVECTOR posv = XMLoadFloat3(&pos);
 
 	mtxView = XMMatrixLookAtLH(posv, XMLoadFloat3(&At), XMLoadFloat3(&Up));
-	renderer->SetViewMatrix(&mtxView);
 	this->mtxView = mtxView;
 
 	XMMATRIX mtxInvView;
@@ -221,9 +301,6 @@ void CameraComponent::SetCamera(void)
 	XMMATRIX mtxProjection;
 	mtxProjection = XMMatrixPerspectiveFovLH(VIEW_ANGLE, VIEW_ASPECT, VIEW_NEAR_Z, VIEW_FAR_Z);
 
-	renderer->SetProjectionMatrix(&mtxProjection);
-
-	renderer->SetShaderCamera(GetWorldPos());
 }
 
 //=============================================================================

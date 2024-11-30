@@ -17,7 +17,7 @@ class MeshData;
 class MeshDataList;
 class AssetsManager;
 
-
+class Material;
 
 
 // 描画サブセットクラス
@@ -26,7 +26,7 @@ class DX11_SUBSET
 	MeshData* pmeshdata;
 	unsigned short	StartIndex;
 	unsigned short	IndexNum;
-	MATERIAL		Material;
+	Material*		material;
 	int textureDiffuseIndex;
 	int textureNormalIndex;
 
@@ -43,8 +43,7 @@ public:
 	unsigned short GetIndexNum(void);
 
 
-	void SetMaterial(MATERIAL m);
-	MATERIAL GetMaterial(void);
+	Material* GetMaterial(void);
 
 
 	void SetpMeshData(MeshData* meshdata);

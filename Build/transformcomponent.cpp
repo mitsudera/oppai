@@ -100,7 +100,7 @@ void TransformComponent::Uninit(void)
 
 void TransformComponent::Update(void)
 {
-
+	Component::Update();
 
 	lMtx = XMMatrixIdentity();
 	lMtx = XMMatrixMultiply(lMtx, mtxscl);
@@ -127,6 +127,7 @@ void TransformComponent::Update(void)
 
 void TransformComponent::Draw(void)
 {
+	Component::Draw();
 }
 
 XMFLOAT3 TransformComponent::GetPosition(void)

@@ -3,9 +3,38 @@
 
 class Renderer;
 
+
+
 class ShaderSet
 {
 public:
+		
+	typedef enum
+	{
+		Lambart,
+		Phong,
+		UI,
+		MAX,
+
+	}ShaderIndex;
+
+	// í∏ì_ç\ë¢ëÃ
+	struct VERTEX_3D
+	{
+		XMFLOAT3	Position;
+		XMFLOAT3	Normal;
+		XMFLOAT4	Diffuse;
+		XMFLOAT2	TexCoord;
+		XMFLOAT3	Tangent;
+		XMFLOAT3	BiNormal;
+	};
+
+	struct MaterialCBuffer
+	{
+
+	};
+
+
 	ShaderSet();
 	~ShaderSet();
 	void SetShaderRenderer(void);
@@ -18,8 +47,9 @@ public:
 	void CreateGS(string filePath,string shaderName);
 	void CreatePS(string filePath,string shaderName);
 
-private:
+	ShaderIndex GetShaderIndex(void);
 
+private:
 
 	ID3D11VertexShader* VS;
 	ID3D11HullShader* HS;
@@ -30,8 +60,13 @@ private:
 	ID3D11InputLayout* VertexLayout;
 
 protected:
+
 	Renderer* pRenderer;
 
 	string name;
+
+	ID3D11Buffer* materialBuffer;
+
+	ShaderIndex shaderIndex;
 };
 

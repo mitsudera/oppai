@@ -27,10 +27,13 @@ void Component::Uninit(void)
 
 void Component::Update(void)
 {
+	if (!isActive) return;
 }
 
 void Component::Draw(void)
 {
+	if (!isActive) return;
+
 }
 
 GameObject* Component::GetGameObject(void)
@@ -41,5 +44,10 @@ GameObject* Component::GetGameObject(void)
 Component::Attribute Component::GetAttribute(void)
 {
 	return this->attribute;
+}
+
+void Component::SetActive(BOOL b)
+{
+	isActive = b;
 }
 

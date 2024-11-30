@@ -1,6 +1,8 @@
 #pragma once
 #include "TransformComponent.h"
 
+class Material;
+
 class PrimitiveComponent : public TransformComponent
 {
 public:
@@ -18,9 +20,11 @@ public:
 	virtual void Uninit(void) override;
 	virtual void Draw(void) override;
 
+	Material* GetMaterial(void);
 
 protected:
 
 	BOOL hasShadow;
 	BOOL drawShadow;
+	Material* material;
 };

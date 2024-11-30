@@ -23,19 +23,21 @@ public:
 	Component(GameObject* gameObject);
 	~Component();
 
-	virtual void Init(void) = 0;
-	virtual void Uninit(void) = 0;
-	virtual void Update(void) = 0;
+	virtual void Init(void);
+	virtual void Uninit(void);
+	virtual void Update(void);
 	virtual void Draw(void);
 
 	GameObject* GetGameObject(void);
 
 	Component::Attribute GetAttribute(void);
 
+	void SetActive(BOOL b);
 
 protected:
 	GameObject* pGameObject;
 	Attribute attribute;
+	BOOL	isActive;
 
 };
 

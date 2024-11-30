@@ -22,14 +22,19 @@ void SpriteComponent::Init(void)
 
 void SpriteComponent::Update(void)
 {
+	PrimitiveComponent::Update();
 }
 
 void SpriteComponent::Uninit(void)
 {
+	
 }
 
 void SpriteComponent::Draw(void)
 {
+
+	PrimitiveComponent::Draw();
+
 	Renderer* renderer = this->GetGameObject()->GetScene()->GetGameEngine()->GetRenderer();
 
 	renderer->SetCullingMode(CULL_MODE::CULL_MODE_BACK);

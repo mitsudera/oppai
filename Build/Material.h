@@ -3,6 +3,8 @@
 
 class Renderer;
 
+class ShaderSet;
+
 class Material
 {
 public:
@@ -12,9 +14,13 @@ public:
 	void SetShaderRenderer(void);
 
 	virtual void SetBufferMaterial(void) = 0;
-private:
-	Renderer* pRenderer;
 
+	ShaderSet* GetShaderSet(void);
+private:
+
+protected:
+
+	ShaderSet* pShader;
 
 
 };

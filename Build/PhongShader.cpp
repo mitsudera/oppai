@@ -1,14 +1,15 @@
-#include "LambartShader.h"
-#include "renderer.h"
+#include "PhongShader.h"
+#include"renderer.h"
 
-LambartShader::LambartShader(Renderer* renderer)
+PhongShader::PhongShader(Renderer* renderer)
 {
-	pRenderer = renderer;
-	name = "LambartShader";
-	CreateVS("shaders/LambartShader.hlsl", "VSmain");
-	CreatePS("shaders/LambartShader.hlsl", "PSmain");
+    pRenderer = renderer;
+    name = "PhongShader";
+    CreateVS("shaders/PhongShader.hlsl", "VSmain");
+    CreatePS("shaders/PhongShader.hlsl", "PSmain");
 
-    shaderIndex = ShaderIndex::Lambart;
+    shaderIndex = ShaderIndex::Phong;
+
     D3D11_BUFFER_DESC bufferDesc;
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
     bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -24,13 +25,14 @@ LambartShader::LambartShader(Renderer* renderer)
 
 }
 
-LambartShader::~LambartShader()
+PhongShader::~PhongShader()
 {
-	ShaderRelease();
+    ShaderRelease();
     if (materialBuffer) materialBuffer->Release();
 }
 
-void LambartShader::SetMaterialCbuffer(LambartShader::MaterialCBuffer data)
+void PhongShader::SetMaterialCbuffer(MaterialCBuffer data)
 {
-	pRenderer->GetDeviceContext()->UpdateSubresource(this->materialBuffer, 0, nullptr, &data, 0, 0);
+    pRenderer->GetDeviceContext()->UpdateSubresource(this->materialBuffer, 0, nullptr, &data, 0, 0);
+
 }

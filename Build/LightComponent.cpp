@@ -26,6 +26,7 @@ void LightComponent::Uninit(void)
 
 void LightComponent::Update(void)
 {
+    TransformComponent::Update();
 }
 
 LIGHT_PARAM LightComponent::GetLightParam(void)

@@ -20,10 +20,14 @@ public:
 
 	GameEngine* GetGameEngine(void);
 	CollisionManger* GetCollisionManager(void);
+
+	vector <GameObject*>& GetGameObject(void);
 protected:
 	GameEngine* pGameEngine;
 	vector <GameObject*> gameObjectList;
 	CollisionManger* coliisionManager;
 	CameraComponent* mainCamera;
+	vector<CameraComponent*> cameraArray;
+
 };
 

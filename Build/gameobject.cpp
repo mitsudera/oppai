@@ -126,3 +126,8 @@ GameObject* GameObject::GetChild(int index)
 {
 	return this->child[index];
 }
+
+vector<Component*>& GameObject::GetComponentList(void)
+{
+	return this->componentList;
+}

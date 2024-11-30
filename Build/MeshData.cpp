@@ -8,7 +8,9 @@
 #include "GameEngine.h"
 #include "AssetsManager.h"
 #include "DX11Texture.h"
-
+#include "Material.h"
+#include "LambartMaterial.h"
+#include "PhongMaterial.h"
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
 //*****************************************************************************
@@ -36,13 +38,6 @@ DX11_SUBSET::DX11_SUBSET()
 {
 	this->StartIndex = 0;
 	this->IndexNum = 0;
-	this->Material.Ambient = { 0.0f,0.0f,0.0f,0.0f };
-	this->Material.Diffuse = { 0.0f,0.0f,0.0f,0.0f };
-	this->Material.Emission = { 0.0f,0.0f,0.0f,0.0f };
-	this->Material.Specular = { 0.0f,0.0f,0.0f,0.0f };
-	this->Material.Shininess = 0.0f;
-	this->Material.noDiffuseTex = TRUE;
-	this->Material.noNormalTex = TRUE;
 	this->pmeshdata = nullptr;
 	this->textureDiffuseIndex = -1;
 	this->textureNormalIndex = -1;
@@ -72,13 +67,9 @@ unsigned short DX11_SUBSET::GetIndexNum(void)
 }
 
 
-void DX11_SUBSET::SetMaterial(MATERIAL m)
+Material* DX11_SUBSET::GetMaterial(void)
 {
-	this->Material = m;
-}
-MATERIAL DX11_SUBSET::GetMaterial(void)
-{
-	return Material;
+	return material;
 }
 
 
@@ -117,7 +108,7 @@ int DX11_SUBSET::GetNormalIndex(void)
 void DX11_SUBSET::SetShaderResouce(void)
 {
 
-	if (Material.noDiffuseTex==FALSE)
+	if (material->noDiffuseTex==FALSE)
 	{
 		pmeshdata->GetpAssetsManager()->GetTexture(textureDiffuseIndex)->SetShaderResource(0);
 

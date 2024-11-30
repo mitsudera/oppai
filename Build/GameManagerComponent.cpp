@@ -20,4 +20,5 @@ void GameManagerComponent::Uninit(void)
 
 void GameManagerComponent::Update(void)
 {
+	Component::Update();
 }

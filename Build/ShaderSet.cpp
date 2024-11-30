@@ -1,5 +1,6 @@
 #include "ShaderSet.h"
 #include "renderer.h"
+#include "CBufferManager.h"
 
 ShaderSet::ShaderSet()
 {
@@ -25,6 +26,9 @@ void ShaderSet::SetShaderRenderer(void)
 	//ピクセルシェーダーを null に設定
 	pRenderer->GetDeviceContext()->PSSetShader(nullptr, NULL, 0);
 
+
+	//頂点入力レイアウトをセット
+	if (this->VertexLayout) pRenderer->GetDeviceContext()->IASetInputLayout(this->VertexLayout);
 	//頂点シェーダーをセット
 	if (this->VS) pRenderer->GetDeviceContext()->VSSetShader(this->VS, NULL, 0);
 	//ハルシェーダーをセット
@@ -36,6 +40,7 @@ void ShaderSet::SetShaderRenderer(void)
 	//ピクセルシェーダーをセット
 	if (this->PS) pRenderer->GetDeviceContext()->PSSetShader(this->PS, NULL, 0);
 
+	pRenderer->GetDeviceContext()->PSSetConstantBuffers((UINT)CBufferManager::BufferSlot::Material, 1, &this->materialBuffer);
 }
 
 void ShaderSet::ShaderRelease(void)
@@ -161,5 +166,10 @@ void ShaderSet::CreatePS(string filePath, string shaderName)
 	//解放
 	pPSBlob->Release();
 
+}
+
+ShaderSet::ShaderIndex ShaderSet::GetShaderIndex(void)
+{
+	return this->shaderIndex;
 }
 

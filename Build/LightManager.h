@@ -11,6 +11,8 @@ class LightManager
 {
 
 public:
+
+
     LightManager(GameEngine* pGameEngine);
     ~LightManager();
 

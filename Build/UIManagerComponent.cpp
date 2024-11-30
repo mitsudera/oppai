@@ -20,5 +20,5 @@ void UIManagerComponent::Uninit(void)
 
 void UIManagerComponent::Update(void)
 {
-
+	Component::Update();
 }

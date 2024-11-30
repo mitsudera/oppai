@@ -19,11 +19,9 @@ public:
 		int dummy;
 
 	};
-	void LambartShader::SetMaterialCbuffer(LambartShader::MaterialCBuffer data);
+	void SetMaterialCbuffer(MaterialCBuffer data);
 
 private:
 
-	ID3D11Buffer* materialBuffer;
-	int materialSlot;
 };
 

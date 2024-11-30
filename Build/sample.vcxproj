@@ -149,9 +149,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AssetsManager.h" />
-    <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="CBufferManager.h" />
     <ClInclude Include="ColliderComponent.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="CollisionManger.h" />
@@ -176,6 +176,8 @@
     <ClInclude Include="MeshAnimData.h" />
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="MeshData.h" />
+    <ClInclude Include="PhongMaterial.h" />
+    <ClInclude Include="PhongShader.h" />
     <ClInclude Include="primitivecomponent.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="Robot.h" />
@@ -194,9 +196,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssetsManager.cpp" />
-    <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
+    <ClCompile Include="CBufferManager.cpp" />
     <ClCompile Include="ColliderComponent.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="CollisionManger.cpp" />
@@ -220,6 +222,8 @@
     <ClCompile Include="MeshAnimData.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="MeshData.cpp" />
+    <ClCompile Include="PhongMaterial.cpp" />
+    <ClCompile Include="PhongShader.cpp" />
     <ClCompile Include="primitivecomponent.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="Robot.cpp" />
@@ -238,6 +242,9 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\LambartShader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shaders\PhongShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="shaders\shader.hlsl">

@@ -40,6 +40,11 @@ void PrimitiveComponent::Draw(void)
 	}
 }
 
+Material* PrimitiveComponent::GetMaterial(void)
+{
+	return this->material;
+}
+
 BOOL PrimitiveComponent::GetHasShadow(void)
 {
 	return hasShadow;

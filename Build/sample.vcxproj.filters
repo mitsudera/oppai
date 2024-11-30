@@ -82,6 +82,9 @@
     <Filter Include="Shader\LambartShader">
       <UniqueIdentifier>{b6d26cf5-a07a-407c-a6f8-ad279c85c9ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\PhongShader">
+      <UniqueIdentifier>{dda8f728-f3d8-466a-9613-5926d3dd3b30}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coreminimal.h">
@@ -97,9 +100,6 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="renderer.h">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Buffer.h">
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="GameEngine.h">
@@ -204,14 +204,23 @@
     <ClInclude Include="Material.h">
       <Filter>Shader\Material</Filter>
     </ClInclude>
+    <ClInclude Include="LambartShader.h">
+      <Filter>Shader\LambartShader</Filter>
+    </ClInclude>
     <ClInclude Include="ShaderSet.h">
       <Filter>Shader\ShaderSet</Filter>
     </ClInclude>
-    <ClInclude Include="LambartMaterial.h">
-      <Filter>Shader\Material</Filter>
+    <ClInclude Include="PhongShader.h">
+      <Filter>Shader\PhongShader</Filter>
     </ClInclude>
-    <ClInclude Include="LambartShader.h">
+    <ClInclude Include="LambartMaterial.h">
       <Filter>Shader\LambartShader</Filter>
+    </ClInclude>
+    <ClInclude Include="PhongMaterial.h">
+      <Filter>Shader\PhongShader</Filter>
+    </ClInclude>
+    <ClInclude Include="CBufferManager.h">
+      <Filter>Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -228,9 +237,6 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="renderer.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Buffer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="GameEngine.cpp">
@@ -332,14 +338,23 @@
     <ClCompile Include="Material.cpp">
       <Filter>Shader\Material</Filter>
     </ClCompile>
+    <ClCompile Include="LambartShader.cpp">
+      <Filter>Shader\LambartShader</Filter>
+    </ClCompile>
     <ClCompile Include="ShaderSet.cpp">
       <Filter>Shader\ShaderSet</Filter>
     </ClCompile>
-    <ClCompile Include="LambartMaterial.cpp">
-      <Filter>Shader\Material</Filter>
+    <ClCompile Include="PhongShader.cpp">
+      <Filter>Shader\PhongShader</Filter>
     </ClCompile>
-    <ClCompile Include="LambartShader.cpp">
+    <ClCompile Include="LambartMaterial.cpp">
       <Filter>Shader\LambartShader</Filter>
+    </ClCompile>
+    <ClCompile Include="PhongMaterial.cpp">
+      <Filter>Shader\PhongShader</Filter>
+    </ClCompile>
+    <ClCompile Include="CBufferManager.cpp">
+      <Filter>Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -357,6 +372,9 @@
     </FxCompile>
     <FxCompile Include="shaders\LambartShader.hlsl">
       <Filter>Shader\LambartShader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\PhongShader.hlsl">
+      <Filter>Shader\PhongShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -12,9 +12,11 @@ class SkeletonAnimData;
 
 class DX11Texture;
 
-class LambartShader;
-
 class GameEngine;
+
+//shader
+class LambartShader;
+class PhongShader;
 
 class AssetsManager
 {
@@ -57,6 +59,9 @@ public:
 	void CreateAllShader(void);
 
 	LambartShader* GetLambartShader(void);
+	PhongShader* GetPhongShader(void);
+
+	void SetShader(ShaderSet::ShaderIndex index);
 
 private:
 
@@ -71,6 +76,6 @@ private:
 	ID3D11ComputeShader* skinMeshCompute;
 
 	LambartShader* lambartShader;
-
+	PhongShader* phongShader;
 };
 

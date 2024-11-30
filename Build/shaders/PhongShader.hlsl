@@ -5,35 +5,42 @@
 //*****************************************************************************
 
 // マトリクスバッファ
-cbuffer WorldBuffer : register( b0 )
+cbuffer WorldBuffer : register(b0)
 {
-	matrix World;
+    matrix World;
 }
 
-cbuffer ViewBuffer : register( b1 )
+cbuffer ViewBuffer : register(b1)
 {
-	matrix View;
+    matrix View;
 }
 
-cbuffer ProjectionBuffer : register( b2 )
+cbuffer ProjectionBuffer : register(b2)
 {
-	matrix Projection;
+    matrix Projection;
 }
 
 // マテリアルバッファ
 struct MATERIAL
 {
-	float4		Diffuse;
-	int			noDiffuseTex;
-	int			noNormalTex;
-	int			noArmTex;
-    int         dummy;
+    float4 Ambient;
+    float4 Diffuse;
+    float4 Specular;
+    float4 Emission;
+    float Shininess;
+    int noDiffuseTex;
+    int noNormalTex;
+    int noArmTex;
+    int phong;
+    int dummy[3];
 };
 
-cbuffer MaterialBuffer : register( b3 )
+cbuffer MaterialBuffer : register(b3)
 {
-	MATERIAL	Material;
+    MATERIAL Material;
 }
+
+#define MAX_LIGHT (8)
 
 // ライト用バッファ
 struct LIGHT
@@ -50,9 +57,6 @@ struct LIGHT
     int Dummy[2]; //16byte境界用
 };
 
-#define MAX_LIGHT (8)
-
-
 cbuffer LightBuffer : register(b4)
 {
     LIGHT Light[MAX_LIGHT];
@@ -66,7 +70,7 @@ cbuffer LightBuffer : register(b4)
 
 cbuffer CameraBuffer : register(b5)
 {
-	float4 Camera;
+    float4 Camera;
 }
 
 struct SHADOW
@@ -84,45 +88,40 @@ cbuffer ShadowBuffer : register(b6)
     SHADOW Shadow;
 }
 
-
-
-
-
-
 //=============================================================================
 // 頂点シェーダ
 //=============================================================================
-void VSmain( in  float4 inPosition		: POSITION0,
-						  in  float4 inNormal		: NORMAL0,
-						  in  float4 inDiffuse		: COLOR0,
-						  in  float2 inTexCoord		: TEXCOORD0,
-                          in float4 inTangent       : TANGENT0,
-                          in float4 inBiNoramal    : BINORMAL0,
+void VSmain(in float4 inPosition : POSITION0,
+						  in float4 inNormal : NORMAL0,
+						  in float4 inDiffuse : COLOR0,
+						  in float2 inTexCoord : TEXCOORD0,
+                          in float4 inTangent : TANGENT0,
+                          in float4 inBiNoramal : BINORMAL0,
 
-						  out float4 outPosition	: SV_POSITION,
-						  out float4 outNormal		: NORMAL0,
-						  out float2 outTexCoord	: TEXCOORD0,
-						  out float4 outDiffuse		: COLOR0,
-						  out float4 outWorldPos    : POSITION0,
-						  out float4 outPosSM		: POSITION1,
-						  out float4 outTangent     : TANGENT0,
-						  out float4 outBiNormal    : BINORMAL0
+						  out float4 outPosition : SV_POSITION,
+						  out float4 outNormal : NORMAL0,
+						  out float2 outTexCoord : TEXCOORD0,
+						  out float4 outDiffuse : COLOR0,
+						  out float4 outWorldPos : POSITION0,
+						  out float4 outPosSM : POSITION1,
+						  out float4 outTangent : TANGENT0,
+						  out float4 outBiNormal : BINORMAL0
 )
 {
-	matrix wvp;
-	wvp = mul(World, View);
-	wvp = mul(wvp, Projection);
-	outPosition = mul(inPosition, wvp);
+    matrix wvp;
+    wvp = mul(World, View);
+    wvp = mul(wvp, Projection);
+    outPosition = mul(inPosition, wvp);
 
-	outNormal = normalize(mul(float4(inNormal.xyz, 0.0f), World));
-	outTangent = normalize(mul(float4(inTangent.xyz, 0.0f), World));
-	outBiNormal = normalize(mul(float4(inBiNoramal.xyz, 0.0f), World));
+    outNormal = normalize(mul(float4(inNormal.xyz, 0.0f), World));
+    outTangent = normalize(mul(float4(inTangent.xyz, 0.0f), World));
+    outBiNormal = normalize(mul(float4(inBiNoramal.xyz, 0.0f), World));
 
-	outTexCoord = inTexCoord;
+    outTexCoord = inTexCoord;
 
-	outWorldPos = mul(inPosition, World);
+    outWorldPos = mul(inPosition, World);
 
-	outDiffuse = inDiffuse;
+    outDiffuse = inDiffuse;
 	
 	
 	 //頂点座標　モデル座標系→透視座標系(シャドウマップ)
@@ -144,13 +143,13 @@ void VSmain( in  float4 inPosition		: POSITION0,
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-Texture2D		g_Texture       : register(t0);
-Texture2D		NormalTex       : register(t1);
-Texture2D       ShadowMap       : register(t2);
-Texture2D       ShadowMapTex    : register(t3);
-Texture2D       armTex           : register(t4);
+Texture2D g_Texture : register(t0);
+Texture2D NormalTex : register(t1);
+Texture2D ShadowMap : register(t2);
+Texture2D ShadowMapTex : register(t3);
+Texture2D armTex : register(t4);
 
-SamplerState	g_SamplerState : register( s0 );
+SamplerState g_SamplerState : register(s0);
 SamplerState smpBorder : register(s1);
 
 
@@ -192,15 +191,15 @@ float VSM_Filter(float2 texcoord, float fragDepth)
 }
 
 void PSmain(in float4 inPosition : SV_POSITION,
-						 in  float4 inNormal		: NORMAL0,
-						 in  float2 inTexCoord		: TEXCOORD0,
-						 in  float4 inDiffuse		: COLOR0,
-						 in  float4 inWorldPos      : POSITION0,
-						 in  float4 inPosSM			: POSITION1,
-						 in  float4 inTangent		: TANGENT0,
-						 in  float4 inBiNormal		: BINORMAL0,
+						 in float4 inNormal : NORMAL0,
+						 in float2 inTexCoord : TEXCOORD0,
+						 in float4 inDiffuse : COLOR0,
+						 in float4 inWorldPos : POSITION0,
+						 in float4 inPosSM : POSITION1,
+						 in float4 inTangent : TANGENT0,
+						 in float4 inBiNormal : BINORMAL0,
 
-						 out float4 outDiffuse		: SV_Target )
+						 out float4 outDiffuse : SV_Target)
 {
     float4 color;
 
@@ -302,32 +301,52 @@ void PSmain(in float4 inPosition : SV_POSITION,
         float4 tempColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
         float4 outColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
+        
         for (int i = 0; i < MAX_LIGHT; i++)
         {
             float3 lightDir;
             float light;
-
-            if (Light[i].Enable == 1)
+            float3 iA;
+            float3 iD;
+            float3 iS;
+                
+            if (LightEnable == 1)
             {
+                lightDir = normalize(Light[i].Direction.xyz);
+                light = dot(lightDir, normal.xyz);
+                light = (0.5 - 0.5 * light);
+
                 if (Light[i].Flags == 0)
                 {
-                    lightDir = normalize(Light[i].Direction.xyz);
-                    light = dot(lightDir, normal.xyz);
+           
 
-                    light = (0.5 - 0.5 * light) * sma;
-                    tempColor = color * Material.Diffuse * light * Light[i].Diffuse;
+                    float3 r = 2.0 * normal.xyz * light - lightDir;
+
+                    float3 v = normalize(Camera.xyz - inWorldPos.xyz);
+                        
+                        
+                    iA = color.xyz * Material.Ambient.xyz * Light[i].Ambient.xyz;
+                        
+                        
+                        
+                    iD = color * Material.Diffuse * light * Light[i].Diffuse;
+                    iS = color.xyz * pow(saturate(dot(r, v)), Material.Shininess) * Material.Specular.xyz;
+
+                    if (light > 0.5)
+                    {
+                        iD *= sma;
+                    }
+                        
+
+                       
+                        
+                        
+                    tempColor = float4(saturate((iA + iD + iS)), 1.0f);
+
                 }
-                else if (Light[i].Flags == 1)
+                else if (Light[i].Flags==1)
                 {
-                    lightDir = normalize(Light[i].Position.xyz - inWorldPos.xyz);
-                    light = dot(lightDir, normal.xyz);
-
-                    tempColor = color * Material.Diffuse * light * Light[i].Diffuse;
-
-                    float distance = length(inWorldPos - Light[i].Position);
-
-                    float att = saturate((Light[i].Attenuation.x - distance) / Light[i].Attenuation.x);
-                    tempColor *= att;
+                    //ポイントライトのphongshdinig
                 }
                 else
                 {
@@ -336,19 +355,16 @@ void PSmain(in float4 inPosition : SV_POSITION,
 
                 outColor += tempColor;
             }
-            
 
         }
 
-        color = outColor;
-
         
-    }
 		
 
-    color.a = alpha;
-    
-    
-    outDiffuse = color;
-}
+        color = outColor;
+        color.a = alpha;
+    }
 
+    outDiffuse = color;
+
+}

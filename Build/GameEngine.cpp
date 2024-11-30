@@ -5,6 +5,7 @@
 #include "input.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "CBufferManager.h"
 
 
 GameEngine::GameEngine(Main* main)
@@ -28,6 +29,8 @@ void GameEngine::Init()
 	this->renderer = new Renderer(this);
 
 	this->renderer->InitRenderer(*main->GetInstanceHandle(), *main->GetWindowHangle(), true);
+
+	this->cBufferManager = new CBufferManager(this->renderer);
 
 	this->assetsManager = new AssetsManager(this);
 
@@ -105,6 +108,11 @@ AssetsManager* GameEngine::GetAssetsManager(void)
 Renderer* GameEngine::GetRenderer(void)
 {
 	return this->renderer;
+}
+
+CBufferManager* GameEngine::GetCBufferManager(void)
+{
+	return this->cBufferManager;
 }
 
 Input* GameEngine::GetInput(void)
