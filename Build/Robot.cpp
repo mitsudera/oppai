@@ -22,8 +22,6 @@ void Robot::Init(void)
 	mesh->Init();
 	mesh->SetMeshComponent("robot.fbx");
 	mesh->SetMeshDataList();
-	
-
 	this->componentList.push_back(mesh);
 
 

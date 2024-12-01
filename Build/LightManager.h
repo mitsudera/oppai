@@ -1,9 +1,10 @@
 #pragma once
 #include "Coreminimal.h"
-#include "renderer.h"
+#include "CBufferManager.h"
 
 class LightComponent;
 class GameEngine;
+
 
 
 
@@ -21,12 +22,22 @@ public:
     void Draw();
     void Uninit();
 
+
+
+    void SetMainLight(LightComponent* lightComponent);
+
 private:
     GameEngine* pGameEngine;
 
-    LightComponent** activeLight;
+    LIGHT_CBUFFER lightCBufferStruct;
+
+    int activeLightIndex[MAX_LIGHT];
 
     vector<LightComponent*> lightList;
+
+    ID3D11Buffer* lightBuffer;
+
+    void SetLight(LightComponent* lightComponent, int index);
 
 };
 

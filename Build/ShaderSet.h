@@ -3,6 +3,16 @@
 
 class Renderer;
 
+// 頂点構造体
+struct VERTEX_3D
+{
+	XMFLOAT3	Position;
+	XMFLOAT3	Normal;
+	XMFLOAT4	Diffuse;
+	XMFLOAT2	TexCoord;
+	XMFLOAT3	Tangent;
+	XMFLOAT3	BiNormal;
+};
 
 
 class ShaderSet
@@ -18,16 +28,6 @@ public:
 
 	}ShaderIndex;
 
-	// 頂点構造体
-	struct VERTEX_3D
-	{
-		XMFLOAT3	Position;
-		XMFLOAT3	Normal;
-		XMFLOAT4	Diffuse;
-		XMFLOAT2	TexCoord;
-		XMFLOAT3	Tangent;
-		XMFLOAT3	BiNormal;
-	};
 
 	struct MaterialCBuffer
 	{

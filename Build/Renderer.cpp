@@ -554,108 +554,108 @@ IDXGISwapChain* Renderer::GetSwapChain(void)
 	return SwapChain;
 }
 
-void Renderer::DrawStringText(string text, float fontSize, XMFLOAT4 color, XMFLOAT2 pos, XMFLOAT2 size, TEXT_ANCHOR anchor, string font)
-{
-	HRESULT hr;
-
-	//バックバッファからサーフェスを取得する
-	IDXGISurface1* pBackSurface = NULL;
-	hr = SwapChain->GetBuffer(0, __uuidof(IDXGISurface1), (void**)&pBackSurface);
-
-	if (SUCCEEDED(hr))
-	{
-		//取得したサーフェスからデバイスコンテキストを取得する
-		HDC hdc;
-		hr = pBackSurface->GetDC(FALSE, &hdc);
-
-		if (SUCCEEDED(hr))
-		{
-			//文字色を変更
-			SetTextColor(hdc, RGB(color.x * 255, color.y * 255, color.z * 255));
-
-			//背景を透明に変更
-			SetBkMode(hdc, TRANSPARENT);
-			XMFLOAT2 vpSize;
-			XMFLOAT2 vpPos;
-			CameraComponent* camComp = pGameEngine->GetMainCamera();
-			if (camComp != nullptr)
-			{
-				camComp->GetViewPort(vpSize, vpPos);
-
-
-				XMFLOAT2 resolution = pGameEngine->GetWindowSize();
-
-				XMFLOAT2 absoluteSize, absolutePos;
-				absoluteSize.x = vpSize.x / resolution.x;
-				absoluteSize.y = vpSize.y / resolution.y;
-				absolutePos.x = vpPos.x / resolution.x;
-				absolutePos.y = vpPos.y / resolution.y;
-
-
-				//pos.x *= absolutePos.x;
-				//pos.y *= absolutePos.y;
-				//size.x *= absoluteSize.x;
-				//size.y *= absoluteSize.y;
-
-				RECT screenRect;
-				screenRect.left = (LONG)(pos.x - size.x / 2.0f) * absoluteSize.x + vpPos.x;
-				screenRect.top = (LONG)(pos.y - size.y / 2.0f) * absoluteSize.y + vpPos.y;
-				screenRect.right = (LONG)(pos.x + size.x / 2.0f) * absoluteSize.x + vpPos.x;
-				screenRect.bottom = (LONG)(pos.y + size.y / 2.0f) * absoluteSize.y + vpPos.y;
-
-
-				int rectDT = DT_SINGLELINE;	//縦のRECTも有効化する
-
-				switch (anchor % 3)
-				{	//横のRECT
-				case 0:
-					rectDT |= DT_LEFT;
-					break;
-				case 1:
-					rectDT |= DT_CENTER;
-					break;
-				case 2:
-					rectDT |= DT_RIGHT;
-					break;
-				default:
-					break;
-				}
-
-				switch (anchor / 3)
-				{	//縦のRECT
-				case 0:
-					rectDT |= DT_TOP;
-					break;
-				case 1:
-					rectDT |= DT_VCENTER;
-					break;
-				case 2:
-					rectDT |= DT_BOTTOM;
-					break;
-				default:
-					break;
-				}
-
-				LPCSTR lpcwstrFontName = font.c_str();
-				//Font作成 Showcard Gothic
-				HFONT font = CreateFont((int)fontSize, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, lpcwstrFontName);//フォントの指定　引数にできる
-				HGDIOBJ hgdi = SelectObject(hdc, font);
-				//rect.top += DrawText(hdc, str, -1, &rect, DT_WORDBREAK); //縦がずれる？
-
-				//テキスト出力
-				DrawText(hdc, const_cast<char*>(text.c_str()), text.length(), &screenRect, rectDT);
-
-				SelectObject(hdc, hgdi); //フォントを元に戻す
-				DeleteObject(font);	//オブジェクト削除
-			}
-				//デバイスコンテキストを解放する
-				pBackSurface->ReleaseDC(NULL);
-			
-		}
-		//サーフェスを解放する
-		pBackSurface->Release();
-
-		//レンダリングターゲットがリセットされるのでセットしなおす
-		m_ImmediateContext->OMSetRenderTargets(1, &RenderTargetViewBackBuffer, DepthStencilViewBackBuffer);
-	}
-}
+//void Renderer::DrawStringText(string text, float fontSize, XMFLOAT4 color, XMFLOAT2 pos, XMFLOAT2 size, TEXT_ANCHOR anchor, string font)
+//{
+//	HRESULT hr;
+//
+//	//バックバッファからサーフェスを取得する
+//	IDXGISurface1* pBackSurface = NULL;
+//	hr = SwapChain->GetBuffer(0, __uuidof(IDXGISurface1), (void**)&pBackSurface);
+//
+//	if (SUCCEEDED(hr))
+//	{
+//		//取得したサーフェスからデバイスコンテキストを取得する
+//		HDC hdc;
+//		hr = pBackSurface->GetDC(FALSE, &hdc);
+//
+//		if (SUCCEEDED(hr))
+//		{
+//			//文字色を変更
+//			SetTextColor(hdc, RGB(color.x * 255, color.y * 255, color.z * 255));
+//
+//			//背景を透明に変更
+//			SetBkMode(hdc, TRANSPARENT);
+//			XMFLOAT2 vpSize;
+//			XMFLOAT2 vpPos;
+//			CameraComponent* camComp = pGameEngine->GetMainCamera();
+//			if (camComp != nullptr)
+//			{
+//				camComp->GetViewPort(vpSize, vpPos);
+//
+//
+//				XMFLOAT2 resolution = pGameEngine->GetWindowSize();
+//
+//				XMFLOAT2 absoluteSize, absolutePos;
+//				absoluteSize.x = vpSize.x / resolution.x;
+//				absoluteSize.y = vpSize.y / resolution.y;
+//				absolutePos.x = vpPos.x / resolution.x;
+//				absolutePos.y = vpPos.y / resolution.y;
+//
+//
+//				//pos.x *= absolutePos.x;
+//				//pos.y *= absolutePos.y;
+//				//size.x *= absoluteSize.x;
+//				//size.y *= absoluteSize.y;
+//
+//				RECT screenRect;
+//				screenRect.left = (LONG)(pos.x - size.x / 2.0f) * absoluteSize.x + vpPos.x;
+//				screenRect.top = (LONG)(pos.y - size.y / 2.0f) * absoluteSize.y + vpPos.y;
+//				screenRect.right = (LONG)(pos.x + size.x / 2.0f) * absoluteSize.x + vpPos.x;
+//				screenRect.bottom = (LONG)(pos.y + size.y / 2.0f) * absoluteSize.y + vpPos.y;
+//
+//
+//				int rectDT = DT_SINGLELINE;	//縦のRECTも有効化する
+//
+//				switch (anchor % 3)
+//				{	//横のRECT
+//				case 0:
+//					rectDT |= DT_LEFT;
+//					break;
+//				case 1:
+//					rectDT |= DT_CENTER;
+//					break;
+//				case 2:
+//					rectDT |= DT_RIGHT;
+//					break;
+//				default:
+//					break;
+//				}
+//
+//				switch (anchor / 3)
+//				{	//縦のRECT
+//				case 0:
+//					rectDT |= DT_TOP;
+//					break;
+//				case 1:
+//					rectDT |= DT_VCENTER;
+//					break;
+//				case 2:
+//					rectDT |= DT_BOTTOM;
+//					break;
+//				default:
+//					break;
+//				}
+//
+//				LPCSTR lpcwstrFontName = font.c_str();
+//				//Font作成 Showcard Gothic
+//				HFONT font = CreateFont((int)fontSize, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, lpcwstrFontName);//フォントの指定　引数にできる
+//				HGDIOBJ hgdi = SelectObject(hdc, font);
+//				//rect.top += DrawText(hdc, str, -1, &rect, DT_WORDBREAK); //縦がずれる？
+//
+//				//テキスト出力
+//				DrawText(hdc, const_cast<char*>(text.c_str()), text.length(), &screenRect, rectDT);
+//
+//				SelectObject(hdc, hgdi); //フォントを元に戻す
+//				DeleteObject(font);	//オブジェクト削除
+//			}
+//				//デバイスコンテキストを解放する
+//				pBackSurface->ReleaseDC(NULL);
+//			
+//		}
+//		//サーフェスを解放する
+//		pBackSurface->Release();
+//
+//		//レンダリングターゲットがリセットされるのでセットしなおす
+//		m_ImmediateContext->OMSetRenderTargets(1, &RenderTargetViewBackBuffer, DepthStencilViewBackBuffer);
+//	}
+//}

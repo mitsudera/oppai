@@ -6,7 +6,7 @@
 #include "SceneManager.h"
 #include "Scene.h"
 #include "CBufferManager.h"
-
+#include "LightManager.h"
 
 GameEngine::GameEngine(Main* main)
 {
@@ -27,15 +27,17 @@ void GameEngine::Init()
 
 
 	this->renderer = new Renderer(this);
-
 	this->renderer->InitRenderer(*main->GetInstanceHandle(), *main->GetWindowHangle(), true);
 
-	this->cBufferManager = new CBufferManager(this->renderer);
+	this->cBufferManager = new CBufferManager(this);
+
+	this->lightManager = new LightManager(this);
+	lightManager->Init();
 
 	this->assetsManager = new AssetsManager(this);
+	this->assetsManager->Init();
 
 	this->input = new Input();
-
 	this->input->Init(*main->GetInstanceHandle(), *main->GetWindowHangle());
 
 	this->sceneManager = new SceneManager(this);
@@ -46,7 +48,7 @@ void GameEngine::Update()
 {
 	this->input->Update();
 	this->activeScene->Update();
-
+	lightManager->Update();
 
 }
 
@@ -71,7 +73,7 @@ void GameEngine::Uninit()
 	this->input->Uninit();
 	this->assetsManager->Uninit();
 	this->renderer->UninitRenderer();
-
+	this->lightManager->Uninit();
 
 	delete input;
 	delete assetsManager;
@@ -137,7 +139,7 @@ Scene* GameEngine::GetActiveScene(void)
 
 void GameEngine::SetActiveScene(Scene* scene)
 {
-	//this->activeScene->Uninit();
+	if(this->activeScene) this->activeScene->Uninit();
 	this->activeScene = scene;
 	activeScene->Init();
 

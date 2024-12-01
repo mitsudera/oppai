@@ -51,7 +51,7 @@ string DX11Texture::GetFilePath(void)
 {
 	return this->filepath;
 }
-void DX11Texture::SetShaderResource(int n)
+void DX11Texture::SetShaderResourcePS(int n)
 {
 	this->pManager->GetGameEngine()->GetRenderer()->GetDeviceContext()->PSSetShaderResources(n, 1, &SRV);
 }

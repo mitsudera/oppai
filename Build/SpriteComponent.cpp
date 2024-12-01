@@ -5,10 +5,16 @@
 #include "Scene.h"
 #include "AssetsManager.h"
 #include "DX11Texture.h"
+#include "UIMaterial.h"
+#include "GameEngine.h"
+#include "gameobject.h"
+#include "AssetsManager.h"
+#include "Scene.h"
+#include "CBufferManager.h"
+
 SpriteComponent::SpriteComponent(GameObject* gameObject)
 {
 	this->pGameObject = gameObject;
-	attribute = Attribute::Primitive;
 }
 
 SpriteComponent::~SpriteComponent()
@@ -17,7 +23,9 @@ SpriteComponent::~SpriteComponent()
 
 void SpriteComponent::Init(void)
 {
+	PrimitiveComponent::Init();
 	CreateVertexBuffer();
+	this->material = new UIMaterial(pGameObject->GetScene()->GetGameEngine()->GetAssetsManager());
 }
 
 void SpriteComponent::Update(void)
@@ -27,7 +35,7 @@ void SpriteComponent::Update(void)
 
 void SpriteComponent::Uninit(void)
 {
-	
+	PrimitiveComponent::Uninit();
 }
 
 void SpriteComponent::Draw(void)
@@ -37,21 +45,20 @@ void SpriteComponent::Draw(void)
 
 	Renderer* renderer = this->GetGameObject()->GetScene()->GetGameEngine()->GetRenderer();
 
+
+
+
 	renderer->SetCullingMode(CULL_MODE::CULL_MODE_BACK);
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
 
 	renderer->GetDeviceContext()->IASetVertexBuffers(0, 1, &this->vertexBuffer, &stride, &offset);
-	renderer->SetWorldViewProjection2D();
 	renderer->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	// マテリアル設定
-	MATERIAL material;
-	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	renderer->SetMaterial(material);
 	
-	pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->GetTexture(texIndex)->SetShaderResource(0);
+	pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->GetTexture(texIndex)->SetShaderResourcePS(0);
+
+	this->GetGameObject()->GetScene()->GetGameEngine()->GetCBufferManager()->SetWorldViewProjection2D();
 
 	renderer->GetDeviceContext()->Draw(4, 0);
 

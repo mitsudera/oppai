@@ -107,6 +107,11 @@ ObjectTag GameObject::GetTag(void)
 	return tag;
 }
 
+Layer GameObject::GetLayer(void)
+{
+	return this->layer;
+}
+
 BOOL GameObject::GetActive(void)
 {
 	return isActive;

@@ -1,6 +1,6 @@
 #pragma once
 #include "transformcomponent.h"
-#include"renderer.h"
+#include "LightManager.h"
 
 class LightComponent:public TransformComponent
 {

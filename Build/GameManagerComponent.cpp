@@ -3,7 +3,6 @@
 GameManagerComponent::GameManagerComponent(GameObject* gameObject)
 {
 	this->pGameObject = gameObject;
-	attribute = Attribute::Manager;
 }
 
 GameManagerComponent::~GameManagerComponent()
@@ -12,10 +11,14 @@ GameManagerComponent::~GameManagerComponent()
 
 void GameManagerComponent::Init(void)
 {
+	Component::Init();
+	attribute = Attribute::Manager;
+
 }
 
 void GameManagerComponent::Uninit(void)
 {
+	Component::Uninit();
 }
 
 void GameManagerComponent::Update(void)

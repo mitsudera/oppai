@@ -7,7 +7,6 @@
 #pragma once
 #include "CoreMinimal.h"
 
-#include "Light.h"
 #include "ShadowMapping.h"
 
 
@@ -85,8 +84,8 @@ public:
 	void SetClearColor(float* color4);
 	void Present(void);
 
-	ID3D11Device *GetDevice( void );
-	ID3D11DeviceContext *GetDeviceContext( void );
+	ID3D11Device* GetDevice( void );
+	ID3D11DeviceContext* GetDeviceContext( void );
 
 	void SetDepthEnable( BOOL Enable );
 	void SetBlendState(BLEND_MODE bm);
@@ -99,7 +98,7 @@ public:
 
 	IDXGISwapChain* GetSwapChain(void);
 
-	void DrawStringText(string text, float fontSize, XMFLOAT4 color, XMFLOAT2 pos, XMFLOAT2 size, TEXT_ANCHOR anchor, string font);
+	//void DrawStringText(string text, float fontSize, XMFLOAT4 color, XMFLOAT2 pos, XMFLOAT2 size, TEXT_ANCHOR anchor, string font);
 
 
 	ID3D11RenderTargetView* GetBackBuffer(void);

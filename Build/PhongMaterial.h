@@ -8,11 +8,18 @@ class DX11Texture;
 class PhongMaterial :public Material
 {
 public:
-	PhongMaterial(PhongShader* phongShader);
+	PhongMaterial(AssetsManager* assetsManager);
+	PhongMaterial(PhongMaterial* phong);
 	~PhongMaterial();
 
 	// Material ÇâÓÇµÇƒåpè≥Ç≥ÇÍÇ‹ÇµÇΩ
 	virtual void SetBufferMaterial(void) override;
+
+	void LoadDiffuseTex(string fName);
+	void LoadNormalTex(string fName);
+	void LoadArmTex(string fName);
+
+	void LoadFbxMaterial(FbxSurfaceMaterial* fbxmaterial);
 
 
 private:
@@ -28,10 +35,9 @@ private:
 	int			noArmTex;
 
 
-
-	DX11Texture* diffuseTex;
-	DX11Texture* normalTex;
-	DX11Texture* armTex;
+	int textureDiffuseIndex;
+	int textureNormalIndex;
+	int textureArmIndex;
 
 
 

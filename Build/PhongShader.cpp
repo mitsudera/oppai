@@ -4,9 +4,8 @@
 PhongShader::PhongShader(Renderer* renderer)
 {
     pRenderer = renderer;
-    name = "PhongShader";
-    CreateVS("shaders/PhongShader.hlsl", "VSmain");
-    CreatePS("shaders/PhongShader.hlsl", "PSmain");
+    this->CreateVS("shaders/PhongShader.hlsl", "VSmain");
+    this->CreatePS("shaders/PhongShader.hlsl", "PSmain");
 
     shaderIndex = ShaderIndex::Phong;
 

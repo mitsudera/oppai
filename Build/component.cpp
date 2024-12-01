@@ -19,6 +19,7 @@ Component::~Component()
 
 void Component::Init(void)
 {
+	this->attribute = Attribute::Component;
 }
 
 void Component::Uninit(void)
@@ -49,5 +50,15 @@ Component::Attribute Component::GetAttribute(void)
 void Component::SetActive(BOOL b)
 {
 	isActive = b;
+}
+
+BOOL Component::GetActive(void)
+{
+	if (!GetGameObject()->GetActive())
+	{
+		return FALSE;
+	}
+
+	return this->isActive;
 }
 

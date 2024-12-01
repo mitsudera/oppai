@@ -6,7 +6,6 @@
 TitleManagerComponent::TitleManagerComponent(GameObject* gameObject)
 {
 	this->pGameObject = gameObject;
-	attribute = Attribute::Component;
 }
 
 TitleManagerComponent::~TitleManagerComponent()
@@ -15,10 +14,15 @@ TitleManagerComponent::~TitleManagerComponent()
 
 void TitleManagerComponent::Init(void)
 {
+
+	Component::Init();
+	attribute = Attribute::Manager;
+
 }
 
 void TitleManagerComponent::Uninit(void)
 {
+	Component::Uninit();
 }
 
 void TitleManagerComponent::Update(void)

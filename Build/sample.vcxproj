@@ -167,7 +167,6 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="LambartMaterial.h" />
     <ClInclude Include="LambartShader.h" />
-    <ClInclude Include="Light.h" />
     <ClInclude Include="LightComponent.h" />
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="Main.h" />
@@ -184,8 +183,6 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderSet.h" />
-    <ClInclude Include="SkeletonAnimData.h" />
-    <ClInclude Include="SkinMeshDataList.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TitleLogo.h" />
     <ClInclude Include="TitleManager.h" />
@@ -193,6 +190,8 @@
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="transformcomponent.h" />
     <ClInclude Include="UIManagerComponent.h" />
+    <ClInclude Include="UIMaterial.h" />
+    <ClInclude Include="UIShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssetsManager.cpp" />
@@ -213,7 +212,6 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="LambartMaterial.cpp" />
     <ClCompile Include="LambartShader.cpp" />
-    <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -230,8 +228,6 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShaderSet.cpp" />
-    <ClCompile Include="SkeletonAnimData.cpp" />
-    <ClCompile Include="SkinMeshDataList.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TitleLogo.cpp" />
     <ClCompile Include="TitleManager.cpp" />
@@ -239,6 +235,8 @@
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="transformcomponent.cpp" />
     <ClCompile Include="UIManagerComponent.cpp" />
+    <ClCompile Include="UIMaterial.cpp" />
+    <ClCompile Include="UIShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\LambartShader.hlsl">

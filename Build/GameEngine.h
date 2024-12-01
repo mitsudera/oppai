@@ -9,6 +9,7 @@ class CameraComponent;
 class SceneManager;
 class Scene;
 class CBufferManager;
+class LightManager;
 
 class GameEngine
 {
@@ -47,9 +48,12 @@ private:
 	Renderer* renderer;
 	CBufferManager* cBufferManager;
 	Input* input;
+	LightManager* lightManager;
+
 	CameraComponent* mainCamera;
 	SceneManager* sceneManager;
 	Scene* activeScene;
+
 
 	XMFLOAT2 windowSize;
 };

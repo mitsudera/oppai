@@ -1,12 +1,36 @@
 #include "LambartMaterial.h"
 #include "LambartShader.h"
 #include "DX11Texture.h"
+#include "AssetsManager.h"
 
-LambartMaterial::LambartMaterial(LambartShader* lambartShader)
+LambartMaterial::LambartMaterial(AssetsManager* assetsManager)
 {
-	this->pShader= lambartShader;
 
-	this->pLambartShader = lambartShader;
+	this->pAssetsManager = assetsManager;
+
+	this->pShader = assetsManager->GetLambartShader();
+	this->pLambartShader = assetsManager->GetLambartShader();
+
+
+}
+
+LambartMaterial::LambartMaterial(LambartMaterial* lambart)
+{
+	this->pAssetsManager = lambart->pAssetsManager;
+
+	this->pShader = lambart->pShader;
+	this->pLambartShader = lambart->pLambartShader;
+
+	this->diffuse = lambart->diffuse;
+	this->noDiffuseTex = lambart->noDiffuseTex;
+	this->noNormalTex = lambart->noNormalTex;
+	this->noArmTex = lambart->noArmTex;
+	this->textureDiffuseIndex = lambart->textureDiffuseIndex;
+	this->textureNormalIndex = lambart->textureNormalIndex;
+	this->textureArmIndex = lambart->textureArmIndex;
+
+
+
 }
 
 LambartMaterial::~LambartMaterial()
@@ -22,8 +46,157 @@ void LambartMaterial::SetBufferMaterial(void)
 	mCBuffer.noArmTex = this->noArmTex;
 	this->pLambartShader->SetMaterialCbuffer(mCBuffer);
 
-	if (!noDiffuseTex) diffuseTex->SetShaderResource(0);
-	if (!noNormalTex) normalTex->SetShaderResource(1);
-	if (!noArmTex) armTex->SetShaderResource(2);
+	if (!noDiffuseTex) pAssetsManager->GetTexture(textureDiffuseIndex)->SetShaderResourcePS(0);
+	if (!noNormalTex) pAssetsManager->GetTexture(textureNormalIndex)->SetShaderResourcePS(1);
+	if (!noArmTex) pAssetsManager->GetTexture(textureArmIndex)->SetShaderResourcePS(2);
+
+
+}
+
+void LambartMaterial::LoadDiffuseTex(string fName)
+{
+	textureDiffuseIndex = pAssetsManager->LoadTexture(fName);
+}
+
+void LambartMaterial::LoadNormalTex(string fName)
+{
+	textureNormalIndex = pAssetsManager->LoadTexture(fName);
+}
+
+void LambartMaterial::LoadArmTex(string fName)
+{
+	textureArmIndex = pAssetsManager->LoadTexture(fName);
+}
+
+void LambartMaterial::LoadFbxMaterial(FbxSurfaceMaterial* fbxmaterial)
+{
+
+	// Lambertにダウンキャスト
+	FbxSurfaceLambert* lambert = (FbxSurfaceLambert*)fbxmaterial;
+
+
+
+	//ディフューズ
+	FbxDouble3 fbxdiffuse = lambert->Diffuse;
+
+	diffuse.x = (float)fbxdiffuse[0];
+	diffuse.y = (float)fbxdiffuse[1];
+	diffuse.z = (float)fbxdiffuse[2];
+
+	// 透過度
+	FbxDouble transparency = lambert->TransparencyFactor;
+	diffuse.w = (float)transparency;
+
+
+
+	this->noDiffuseTex = true;
+	this->noNormalTex = true;
+	this->noArmTex = true;
+
+
+	// プロパティ取得。
+	const FbxProperty property = fbxmaterial->FindProperty(
+		FbxSurfaceMaterial::sDiffuse    // const char* pName
+	);                                  // bool pCaseSensitive = true
+
+
+
+	// プロパティが持っているレイヤードテクスチャの枚数をチェック
+	int layerNum = property.GetSrcObjectCount<FbxFileTexture>();
+
+	if (layerNum > 0)
+	{
+		FbxFileTexture* pFileTexture = property.GetSrcObject<FbxFileTexture>(0);
+
+		FbxFileTexture::ETextureUse m_type = FbxFileTexture::ETextureUse(pFileTexture->GetTextureUse());
+
+
+		//ディフューズテクスチャなら
+		if (m_type == FbxFileTexture::ETextureUse::eStandard)
+		{
+			const char* fileName = pFileTexture->GetFileName();
+
+			int slush = '/';
+			char* path;
+			path = new char[256];
+
+			//最後に/が出てくる場所
+			const char* last = strrchr(fileName, slush);
+
+
+			if (last == nullptr)
+			{
+				strcpy(path, "data/TEXTURE/");
+
+				strcat(path, fileName);
+
+			}
+			else
+			{
+				strcpy(path, "data/TEXTURE");
+
+				strcat(path, last);
+
+			}
+
+			this->LoadDiffuseTex(path);
+
+			delete[]path;
+
+			// マテリアル設定
+			noDiffuseTex = false;
+		}
+
+	}
+
+
+
+
+
+
+	// プロパティ取得。
+	const FbxProperty propertynormal = fbxmaterial->FindProperty(
+		FbxSurfaceMaterial::sBump    // const char* pName
+	);                                  // bool pCaseSensitive = true
+
+
+
+	// プロパティが持っているレイヤードテクスチャの枚数をチェック
+	layerNum = propertynormal.GetSrcObjectCount<FbxFileTexture>();
+
+	if (layerNum > 0)
+	{
+		FbxFileTexture* pFileTextureNormal = propertynormal.GetSrcObject<FbxFileTexture>(0);
+
+		FbxFileTexture::ETextureUse m_type = FbxFileTexture::ETextureUse(pFileTextureNormal->GetTextureUse());
+
+
+		if (m_type == FbxFileTexture::ETextureUse::eStandard)
+		{
+
+			const char* fileName1 = pFileTextureNormal->GetFileName();
+			int slush = '/';
+			char* path;
+			path = new char[256];
+
+			//最後に/が出てくる場所
+			const char* last = strrchr(fileName1, slush);
+
+			strcpy(path, "data/TEXTURE");
+			strcat(path, last);
+
+			this->LoadNormalTex(path);
+
+			delete[]path;
+
+			noNormalTex = FALSE;
+
+		}
+
+
+	}
+
+
+
 
 }

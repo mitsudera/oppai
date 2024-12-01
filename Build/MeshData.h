@@ -27,8 +27,6 @@ class DX11_SUBSET
 	unsigned short	StartIndex;
 	unsigned short	IndexNum;
 	Material*		material;
-	int textureDiffuseIndex;
-	int textureNormalIndex;
 
 public:
 	DX11_SUBSET();
@@ -44,19 +42,12 @@ public:
 
 
 	Material* GetMaterial(void);
-
+	void SetMaterial(Material* material);
 
 	void SetpMeshData(MeshData* meshdata);
 	MeshData* GetpMeshData(void);
 
 
-	void LoadDiffuseTex(string filepath);
-	void LoadNormalTex(string filepath);
-
-	int GetDiffuseIndex(void);
-	int GetNormalIndex(void);
-
-	void SetShaderResouce(void);
 
 };
 

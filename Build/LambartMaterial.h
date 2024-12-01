@@ -6,12 +6,18 @@ class DX11Texture;
 class LambartMaterial :public Material
 {
 public:
-	LambartMaterial(LambartShader* lambartShader);
+	LambartMaterial(AssetsManager* assetsManager);
+	LambartMaterial(LambartMaterial* lambart);
 	~LambartMaterial();
 	// Material ÇâÓÇµÇƒåpè≥Ç≥ÇÍÇ‹ÇµÇΩ
 	virtual void SetBufferMaterial(void) override;
 
 
+	void LoadDiffuseTex(string fName);
+	void LoadNormalTex(string fName);
+	void LoadArmTex(string fName);
+
+	void LoadFbxMaterial(FbxSurfaceMaterial* fbxmaterial);
 
 private:
 
@@ -20,9 +26,9 @@ private:
 	int			noNormalTex;
 	int			noArmTex;
 	
-	DX11Texture* diffuseTex;
-	DX11Texture* normalTex;
-	DX11Texture* armTex;
+	int textureDiffuseIndex;
+	int textureNormalIndex;
+	int textureArmIndex;
 
 
 

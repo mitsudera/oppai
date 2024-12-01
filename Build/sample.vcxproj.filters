@@ -85,6 +85,9 @@
     <Filter Include="Shader\PhongShader">
       <UniqueIdentifier>{dda8f728-f3d8-466a-9613-5926d3dd3b30}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\UIShader">
+      <UniqueIdentifier>{6384fe22-118a-445d-9e62-697d504892b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coreminimal.h">
@@ -114,9 +117,6 @@
     <ClInclude Include="LightManager.h">
       <Filter>Light</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>Light</Filter>
-    </ClInclude>
     <ClInclude Include="CameraComponent.h">
       <Filter>component\Camera</Filter>
     </ClInclude>
@@ -143,12 +143,6 @@
     </ClInclude>
     <ClInclude Include="FbxConvertDX11.h">
       <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="SkeletonAnimData.h">
-      <Filter>Data</Filter>
-    </ClInclude>
-    <ClInclude Include="SkinMeshDataList.h">
-      <Filter>Data</Filter>
     </ClInclude>
     <ClInclude Include="collision.h">
       <Filter>math</Filter>
@@ -222,6 +216,12 @@
     <ClInclude Include="CBufferManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
+    <ClInclude Include="UIMaterial.h">
+      <Filter>Shader\UIShader</Filter>
+    </ClInclude>
+    <ClInclude Include="UIShader.h">
+      <Filter>Shader\UIShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -246,9 +246,6 @@
       <Filter>Manager</Filter>
     </ClCompile>
     <ClCompile Include="LightManager.cpp">
-      <Filter>Light</Filter>
-    </ClCompile>
-    <ClCompile Include="Light.cpp">
       <Filter>Light</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
@@ -277,12 +274,6 @@
     </ClCompile>
     <ClCompile Include="FbxConvertDX11.cpp">
       <Filter>math</Filter>
-    </ClCompile>
-    <ClCompile Include="SkeletonAnimData.cpp">
-      <Filter>Data</Filter>
-    </ClCompile>
-    <ClCompile Include="SkinMeshDataList.cpp">
-      <Filter>Data</Filter>
     </ClCompile>
     <ClCompile Include="collision.cpp">
       <Filter>math</Filter>
@@ -356,6 +347,12 @@
     <ClCompile Include="CBufferManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
+    <ClCompile Include="UIShader.cpp">
+      <Filter>Shader\UIShader</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMaterial.cpp">
+      <Filter>Shader\UIShader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\shader.hlsl">
@@ -367,14 +364,14 @@
     <FxCompile Include="shaders\TerrainShader.hlsl">
       <Filter>Shader\hlsl</Filter>
     </FxCompile>
-    <FxCompile Include="shaders\UIShader.hlsl">
-      <Filter>Shader\hlsl</Filter>
-    </FxCompile>
     <FxCompile Include="shaders\LambartShader.hlsl">
       <Filter>Shader\LambartShader</Filter>
     </FxCompile>
     <FxCompile Include="shaders\PhongShader.hlsl">
       <Filter>Shader\PhongShader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\UIShader.hlsl">
+      <Filter>Shader\UIShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

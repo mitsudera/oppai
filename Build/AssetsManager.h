@@ -1,14 +1,14 @@
 #pragma once
 #include "CoreMinimal.h"
-
+#include "ShaderSet.h"
 
 class MeshDataList;
 
 class KeyFrameAnimData; 
 
-class SkinMeshDataList;
-
-class SkeletonAnimData;
+//class SkinMeshDataList;
+//
+//class SkeletonAnimData;
 
 class DX11Texture;
 
@@ -17,6 +17,7 @@ class GameEngine;
 //shader
 class LambartShader;
 class PhongShader;
+class UIShader;
 
 class AssetsManager
 {
@@ -44,11 +45,11 @@ public:
 
 	int LoadMeshAnim(string filepath);
 
-	SkinMeshDataList* GetSkinMeshDataList(int n);
-	int LoadSkinMesh(string filepath);
+	//SkinMeshDataList* GetSkinMeshDataList(int n);
+	//int LoadSkinMesh(string filepath);
 
-	SkeletonAnimData* GetSkeletonAnimData(int n);
-	int LoadSkeletonAnimData(string filepath);
+	//SkeletonAnimData* GetSkeletonAnimData(int n);
+	//int LoadSkeletonAnimData(string filepath);
 
 
 	DX11Texture* GetTexture(int n);
@@ -60,6 +61,7 @@ public:
 
 	LambartShader* GetLambartShader(void);
 	PhongShader* GetPhongShader(void);
+	UIShader* GetUIShader(void);
 
 	void SetShader(ShaderSet::ShaderIndex index);
 
@@ -68,8 +70,8 @@ private:
 	GameEngine* pGameEngine;
 	vector<MeshDataList*> MeshDataListArray;
 	vector<KeyFrameAnimData*>  KeyFrameAnimDataArray;
-	vector<SkinMeshDataList*> SkinMeshDataListArray;
-	vector<SkeletonAnimData*> SkeletonAnimDataArray;
+	//vector<SkinMeshDataList*> SkinMeshDataListArray;
+	//vector<SkeletonAnimData*> SkeletonAnimDataArray;
 
 	vector<DX11Texture*> TextureArray;
 
@@ -77,5 +79,6 @@ private:
 
 	LambartShader* lambartShader;
 	PhongShader* phongShader;
+	UIShader* uiShader;
 };
 

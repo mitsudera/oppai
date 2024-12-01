@@ -43,6 +43,9 @@ CameraComponent::CameraComponent()
 
 CameraComponent::CameraComponent(GameObject* gameObject)
 {
+
+	pRenderer = gameObject->GetScene()->GetGameEngine()->GetRenderer();
+
 	for (int i = 0; i < Layer::LayerMax; i++)
 	{
 		layerCulling[i] = FALSE;
@@ -72,6 +75,8 @@ void CameraComponent::Init(void)
 {
 	TransformComponent::Init();
 
+	this->attribute = Attribute::Camera;
+
 	this->SetTransForm(XMFLOAT3(0.0f, 0.0f, 0.0f),XMFLOAT3(0.0f, 0.0f, 0.0f),XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 	this->at = { 0.0f, 0.0f, 0.0f };
@@ -95,12 +100,15 @@ void CameraComponent::Init(void)
 	this->len = 50.0f;
 
 	this->mode = MODE::WORLD;
-
+	for (int i = 0; i < Layer::LayerMax; i++)
+	{
+		layerCulling[i] = FALSE;
+	}
 
 	this->clearColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// ビューポートタイプの初期化
-	//SetViewPort(g_ViewPortType);
+	SetViewPort(VIEWPORT_TYPE::TYPE_FULL_SCREEN);
 }
 
 void CameraComponent::Update(void)
@@ -151,7 +159,7 @@ void CameraComponent::Render(void)
 	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetViewMtx(&this->mtxView);
 	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetCameraBuffer(cameraBuffer);
 	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetProjectionMtx(&this->mtxProj);
-	
+
 	for (int i = 0; i < ShaderSet::ShaderIndex::MAX; i++)
 	{
 		pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->SetShader((ShaderSet::ShaderIndex)i);
@@ -160,23 +168,25 @@ void CameraComponent::Render(void)
 		//描画処理
 		for (GameObject* gameObject : pGameObject->GetScene()->GetGameObject())
 		{
-			
-
 			//カリングがtrueの場合は描画しない
-			if (layerCulling[gameObject->GetLayer()] != TRUE)
+			if (layerCulling[gameObject->GetLayer()] == TRUE)
+				continue;
+
+			for (Component* component : gameObject->GetComponentList())
 			{
-				for (Component* component : gameObject->GetComponentList())
-				{
-					PrimitiveComponent* primitiveComponent = dynamic_cast<PrimitiveComponent*>(component);  // ダウンキャスト
-					if (primitiveComponent == nullptr) continue;
+				if (component->GetAttribute() != Component::Attribute::Primitive)
+					continue;
 
-					if (primitiveComponent->GetMaterial()->GetShaderSet()->GetShaderIndex() == i)
-					{
-						primitiveComponent->Draw();
+				PrimitiveComponent* primitiveComponent = static_cast<PrimitiveComponent*>(component);
 
-					}
-				}
+				//現在セットしてるシェーダーを使っている場合描画
+				if (primitiveComponent->GetMaterial()->GetShaderSet()->GetShaderIndex() != i)
+					continue;
+
+				primitiveComponent->Draw();
+
 			}
+
 		}
 
 	}
@@ -308,9 +318,6 @@ void CameraComponent::SetCamera(void)
 //=============================================================================
 void CameraComponent::SetViewPort(int m_type)
 {
-	Renderer* renderer = GetGameObject()->GetScene()->GetGameEngine()->GetRenderer();
-	ID3D11DeviceContext *ImmediateContext = renderer->GetDeviceContext();
-	D3D11_VIEWPORT vp;
 
 	ViewPortType = m_type;
 
@@ -373,22 +380,9 @@ void CameraComponent::SetViewPort(int m_type)
 		vp.TopLeftY = (FLOAT)screenSize.y * 0.1f;
 		break;
 	}
-	ImmediateContext->RSSetViewports(1, &vp);
-
-	vpSize.x = vp.Width;
-	vpSize.y = vp.Height;
-	vpPos.x = vp.TopLeftX;
-	vpPos.y = vp.TopLeftY;
-
-
 }
 
 
-void CameraComponent::GetViewPort(XMFLOAT2& size, XMFLOAT2& pos)
-{
-	size = vpSize;// カメラが表示するスクリーンのサイズをセット
-	pos = vpPos;
-}
 
 
 int CameraComponent::GetViewPortType(void)

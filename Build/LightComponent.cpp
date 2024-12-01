@@ -18,10 +18,12 @@ LightComponent::~LightComponent()
 
 void LightComponent::Init(void)
 {
+    TransformComponent::Init();
 }
 
 void LightComponent::Uninit(void)
 {
+    TransformComponent::Uninit();
 }
 
 void LightComponent::Update(void)

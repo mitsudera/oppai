@@ -17,6 +17,7 @@ public:
 		Primitive,
 		Light,
 		Manager,
+		Camera,
 	};
 
 	Component();
@@ -33,6 +34,7 @@ public:
 	Component::Attribute GetAttribute(void);
 
 	void SetActive(BOOL b);
+	BOOL GetActive(void);
 
 protected:
 	GameObject* pGameObject;

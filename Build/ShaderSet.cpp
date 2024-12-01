@@ -14,7 +14,6 @@ ShaderSet::~ShaderSet()
 void ShaderSet::SetShaderRenderer(void)
 {
 
-	if (!pRenderer) return;
 	//頂点シェーダーを null に設定
 	pRenderer->GetDeviceContext()->VSSetShader(nullptr, NULL, 0);
 	//ハルシェーダーを null に設定
@@ -64,7 +63,7 @@ void ShaderSet::CreateVS(string filePath, string shaderName)
 	shFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-	HRESULT hr = D3DX11CompileFromFile(shaderName.c_str(), NULL, NULL, filePath.c_str(), "vs_4_0", shFlag, 0, NULL, &pVSBlob, &pErrorBlob, NULL);
+	HRESULT hr = D3DX11CompileFromFile(filePath.c_str(), NULL, NULL, shaderName.c_str(), "vs_4_0", shFlag, 0, NULL, &pVSBlob, &pErrorBlob, NULL);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, (char*)pErrorBlob->GetBufferPointer(), "VS", MB_OK | MB_ICONERROR);
@@ -101,7 +100,7 @@ void ShaderSet::CreateHS(string filePath, string shaderName)
 	ID3DBlob* pHSBlob = NULL;
 	DWORD shFlag = D3DCOMPILE_ENABLE_STRICTNESS;
 
-	HRESULT hr = D3DX11CompileFromFile(shaderName.c_str(), NULL, NULL, filePath.c_str(), "hs_4_0", shFlag, 0, NULL, &pHSBlob, &pErrorBlob, NULL);
+	HRESULT hr = D3DX11CompileFromFile(filePath.c_str(), NULL, NULL, shaderName.c_str(), "hs_4_0", shFlag, 0, NULL, &pHSBlob, &pErrorBlob, NULL);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, (char*)pErrorBlob->GetBufferPointer(), "HS", MB_OK | MB_ICONERROR);
@@ -119,7 +118,7 @@ void ShaderSet::CreateDS(string filePath, string shaderName)
 	ID3DBlob* pDSBlob = NULL;
 	DWORD shFlag = D3DCOMPILE_ENABLE_STRICTNESS;
 
-	HRESULT hr = D3DX11CompileFromFile(shaderName.c_str(), NULL, NULL, filePath.c_str(), "ds_4_0", shFlag, 0, NULL, &pDSBlob, &pErrorBlob, NULL);
+	HRESULT hr = D3DX11CompileFromFile(filePath.c_str(), NULL, NULL, shaderName.c_str(), "ds_4_0", shFlag, 0, NULL, &pDSBlob, &pErrorBlob, NULL);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, (char*)pErrorBlob->GetBufferPointer(), "DS", MB_OK | MB_ICONERROR);
@@ -137,7 +136,7 @@ void ShaderSet::CreateGS(string filePath, string shaderName)
 	ID3DBlob* pGSBlob = NULL;
 	DWORD shFlag = D3DCOMPILE_ENABLE_STRICTNESS;
 
-	HRESULT hr = D3DX11CompileFromFile(shaderName.c_str(), NULL, NULL, filePath.c_str(), "gs_4_0", shFlag, 0, NULL, &pGSBlob, &pErrorBlob, NULL);
+	HRESULT hr = D3DX11CompileFromFile(filePath.c_str(), NULL, NULL, shaderName.c_str(), "gs_4_0", shFlag, 0, NULL, &pGSBlob, &pErrorBlob, NULL);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, (char*)pErrorBlob->GetBufferPointer(), "GS", MB_OK | MB_ICONERROR);
@@ -156,7 +155,7 @@ void ShaderSet::CreatePS(string filePath, string shaderName)
 	ID3DBlob* pPSBlob = NULL;
 	DWORD shFlag = D3DCOMPILE_ENABLE_STRICTNESS;
 
-	HRESULT hr = D3DX11CompileFromFile(shaderName.c_str(), NULL, NULL, filePath.c_str(), "ps_4_0", shFlag, 0, NULL, &pPSBlob, &pErrorBlob, NULL);
+	HRESULT hr = D3DX11CompileFromFile(filePath.c_str(), NULL, NULL, shaderName.c_str(), "ps_4_0", shFlag, 0, NULL, &pPSBlob, &pErrorBlob, NULL);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, (char*)pErrorBlob->GetBufferPointer(), "PS", MB_OK | MB_ICONERROR);

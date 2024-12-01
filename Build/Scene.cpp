@@ -2,6 +2,7 @@
 #include "GameEngine.h"
 #include "gameobject.h"
 #include "CollisionManger.h"
+#include "CameraComponent.h"
 
 Scene::Scene()
 {
@@ -40,13 +41,24 @@ void Scene::Update()
 
 void Scene::Draw()
 {
-	pGameEngine->SetMainCamera(this->mainCamera);
-	
-
-	for (int i = 0; i < gameObjectList.size(); i++)
+	//•`‰æˆ—
+	for (GameObject* gameObject :GetGameObject())
 	{
-		gameObjectList[i]->Draw();
+
+		for (Component* component : gameObject->GetComponentList())
+		{
+			if (component->GetAttribute() != Component::Attribute::Camera)
+				continue;
+
+			CameraComponent* cameraComponent = static_cast<CameraComponent*>(component);
+
+
+			cameraComponent->Render();
+
+		}
+
 	}
+
 
 }
 

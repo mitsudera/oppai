@@ -1,10 +1,12 @@
 #include "CBufferManager.h"
 #include "renderer.h"
+#include "GameEngine.h"
 
-CBufferManager::CBufferManager(Renderer* renderer)
+CBufferManager::CBufferManager(GameEngine* gameEngine)
 {
-	pRenderer = renderer;
-	pDeviceContext = renderer->GetDeviceContext();
+	pGameEngine = gameEngine;
+	pRenderer = gameEngine->GetRenderer();
+	pDeviceContext = pRenderer->GetDeviceContext();
 	// 定数バッファ生成
 	D3D11_BUFFER_DESC hBufferDesc;
 	hBufferDesc.ByteWidth = sizeof(XMMATRIX);
@@ -14,13 +16,13 @@ CBufferManager::CBufferManager(Renderer* renderer)
 	hBufferDesc.MiscFlags = 0;
 	hBufferDesc.StructureByteStride = sizeof(float);
 
-	renderer->GetDevice()->CreateBuffer(&hBufferDesc, nullptr, &this->WorldBuffer);
+	pRenderer->GetDevice()->CreateBuffer(&hBufferDesc, nullptr, &this->WorldBuffer);
 	SetWorldBuffer(this->WorldBuffer);
 
-	renderer->GetDevice()->CreateBuffer(&hBufferDesc, nullptr, &this->ViewBuffer);
+	pRenderer->GetDevice()->CreateBuffer(&hBufferDesc, nullptr, &this->ViewBuffer);
 	SetViewBuffer(this->ViewBuffer);
 
-	renderer->GetDevice()->CreateBuffer(&hBufferDesc, nullptr, &this->ProjectionBuffer);
+	pRenderer->GetDevice()->CreateBuffer(&hBufferDesc, nullptr, &this->ProjectionBuffer);
 	SetProjectionBuffer(this->ProjectionBuffer);
 }
 
@@ -76,6 +78,28 @@ void CBufferManager::SetProjectionMtx(XMMATRIX* projection)
 	XMMATRIX mtx = XMMatrixTranspose(*projection);
 
 	pDeviceContext->UpdateSubresource(ProjectionBuffer, 0, NULL, &mtx, 0, 0);
+
+}
+
+void CBufferManager::SetWorldViewProjection2D(void)
+{
+
+	XMMATRIX world;
+	world = XMMatrixTranspose(XMMatrixIdentity());
+	pDeviceContext->UpdateSubresource(WorldBuffer, 0, NULL, &world, 0, 0);
+
+	XMMATRIX view;
+	view = XMMatrixTranspose(XMMatrixIdentity());
+	pDeviceContext->UpdateSubresource(ViewBuffer, 0, NULL, &view, 0, 0);
+
+	XMFLOAT2 screen = pGameEngine->GetWindowSize();
+
+	XMMATRIX worldViewProjection;
+	worldViewProjection = XMMatrixOrthographicOffCenterLH(0.0f, screen.x, screen.y, 0.0f, 0.0f, 1.0f);
+	worldViewProjection = XMMatrixTranspose(worldViewProjection);
+
+	
+	pDeviceContext->UpdateSubresource(ProjectionBuffer, 0, NULL, &worldViewProjection, 0, 0);
 
 }
 

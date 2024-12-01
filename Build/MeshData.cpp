@@ -11,6 +11,7 @@
 #include "Material.h"
 #include "LambartMaterial.h"
 #include "PhongMaterial.h"
+#include "ShaderSet.h"
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -39,8 +40,6 @@ DX11_SUBSET::DX11_SUBSET()
 	this->StartIndex = 0;
 	this->IndexNum = 0;
 	this->pmeshdata = nullptr;
-	this->textureDiffuseIndex = -1;
-	this->textureNormalIndex = -1;
 
 }
 DX11_SUBSET::~DX11_SUBSET()
@@ -72,6 +71,11 @@ Material* DX11_SUBSET::GetMaterial(void)
 	return material;
 }
 
+void DX11_SUBSET::SetMaterial(Material* material)
+{
+	this->material = material;
+}
+
 
 MeshData* DX11_SUBSET::GetpMeshData(void)
 {
@@ -83,44 +87,6 @@ void DX11_SUBSET::SetpMeshData(MeshData* meshdata)
 	this->pmeshdata = meshdata;
 }
 
-void DX11_SUBSET::LoadDiffuseTex(string filepath)
-{
-	this->textureDiffuseIndex = pmeshdata->GetpAssetsManager()->LoadTexture(filepath);
-
-}
-
-void DX11_SUBSET::LoadNormalTex(string filepath)
-{
-	this->textureNormalIndex = pmeshdata->GetpAssetsManager()->LoadTexture(filepath);
-
-}
-
-int DX11_SUBSET::GetDiffuseIndex(void)
-{
-	return textureDiffuseIndex;
-}
-
-int DX11_SUBSET::GetNormalIndex(void)
-{
-	return textureNormalIndex;
-}
-
-void DX11_SUBSET::SetShaderResouce(void)
-{
-
-	if (material->noDiffuseTex==FALSE)
-	{
-		pmeshdata->GetpAssetsManager()->GetTexture(textureDiffuseIndex)->SetShaderResource(0);
-
-	}
-
-	if (Material.noNormalTex==FALSE)
-	{
-		pmeshdata->GetpAssetsManager()->GetTexture(textureNormalIndex)->SetShaderResource(1);
-
-	}
-
-}
 
 
 
@@ -691,47 +657,20 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 
 		if (fbxmaterial != 0)
 		{
-			MATERIAL material;
-			ZeroMemory(&material, sizeof(MATERIAL));
-
 			// マテリアル解析
 			// LambertかPhongか
 			//lambart
-			material.phong = 0;
 
 			
 
 			if (id == (FbxSurfaceLambert::ClassId))
 			{
 
-				// Lambertにダウンキャスト
-				FbxSurfaceLambert* lambert = (FbxSurfaceLambert*)fbxmaterial;
+				LambartMaterial* lambart = new LambartMaterial(this->GetpAssetsManager());
 
+				lambart->LoadFbxMaterial(fbxmaterial);
 
-				//アンビエント
-				FbxDouble3 amb = lambert->Ambient;
-
-				material.Ambient.x = (float)amb[0];
-				material.Ambient.y = (float)amb[1];
-				material.Ambient.z = (float)amb[2];
-
-				//ディフューズ
-				FbxDouble3 diffuse = lambert->Diffuse;
-
-				material.Diffuse.x = (float)diffuse[0];
-				material.Diffuse.y = (float)diffuse[1];
-				material.Diffuse.z = (float)diffuse[2];
-
-				// 透過度
-				FbxDouble transparency = lambert->TransparencyFactor;
-				material.Diffuse.w = (float)transparency;
-
-				//エミッション
-				FbxDouble3 emi = lambert->Emissive;
-
-				material.Emission.x = (float)emi[0];
-				material.Emission.y = (float)emi[1];
-				material.Emission.z = (float)emi[2];
+				this->GetSubset()->SetMaterial(lambart);
 
 
 
@@ -740,173 +679,21 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 			else if (id == (FbxSurfacePhong::ClassId))
 			{
 
-				// Phongにダウンキャスト
-				FbxSurfacePhong* phong = (FbxSurfacePhong*)fbxmaterial;
-				material.phong = 1;
-				//アンビエント
-				FbxDouble3 amb = phong->Ambient;
+				PhongMaterial* phong = new PhongMaterial(this->GetpAssetsManager());
 
-				material.Ambient.x = (float)amb[0];
-				material.Ambient.y = (float)amb[1];
-				material.Ambient.z = (float)amb[2];
+				phong->LoadFbxMaterial(fbxmaterial);
 
-				//ディフューズ
-				FbxDouble3 diffuse = phong->Diffuse;
+				this->GetSubset()->SetMaterial(phong);
 
-				material.Diffuse.x = (float)diffuse[0];
-				material.Diffuse.y = (float)diffuse[1];
-				material.Diffuse.z = (float)diffuse[2];
-
-				// 透過度
-				FbxDouble transparency = phong->TransparencyFactor;
-				material.Diffuse.w = (float)transparency;
-
-				//エミッション
-				FbxDouble3 emi = phong->Emissive;
-
-				material.Emission.x = (float)emi[0];
-				material.Emission.y = (float)emi[1];
-				material.Emission.z = (float)emi[2];
-
-				//スペキュラー
-				FbxDouble3 spe = phong->Specular;
-
-				material.Specular.x = (float)spe[0];
-				material.Specular.y = (float)spe[1];
-				material.Specular.z = (float)spe[2];
-
-				FbxDouble shine = phong->Shininess;
-				material.Shininess = (float)shine;
 
 
 			}
 			else
 			{
-				material.phong = 0;
-				material.Diffuse.x = 1.0f;
-				material.Diffuse.y = 1.0f;
-				material.Diffuse.z = 1.0f;
-				material.Diffuse.w = 1.0f;
 
 			}
 
-			material.noDiffuseTex = true;
-			material.noNormalTex = true;
-
-
-			// プロパティ取得。
-			const FbxProperty property = fbxmaterial->FindProperty(
-				FbxSurfaceMaterial::sDiffuse    // const char* pName
-			);                                  // bool pCaseSensitive = true
-
-
-
-			// プロパティが持っているレイヤードテクスチャの枚数をチェック
-			int layerNum = property.GetSrcObjectCount<FbxFileTexture>();
-
-			if (layerNum>0)
-			{
-				FbxFileTexture* pFileTexture = property.GetSrcObject<FbxFileTexture>(0);
-
-				FbxFileTexture::ETextureUse m_type = FbxFileTexture::ETextureUse(pFileTexture->GetTextureUse());
-
-
-				//ディフューズテクスチャなら
-				if (m_type == FbxFileTexture::ETextureUse::eStandard)
-				{
-					const char* fileName = pFileTexture->GetFileName();
-
-					int slush = '/';
-					char* path;
-					path = new char[256];
-
-					//最後に/が出てくる場所
-					const char* last = strrchr(fileName, slush);
-
-
-					if (last == nullptr)
-					{
-						strcpy(path, "data/TEXTURE/");
-
-						strcat(path, fileName);
-
-					}
-					else
-					{
-						strcpy(path, "data/TEXTURE");
-
-						strcat(path, last);
-
-					}
-
-					this->GetSubset()[i].LoadDiffuseTex(path);
-
-					delete[]path;
-
-					// マテリアル設定
-					material.noDiffuseTex = false;
-				}
-
-			}
-
-
-
-
-
-
-			// プロパティ取得。
-			const FbxProperty propertynormal = fbxmaterial->FindProperty(
-				FbxSurfaceMaterial::sBump    // const char* pName
-			);                                  // bool pCaseSensitive = true
-
-
-
-			// プロパティが持っているレイヤードテクスチャの枚数をチェック
-			layerNum = propertynormal.GetSrcObjectCount<FbxFileTexture>();
-
-			if (layerNum>0)
-			{
-				FbxFileTexture* pFileTextureNormal = propertynormal.GetSrcObject<FbxFileTexture>(0);
-
-				FbxFileTexture::ETextureUse m_type = FbxFileTexture::ETextureUse(pFileTextureNormal->GetTextureUse());
-
-
-				if (m_type == FbxFileTexture::ETextureUse::eStandard)
-				{
-
-					const char* fileName1 = pFileTextureNormal->GetFileName();
-					int slush = '/';
-					char* path;
-					path = new char[256];
-
-					//最後に/が出てくる場所
-					const char* last = strrchr(fileName1, slush);
-
-					strcpy(path, "data/TEXTURE");
-					strcat(path, last);
-
-					this->GetSubset()[i].LoadNormalTex(path);
-
-					delete[]path;
-
-					material.noNormalTex = FALSE;
-
-				}
-
-
-			}
-
-
-
-
-
-
-
-			material.Diffuse.w = 1.0f;
-			this->GetSubset()[i].SetMaterial(material);
 			this->GetSubset()[i].SetpMeshData(this);
-
-
 		}
 	}
 

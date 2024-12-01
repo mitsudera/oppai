@@ -21,6 +21,8 @@ void TitleScene::Init()
 	TitleLogo* titleLogo = new TitleLogo(this);
 	this->gameObjectList.push_back(titleLogo);
 
+	Camera* gameCamera = new Camera(this);
+	this->gameObjectList.push_back(gameCamera);
 
 
 	Scene::Init();

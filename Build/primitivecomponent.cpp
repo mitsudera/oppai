@@ -3,7 +3,6 @@
 
 PrimitiveComponent::PrimitiveComponent()
 {
-	attribute = Attribute::Primitive;
 
 }
 
@@ -14,6 +13,8 @@ PrimitiveComponent::~PrimitiveComponent()
 void PrimitiveComponent::Init(void)
 {
 	TransformComponent::Init();
+	attribute = Attribute::Primitive;
+
 	hasShadow = FALSE;
 	drawShadow = FALSE;
 }

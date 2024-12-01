@@ -183,7 +183,7 @@ void VSmain( in  float4 inPosition		: POSITION0,
 //*****************************************************************************
 // ƒOƒ[ƒoƒ‹•Ï”
 //*****************************************************************************
-Texture2D		g_Texture       : register(t0);
+Texture2D		DiffuseTexture       : register(t0);
 Texture2D		NormalTex       : register(t1);
 Texture2D       ShadowMap       : register(t2);
 Texture2D       ShadowMapTex    : register(t3);

@@ -17,6 +17,8 @@ ColliderComponent::~ColliderComponent()
 void ColliderComponent::Init(void)
 {
 	TransformComponent::Init();
+
+	this->attribute = Attribute::Collider;
 	result.hitObject.clear();
 	for (int i = 0; i < ObjectTag::ObjectTagMax; i++)
 	{

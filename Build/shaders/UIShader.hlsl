@@ -1,4 +1,3 @@
-
 // マトリクスバッファ
 cbuffer WorldBuffer : register(b0)
 {
@@ -16,49 +15,60 @@ cbuffer ProjectionBuffer : register(b2)
 }
 
 
-struct VS_IN_PARTICLE
-{
-    float4 Position : POSITION0;
-    float4 Normal : NORMAL0;
-    float4 Diffuse : COLOR0;
-    float2 TexCoord : TEXCOORD0;
-};
-struct PS_IN_PARTICLE
-{
-    float4 Position : SV_POSITION;
-    float4 Normal : NORMAL0;
-    float2 TexCoord : TEXCOORD0;
-    float4 Diffuse : COLOR0;
-    float4 WorldPos : POSITION0;
-};
 
-void VSmain(in VS_IN_PARTICLE In, out PS_IN_PARTICLE Out)
-{
+//=============================================================================
+// 頂点シェーダ
+//=============================================================================
+void VSmain(              in float4 inPosition : POSITION0,
+						  in float4 inNormal : NORMAL0,
+						  in float4 inDiffuse : COLOR0,
+						  in float2 inTexCoord : TEXCOORD0,
+                          in float4 inTangent : TANGENT0,
+                          in float4 inBiNoramal : BINORMAL0,
 
+						  out float4 outPosition : SV_POSITION,
+						  out float2 outTexCoord : TEXCOORD0,
+						  out float4 outDiffuse : COLOR0)
+{
     matrix wvp;
     wvp = mul(World, View);
     wvp = mul(wvp, Projection);
+    outPosition = mul(inPosition, wvp);
 
-    //位置
-    Out.Position = mul(In.Position, wvp);
-    Out.WorldPos = mul(In.Position, World);
-    //UV
-    Out.TexCoord = In.TexCoord;
-    //法線
-    Out.Normal = normalize(mul(float4(In.Normal.xyz, 0.0f), World));
-    //色
-    Out.Diffuse = In.Diffuse;
-    
+    outTexCoord = inTexCoord;
+    outDiffuse = inDiffuse;
+	
 }
 
-Texture2D g_Texture : register(t0);
-SamplerState g_SamplerState : register(s0);
 
-void PSmain(in PS_IN_PARTICLE In, out float4 outDiffuse : SV_Target)
+
+//*****************************************************************************
+// グローバル変数
+//*****************************************************************************
+Texture2D DiffuseTexture : register(t0);
+
+SamplerState WrapSampler : register(s0);
+SamplerState BorderSampler : register(s1);
+
+
+//=============================================================================
+// ピクセルシェーダ
+//=============================================================================
+
+
+
+void PSmain(             in float4 inPosition : SV_POSITION,
+						 in float2 inTexCoord : TEXCOORD0,
+						 in float4 inDiffuse : COLOR0,
+
+						 out float4 outDiffuse : SV_Target)
 {
     float4 color;
 
-    color = g_Texture.Sample(g_SamplerState, In.TexCoord);
-    color *= In.Diffuse;
+	
+    color = DiffuseTexture.Sample(WrapSampler, inTexCoord);
+    //color *= inDiffuse;
+	
     outDiffuse = color;
+
 }

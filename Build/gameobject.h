@@ -24,7 +24,8 @@ typedef enum
 	Player,
 
 	LayerMax,
-}Layer;
+}
+Layer;
 
 class ColliderComponent;
 class Scene;

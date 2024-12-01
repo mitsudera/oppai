@@ -4,6 +4,7 @@
 
 TransformComponent::TransformComponent()
 {
+	this->attribute = Attribute::Transform;
 	this->pos = { 0.0f,0.0f,0.0f };
 	this->oldPos = { 0.0f, 0.0f, 0.0f };
 	this->rot = { 0.0f,0.0f,0.0f };
@@ -32,7 +33,6 @@ TransformComponent::TransformComponent()
 
 TransformComponent::TransformComponent(GameObject* gameObject)
 {
-
 	attribute = Attribute::Transform;
 	this->pos = { 0.0f,0.0f,0.0f };
 	this->oldPos = { 0.0f, 0.0f, 0.0f };
@@ -69,6 +69,9 @@ TransformComponent::~TransformComponent()
 }
 void TransformComponent::Init(void)
 {
+	attribute = Attribute::Transform;
+
+
 	this->pos = { 0.0f,0.0f,0.0f };
 	this->oldPos = { 0.0f, 0.0f, 0.0f };
 	this->rot = { 0.0f,0.0f,0.0f };
@@ -214,6 +217,7 @@ XMMATRIX TransformComponent::GetWorldMtx(XMMATRIX mtx)
 {
 	XMMATRIX ans = XMMatrixMultiply(mtx,lMtx);
 
+	this->attribute;
 
 	if (this->attribute != Attribute::Transform)
 	{

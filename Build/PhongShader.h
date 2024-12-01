@@ -27,7 +27,6 @@ public:
 
 
 private:
-	Renderer* pRenderer;
 
 
 

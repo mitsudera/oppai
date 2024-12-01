@@ -2,11 +2,12 @@
 #include "MeshData.h"
 #include "GameEngine.h"
 #include "MeshAnimData.h"
-#include "SkinMeshDataList.h"
-#include "SkeletonAnimData.h"
+//#include "SkinMeshDataList.h"
+//#include "SkeletonAnimData.h"
 #include "DX11Texture.h"
 #include "LambartShader.h"
 #include "PhongShader.h"
+#include "UIShader.h"
 
 #define MESH_PATH "data/MODEL/mesh/"
 #define SKINMESH_PATH "data/MODEL/skinmesh/"
@@ -35,8 +36,9 @@ AssetsManager::~AssetsManager()
 
 void AssetsManager::Init(void)
 {
-	pGameEngine->GetRenderer()->CreateCSFile("shaders/CSskinmesh.hlsl", "CSFunc", &skinMeshCompute);
+	//pGameEngine->GetRenderer()->CreateCSFile("shaders/CSskinmesh.hlsl", "CSFunc", &skinMeshCompute);
 	
+	CreateAllShader();
 
 	
 }
@@ -57,18 +59,18 @@ void AssetsManager::Uninit(void)
 	}
 	this->KeyFrameAnimDataArray.clear();
 
-	for (int i = 0; i < this->SkinMeshDataListArray.size(); i++)
-	{
-		delete this->SkinMeshDataListArray[i];
-	}
-	this->SkinMeshDataListArray.clear();
+	//for (int i = 0; i < this->SkinMeshDataListArray.size(); i++)
+	//{
+	//	delete this->SkinMeshDataListArray[i];
+	//}
+	//this->SkinMeshDataListArray.clear();
 
 
-	for (int i = 0; i < this->SkeletonAnimDataArray.size(); i++)
-	{
-		delete this->SkeletonAnimDataArray[i];
-	}
-	this->SkeletonAnimDataArray.clear();
+	//for (int i = 0; i < this->SkeletonAnimDataArray.size(); i++)
+	//{
+	//	delete this->SkeletonAnimDataArray[i];
+	//}
+	//this->SkeletonAnimDataArray.clear();
 
 
 	for (int i = 0; i < this->TextureArray.size(); i++)
@@ -161,77 +163,80 @@ int AssetsManager::LoadMeshAnim(string filepath)
 	return p;
 }
 
-int AssetsManager::LoadSkinMesh(string filepath)
-{
-	int p = -1;
-	BOOL find = FALSE;
-	for (int i = 0; i < SkinMeshDataListArray.size(); i++)
-	{
-		if ((SKINMESH_PATH + filepath) == SkinMeshDataListArray[i]->GetFilePath())
-		{
-			p = i;
-			find = TRUE;
-			break;
-		}
-	}
+//int AssetsManager::LoadSkinMesh(string filepath)
+//{
+//	int p = -1;
+//	BOOL find = FALSE;
+//	for (int i = 0; i < SkinMeshDataListArray.size(); i++)
+//	{
+//		if ((SKINMESH_PATH + filepath) == SkinMeshDataListArray[i]->GetFilePath())
+//		{
+//			p = i;
+//			find = TRUE;
+//			break;
+//		}
+//	}
+//
+//	if (find == FALSE)
+//	{
+//		string path = SKINMESH_PATH + filepath;
+//
+//
+//		SkinMeshDataList* skinmeshdatalist = new SkinMeshDataList;
+//
+//		skinmeshdatalist->LoadSkinMeshDataList(path, this);
+//
+//		this->SkinMeshDataListArray.push_back(skinmeshdatalist);
+//		p = (int)SkinMeshDataListArray.size() - 1;
+//
+//	}
+//
+//	return p;
+//}
+//
+//SkinMeshDataList* AssetsManager::GetSkinMeshDataList(int n)
+//{
+//	return this->SkinMeshDataListArray[n];
+//}
+//
+//SkeletonAnimData* AssetsManager::GetSkeletonAnimData(int n)
+//{
+//	return this->SkeletonAnimDataArray[n];
+//}
+//int AssetsManager::LoadSkeletonAnimData(string filepath)
+//{
+//	int p = -1;
+//	BOOL find = FALSE;
+//	for (int i = 0; i < SkeletonAnimDataArray.size(); i++)
+//	{
+//		if ((SKINMESH_ANIM_PATH + filepath) == SkeletonAnimDataArray[i]->GetFilePath())
+//		{
+//			p = i;
+//			find = TRUE;
+//			break;
+//		}
+//	}
+//
+//	if (find == FALSE)
+//	{
+//		string path = SKINMESH_ANIM_PATH + filepath;
+//
+//
+//		SkeletonAnimData* skeletonAnimdata = new SkeletonAnimData;
+//
+//		
+//		skeletonAnimdata->LoadSkeletonAnimData(path);
+//
+//		this->SkeletonAnimDataArray.push_back(skeletonAnimdata);
+//		p = (int)SkeletonAnimDataArray.size() - 1;
+//
+//	}
+//
+//	return p;
+//}
 
-	if (find == FALSE)
-	{
-		string path = SKINMESH_PATH + filepath;
 
 
-		SkinMeshDataList* skinmeshdatalist = new SkinMeshDataList;
-
-		skinmeshdatalist->LoadSkinMeshDataList(path, this);
-
-		this->SkinMeshDataListArray.push_back(skinmeshdatalist);
-		p = (int)SkinMeshDataListArray.size() - 1;
-
-	}
-
-	return p;
-}
-
-SkinMeshDataList* AssetsManager::GetSkinMeshDataList(int n)
-{
-	return this->SkinMeshDataListArray[n];
-}
-
-SkeletonAnimData* AssetsManager::GetSkeletonAnimData(int n)
-{
-	return this->SkeletonAnimDataArray[n];
-}
-int AssetsManager::LoadSkeletonAnimData(string filepath)
-{
-	int p = -1;
-	BOOL find = FALSE;
-	for (int i = 0; i < SkeletonAnimDataArray.size(); i++)
-	{
-		if ((SKINMESH_ANIM_PATH + filepath) == SkeletonAnimDataArray[i]->GetFilePath())
-		{
-			p = i;
-			find = TRUE;
-			break;
-		}
-	}
-
-	if (find == FALSE)
-	{
-		string path = SKINMESH_ANIM_PATH + filepath;
-
-
-		SkeletonAnimData* skeletonAnimdata = new SkeletonAnimData;
-
-		
-		skeletonAnimdata->LoadSkeletonAnimData(path);
-
-		this->SkeletonAnimDataArray.push_back(skeletonAnimdata);
-		p = (int)SkeletonAnimDataArray.size() - 1;
-
-	}
-
-	return p;
-}
 DX11Texture* AssetsManager::GetTexture(int n)
 {
 
@@ -278,7 +283,7 @@ void AssetsManager::CreateAllShader(void)
 {
 	lambartShader = new LambartShader(this->pGameEngine->GetRenderer());
 	phongShader = new PhongShader(this->pGameEngine->GetRenderer());
-
+	uiShader = new UIShader(this->pGameEngine->GetRenderer());
 }
 
 LambartShader* AssetsManager::GetLambartShader(void)
@@ -289,6 +294,11 @@ LambartShader* AssetsManager::GetLambartShader(void)
 PhongShader* AssetsManager::GetPhongShader(void)
 {
 	return this->phongShader;
+}
+
+UIShader* AssetsManager::GetUIShader(void)
+{
+	return this->uiShader;
 }
 
 void AssetsManager::SetShader(ShaderSet::ShaderIndex index)
@@ -308,6 +318,7 @@ void AssetsManager::SetShader(ShaderSet::ShaderIndex index)
 
 	case ShaderSet::UI:
 
+		this->uiShader->SetShaderRenderer();
 		break;
 
 	}

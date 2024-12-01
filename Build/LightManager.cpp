@@ -1,8 +1,7 @@
 #include "LightManager.h"
 #include "GameEngine.h"
-#include "renderer.h"
-#include "light.h"
 #include "LightComponent.h"
+#include "renderer.h"
 
 LightManager::LightManager(GameEngine* pGameEngine)
 {
@@ -16,24 +15,50 @@ LightManager::~LightManager()
 
 void LightManager::Init()
 {
+	// 定数バッファ生成
+	D3D11_BUFFER_DESC hBufferDesc;
+	hBufferDesc.ByteWidth = sizeof(LIGHT_CBUFFER);
+	hBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	hBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	hBufferDesc.CPUAccessFlags = 0;
+	hBufferDesc.MiscFlags = 0;
+	hBufferDesc.StructureByteStride = sizeof(float);
 
+	pGameEngine->GetRenderer()->GetDevice()->CreateBuffer(&hBufferDesc, nullptr, &this->lightBuffer);
+	pGameEngine->GetCBufferManager()->SetLightBuffer(this->lightBuffer);
+
+	for (int i = 0; i < MAX_LIGHT; i++)
+	{
+		activeLightIndex[i] = -1;
+	}
 }
 
 void LightManager::Update()
 {
-	XMFLOAT3 mainCamPos;
 
 
-	for (int i = 0; i < MAX_LIGHT; i++)
+	int setNum = 0;
+	for (int i = 0; i < lightList.size(); i++)
 	{
-		activeLight[i] = lightList[i];
+
+		if (lightList[i]->GetActive() && lightList[i]->GetLightParam().m_Flags == 0)
+		{
+			activeLightIndex[setNum] = i;
+
+		}
+		if (setNum > MAX_LIGHT-1) break;
 	}
 
-	for (int i = 0; i < MAX_LIGHT; i++)
+
+	ZeroMemory(&this->lightCBufferStruct, sizeof(LIGHT_CBUFFER));
+
+	for (int i = 0; i < setNum; i++)
 	{
-		pGameEngine->GetRenderer()->SetLight(i,activeLight[i]->GetLightParam());
+		SetLight(lightList[activeLightIndex[i]], i);
 	}
 
+
+	pGameEngine->GetRenderer()->GetDeviceContext()->UpdateSubresource(this->lightBuffer, 0, NULL, &this->lightCBufferStruct, 0, 0);
 }
 
 void LightManager::Draw()
@@ -44,4 +69,10 @@ void LightManager::Draw()
 
 void LightManager::Uninit()
 {
+}
+
+
+void LightManager::SetLight(LightComponent* lightComponent,int index)
+{
+	this->lightCBufferStruct.m_lightParam[index] = lightComponent->GetLightParam();
 }

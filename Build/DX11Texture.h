@@ -20,7 +20,7 @@ public:
 
 	string GetFilePath(void);
 
-	void SetShaderResource(int n);
+	void SetShaderResourcePS(int n);
 
 	void SetManager(AssetsManager* Manager);
 

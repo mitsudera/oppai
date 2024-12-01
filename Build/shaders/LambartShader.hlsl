@@ -144,14 +144,14 @@ void VSmain( in  float4 inPosition		: POSITION0,
 //*****************************************************************************
 // ƒOƒ[ƒoƒ‹•Ï”
 //*****************************************************************************
-Texture2D		g_Texture       : register(t0);
+Texture2D		DiffuseTexture       : register(t0);
 Texture2D		NormalTex       : register(t1);
-Texture2D       ShadowMap       : register(t2);
-Texture2D       ShadowMapTex    : register(t3);
-Texture2D       armTex           : register(t4);
+Texture2D       armTex           : register(t2);
+Texture2D       ShadowMap       : register(t3);
+Texture2D       ShadowMapTex    : register(t4);
 
-SamplerState	g_SamplerState : register( s0 );
-SamplerState smpBorder : register(s1);
+SamplerState	WrapSampler : register( s0 );
+SamplerState BorderSampler : register(s1);
 
 
 //=============================================================================
@@ -162,7 +162,7 @@ SamplerState smpBorder : register(s1);
 float GetVarianceDirectionalShadowFactor(float4 shadowCoord)
 {
     
-    float2 depth = ShadowMapTex.Sample(smpBorder, shadowCoord.xy).xy;
+    float2 depth = ShadowMapTex.Sample(BorderSampler, shadowCoord.xy).xy;
     float depth_sq = depth.x * depth.x; // E(x)^2
     float variance = depth.y - depth_sq; // ƒÐ^2 = E(x^2) - E(x^2)
     variance = saturate(variance + 0.0001); // 0.0001‚ð’Ç‰Á‚µ‚ÄˆÀ’è«‚ðŒüã
@@ -177,7 +177,7 @@ float GetVarianceDirectionalShadowFactor(float4 shadowCoord)
 float VSM_Filter(float2 texcoord, float fragDepth)
 {
 
-    float4 depth = ShadowMapTex.Sample(smpBorder, texcoord);
+    float4 depth = ShadowMapTex.Sample(BorderSampler, texcoord);
   
 
     float depth_sq = depth.x * depth.x;
@@ -213,7 +213,7 @@ void PSmain(in float4 inPosition : SV_POSITION,
     if (Material.noNormalTex == 0)
     {
         // Sample the normal map
-        float3 normalMap = NormalTex.Sample(g_SamplerState, inTexCoord).rgb;
+        float3 normalMap = NormalTex.Sample(WrapSampler, inTexCoord).rgb;
         
         normalMap.x = 1.0 - normalMap.x;
         normalMap.y = 1.0 - normalMap.y;
@@ -244,7 +244,7 @@ void PSmain(in float4 inPosition : SV_POSITION,
         }
         else if (Shadow.mode == 0)
         {
-            float sm0 = ShadowMap.Sample(smpBorder, inPosSM.xy);
+            float sm0 = ShadowMap.Sample(BorderSampler, inPosSM.xy);
 
             
             if (inPosSM.z - 0.0002 > sm0)
@@ -282,7 +282,7 @@ void PSmain(in float4 inPosition : SV_POSITION,
 	
     if (Material.noDiffuseTex == 0)
     {
-        color = g_Texture.Sample(g_SamplerState, inTexCoord);
+        color = DiffuseTexture.Sample(WrapSampler, inTexCoord);
 
         color *= inDiffuse;
     }

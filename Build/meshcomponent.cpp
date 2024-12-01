@@ -8,6 +8,10 @@
 #include "DX11Texture.h"
 #include "gameobject.h"
 #include "GameScene.h"
+#include "CBufferManager.h"
+#include "Material.h"
+#include "LambartMaterial.h"
+#include "PhongMaterial.h"
 
 #define TEXTURE_PATH	"data/TEXTURE/"
 
@@ -271,10 +275,8 @@ void MeshComponent::Draw(void)
 	
 	for (int i = 0; i < this->meshNum; i++)
 	{
-		renderer->SetFuchi(m_fuchi);
 		this->DrawMesh(i);
 	}
-	renderer->SetFuchi(FALSE);
 	renderer->SetAlphaTestEnable(FALSE);
 
 }
@@ -298,7 +300,7 @@ void MeshComponent::DrawMesh(int n)
 	XMMATRIX world = XMMatrixIdentity();
 	world = XMMatrixMultiply(world, this->MeshMtxArray[n]);
 	world = GetWorldMtx(world);
-	renderer->SetWorldMatrix(&world);
+	pGameEngine->GetCBufferManager()->SetWorldMtx(&world);
 
 
 	//マテリアルテクスチャ設定
@@ -306,19 +308,10 @@ void MeshComponent::DrawMesh(int n)
 
 	for (unsigned short i = 0; i < subsetnum; i++)
 	{
-		MATERIAL m = list->GetMeshData()[n].GetSubset()[0].GetMaterial();
-
-
-		
-		renderer->SetMaterial(m);
-
-
-
-		list->GetMeshData()[n].GetSubset()[i].SetShaderResouce();
-		
+		list->GetMeshData()[n].GetSubset()[0].GetMaterial()->SetBufferMaterial();
 		if (isOriginalDiffuse)
 		{
-			pGameEngine->GetAssetsManager()->GetTexture(diffuseIndex)->SetShaderResource(0);
+			pGameEngine->GetAssetsManager()->GetTexture(diffuseIndex)->SetShaderResourcePS(0);
 		}
 
 		renderer->GetDeviceContext()->DrawIndexed(list->GetMeshData()[n].GetIndexNum(), 0, 0);
@@ -521,7 +514,16 @@ void MeshComponent::SetMeshDataList(void)
 	Renderer* renderer = pGameEngine->GetRenderer();
 
 	this->MeshDataListIndex = pGameEngine->GetAssetsManager()->LoadMesh(this->meshFilePath);
-	this->CreateMeshMtxArray(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshDataNum());
+	if (pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Lambart)
+	{
+		this->material = new LambartMaterial(dynamic_cast<LambartMaterial*>( pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()->GetSubset()->GetMaterial()));
+	}
+	else if (pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Phong)
+	{
+		this->material = new PhongMaterial(dynamic_cast<PhongMaterial*>(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()->GetSubset()->GetMaterial()));
+
+	}
+		this->CreateMeshMtxArray(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshDataNum());
 	for (int i = 0; i < this->meshNum; i++)
 	{
 		MeshMtxArray[i] = pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()[i].GetOffset();

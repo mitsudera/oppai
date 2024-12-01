@@ -5,6 +5,8 @@ class Renderer;
 
 class ShaderSet;
 
+class AssetsManager;
+
 class Material
 {
 public:
@@ -16,12 +18,14 @@ public:
 	virtual void SetBufferMaterial(void) = 0;
 
 	ShaderSet* GetShaderSet(void);
+
+
 private:
 
 protected:
 
 	ShaderSet* pShader;
-
+	AssetsManager* pAssetsManager;
 
 };
 
