@@ -4,6 +4,7 @@
 class GameEngine;
 class GameObject;
 class TransformComponent;
+class Input;
 
 class Component
 {
@@ -40,6 +41,8 @@ protected:
 	GameObject* pGameObject;
 	Attribute attribute;
 	BOOL	isActive;
+	GameEngine* pGameEngine;
+	Input* input;
 
 };
 

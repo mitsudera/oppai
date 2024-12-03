@@ -67,7 +67,7 @@ void PSmain(             in float4 inPosition : SV_POSITION,
 
 	
     color = DiffuseTexture.Sample(WrapSampler, inTexCoord);
-    //color *= inDiffuse;
+    color *= inDiffuse;
 	
     outDiffuse = color;
 

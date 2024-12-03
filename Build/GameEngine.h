@@ -22,8 +22,8 @@ public:
 	void Draw();
 	void Uninit();
 
-	long GetMousePosX(void);
-	long GetMousePosY(void);
+	long GetMouseMoveX(void);
+	long GetMouseMoveY(void);
 
 	// 前フレームからの経過ミリ秒を取得する
 	float GetDeltaTime(void);
@@ -53,6 +53,13 @@ private:
 	CameraComponent* mainCamera;
 	SceneManager* sceneManager;
 	Scene* activeScene;
+
+	long oldMousePosX;
+	long oldMousePosY;
+
+	long mouseDeltaX;
+	long mouseDeltaY;
+
 
 
 	XMFLOAT2 windowSize;

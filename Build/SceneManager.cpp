@@ -7,7 +7,7 @@ SceneManager::SceneManager(GameEngine* pGameEngine)
 {
 	this->pGameEngine = pGameEngine;
 
-	this->defaultScene = SCENE::TITLE;
+	this->defaultScene = SCENE::GAME;
 
 	TitleScene* titleScene = new TitleScene(pGameEngine);
 

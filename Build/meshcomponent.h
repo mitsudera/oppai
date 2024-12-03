@@ -9,6 +9,26 @@ class GameEngine;
 
 class DX11Texture;
 
+
+class Mesh
+{
+public:
+	Mesh();
+	~Mesh();
+	void SetMtx(XMMATRIX mtx);
+	void SetBlendMtx(XMMATRIX mtx);
+	void SetMaterial(Material* m);
+
+	XMMATRIX GetMtx(void);
+	XMMATRIX GetBlendMtx(void);
+	Material* GetMaterial(void);
+
+private:
+	XMMATRIX mtx;
+	XMMATRIX blendMtx;
+	Material* material;
+};
+
 class MeshComponent :public PrimitiveComponent
 {
 
@@ -57,9 +77,8 @@ public:
 	void CreatepAnimDataArray(int n);
 	void SetpKeyFrameAnimData(int n, KeyFrameAnimData* p);
 
-	void CreateMeshMtxArray(int n);
-	void SetMeshMtxArray(int n, XMMATRIX mtx);
-	void SetBlendMtxArray(void);
+	void CreateMeshArray(int n);
+	void SetBlendMtx(void);
 	virtual void SwichAnimIndex(int n);
 	virtual void StartOneTimeAnimIndex(int n);
 
@@ -96,7 +115,7 @@ public:
 	void SetOcclusionCulling(bool occlusionCulling);
 	bool GetOcclusionCulling(void);
 
-
+	Mesh* GetMesh(int n);
 
 protected:
 
@@ -108,11 +127,10 @@ protected:
 
 	//GameEngine* pGameEngine;
 
+	Mesh* mesh;
 
-	XMMATRIX* MeshMtxArray;
 	int meshNum;
 
-	XMMATRIX* BlendMeshMtxArray;
 	int animindex;
 	int lastanimindex;
 	float framecnt;

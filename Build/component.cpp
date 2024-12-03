@@ -2,6 +2,8 @@
 #include "transformcomponent.h"
 #include "gameobject.h"
 #include "GameEngine.h"
+#include "input.h"
+#include "Scene.h"
 
 Component::Component()
 {
@@ -20,6 +22,9 @@ Component::~Component()
 void Component::Init(void)
 {
 	this->attribute = Attribute::Component;
+	this->pGameEngine = pGameObject->GetScene()->GetGameEngine();
+	this->input = pGameEngine->GetInput();
+	this->isActive = TRUE;
 }
 
 void Component::Uninit(void)

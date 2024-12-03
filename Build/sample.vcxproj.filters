@@ -61,9 +61,6 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{db177042-e70f-495d-bdd0-2ec6b0140e75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="gameobject\NotDraw">
-      <UniqueIdentifier>{269e4b1f-069c-4450-a34c-3c3397ead6ac}</UniqueIdentifier>
-    </Filter>
     <Filter Include="gameobject\Camera">
       <UniqueIdentifier>{96a44aaa-7a14-4ae0-934b-6e84a0a4ca49}</UniqueIdentifier>
     </Filter>
@@ -87,6 +84,21 @@
     </Filter>
     <Filter Include="Shader\UIShader">
       <UniqueIdentifier>{6384fe22-118a-445d-9e62-697d504892b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject\Manager">
+      <UniqueIdentifier>{a3aba652-1d21-480e-9ac9-d443bd2a82d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject\GameObject">
+      <UniqueIdentifier>{269e4b1f-069c-4450-a34c-3c3397ead6ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject\3D\Robot">
+      <UniqueIdentifier>{5b6ed62a-6047-4d44-acfd-3e2e1bc98aac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject\2D\Title">
+      <UniqueIdentifier>{99e69468-4fa5-4056-9e5a-4eedb214fd84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\SkyShader">
+      <UniqueIdentifier>{57da6a5d-4755-47c1-8fc9-11b513d57d5a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -159,9 +171,6 @@
     <ClInclude Include="GameScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="TitleLogo.h">
-      <Filter>gameobject\2D</Filter>
-    </ClInclude>
     <ClInclude Include="SpriteComponent.h">
       <Filter>component</Filter>
     </ClInclude>
@@ -172,25 +181,16 @@
       <Filter>component</Filter>
     </ClInclude>
     <ClInclude Include="gameobject.h">
-      <Filter>gameobject\NotDraw</Filter>
+      <Filter>gameobject\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="GameManagerComponent.h">
       <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>gameobject\NotDraw</Filter>
-    </ClInclude>
-    <ClInclude Include="TitleManager.h">
-      <Filter>gameobject\NotDraw</Filter>
     </ClInclude>
     <ClInclude Include="TitleManagerComponent.h">
       <Filter>component</Filter>
     </ClInclude>
     <ClInclude Include="MeshComponent.h">
       <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="Robot.h">
-      <Filter>gameobject\3D</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>gameobject\Camera</Filter>
@@ -221,6 +221,36 @@
     </ClInclude>
     <ClInclude Include="UIShader.h">
       <Filter>Shader\UIShader</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraControllerComponent.h">
+      <Filter>component\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugCamera.h">
+      <Filter>gameobject\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>gameobject\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleManager.h">
+      <Filter>gameobject\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="RobotComponent.h">
+      <Filter>gameobject\3D\Robot</Filter>
+    </ClInclude>
+    <ClInclude Include="Robot.h">
+      <Filter>gameobject\3D\Robot</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleLogo.h">
+      <Filter>gameobject\2D\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="SkySphere.h">
+      <Filter>gameobject\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyMaterial.h">
+      <Filter>Shader\SkyShader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyShader.h">
+      <Filter>Shader\SkyShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -290,9 +320,6 @@
     <ClCompile Include="GameScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="TitleLogo.cpp">
-      <Filter>gameobject\2D</Filter>
-    </ClCompile>
     <ClCompile Include="SpriteComponent.cpp">
       <Filter>component</Filter>
     </ClCompile>
@@ -303,25 +330,16 @@
       <Filter>component</Filter>
     </ClCompile>
     <ClCompile Include="gameobject.cpp">
-      <Filter>gameobject\NotDraw</Filter>
+      <Filter>gameobject\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="GameManagerComponent.cpp">
       <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>gameobject\NotDraw</Filter>
-    </ClCompile>
-    <ClCompile Include="TitleManager.cpp">
-      <Filter>gameobject\NotDraw</Filter>
     </ClCompile>
     <ClCompile Include="TitleManagerComponent.cpp">
       <Filter>component</Filter>
     </ClCompile>
     <ClCompile Include="MeshComponent.cpp">
       <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="Robot.cpp">
-      <Filter>gameobject\3D</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>gameobject\Camera</Filter>
@@ -353,6 +371,36 @@
     <ClCompile Include="UIMaterial.cpp">
       <Filter>Shader\UIShader</Filter>
     </ClCompile>
+    <ClCompile Include="CameraControllerComponent.cpp">
+      <Filter>component\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugCamera.cpp">
+      <Filter>gameobject\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>gameobject\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleManager.cpp">
+      <Filter>gameobject\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Robot.cpp">
+      <Filter>gameobject\3D\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="RobotComponent.cpp">
+      <Filter>gameobject\3D\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleLogo.cpp">
+      <Filter>gameobject\2D\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="SkySphere.cpp">
+      <Filter>gameobject\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyMaterial.cpp">
+      <Filter>Shader\SkyShader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyShader.cpp">
+      <Filter>Shader\SkyShader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\shader.hlsl">
@@ -372,6 +420,9 @@
     </FxCompile>
     <FxCompile Include="shaders\UIShader.hlsl">
       <Filter>Shader\UIShader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\SkyShader.hlsl">
+      <Filter>Shader\SkyShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

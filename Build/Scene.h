@@ -22,6 +22,9 @@ public:
 	CollisionManger* GetCollisionManager(void);
 
 	vector <GameObject*>& GetGameObject(void);
+
+	GameObject* GetGameObjectName(string name);
+
 protected:
 	GameEngine* pGameEngine;
 	vector <GameObject*> gameObjectList;

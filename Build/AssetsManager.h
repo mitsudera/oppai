@@ -18,6 +18,7 @@ class GameEngine;
 class LambartShader;
 class PhongShader;
 class UIShader;
+class SkyShader;
 
 class AssetsManager
 {
@@ -62,6 +63,7 @@ public:
 	LambartShader* GetLambartShader(void);
 	PhongShader* GetPhongShader(void);
 	UIShader* GetUIShader(void);
+	SkyShader* GetSkyShader(void);
 
 	void SetShader(ShaderSet::ShaderIndex index);
 
@@ -80,5 +82,6 @@ private:
 	LambartShader* lambartShader;
 	PhongShader* phongShader;
 	UIShader* uiShader;
+	SkyShader* skyShader;
 };
 

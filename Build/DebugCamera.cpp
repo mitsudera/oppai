@@ -1,33 +1,32 @@
-#include "Camera.h"
+#include "DebugCamera.h"
 #include "CameraComponent.h"
 #include "Scene.h"
 #include "GameEngine.h"
 #include "renderer.h"
-#include"CameraControllerComponent.h"
+#include "CameraControllerComponent.h"
 
-Camera::Camera(Scene* scene)
+DebugCamera::DebugCamera(Scene* scene)
 {
 	this->pScene = scene;
 	this->parent = nullptr;
-	cameraComponent = nullptr;
+
 }
 
-Camera::Camera(GameObject* gameObject)
+DebugCamera::DebugCamera(GameObject* gameObject)
 {
 	this->parent = gameObject;
 	this->pScene = gameObject->GetScene();
-	cameraComponent = nullptr;
-
 }
 
-Camera::~Camera()
+
+DebugCamera::~DebugCamera()
 {
 }
 
-void Camera::Init(void)
+void DebugCamera::Init(void)
 {
 	GameObject::Init();
-	this->name = "Camera";
+	this->name = "DebugCamera";
 	cameraComponent = new CameraComponent(this);
 	cameraComponent->Init();
 
@@ -36,10 +35,15 @@ void Camera::Init(void)
 
 	this->componentList.push_back(cameraComponent);
 
+	CameraControllerComponent* cameraController = new CameraControllerComponent(this);
+	cameraController->Init();
+
+	this->componentList.push_back(cameraController);
+
 
 }
 
-CameraComponent* Camera::GetCameraComponent(void)
+CameraComponent* DebugCamera::GetCameraComponent(void)
 {
-	return this->cameraComponent;
+	return nullptr;
 }

@@ -4,8 +4,6 @@
 #define CLASS_NAME		"AppClass"				// ウインドウのクラス名
 #define WINDOW_NAME		"Game"				// ウインドウのキャプション名
 
-long g_mouseX = 0;
-long g_mouseY = 0;
 
 int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
@@ -154,17 +152,6 @@ int Main::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int
 	// 終了処理
 	Uninit();
 	return (int)msg.wParam;
-}
-
-
-long Main::GetMousePosX(void)
-{
-	return g_mouseX;
-}
-
-long Main::GetMousePosY(void)
-{
-	return g_mouseY;
 }
 
 float Main::GetDeltaTime(void)

@@ -8,6 +8,7 @@
 #include "LambartShader.h"
 #include "PhongShader.h"
 #include "UIShader.h"
+#include "SkyShader.h"
 
 #define MESH_PATH "data/MODEL/mesh/"
 #define SKINMESH_PATH "data/MODEL/skinmesh/"
@@ -284,6 +285,7 @@ void AssetsManager::CreateAllShader(void)
 	lambartShader = new LambartShader(this->pGameEngine->GetRenderer());
 	phongShader = new PhongShader(this->pGameEngine->GetRenderer());
 	uiShader = new UIShader(this->pGameEngine->GetRenderer());
+	skyShader = new SkyShader(this->pGameEngine->GetRenderer());
 }
 
 LambartShader* AssetsManager::GetLambartShader(void)
@@ -299,6 +301,11 @@ PhongShader* AssetsManager::GetPhongShader(void)
 UIShader* AssetsManager::GetUIShader(void)
 {
 	return this->uiShader;
+}
+
+SkyShader* AssetsManager::GetSkyShader(void)
+{
+	return this->skyShader;
 }
 
 void AssetsManager::SetShader(ShaderSet::ShaderIndex index)
@@ -319,6 +326,10 @@ void AssetsManager::SetShader(ShaderSet::ShaderIndex index)
 	case ShaderSet::UI:
 
 		this->uiShader->SetShaderRenderer();
+		break;
+	case ShaderSet::Sky:
+
+		this->skyShader->SetShaderRenderer();
 		break;
 
 	}

@@ -70,6 +70,12 @@ public:
 	void MoveY(float f);
 	void MoveZ(float f);
 
+	//このトランスフォームのX軸方向に動かす
+	void MoveXAxis(float f);
+	//このトランスフォームのY軸方向に動かす
+	void MoveYAxis(float f);
+	//このトランスフォームのZ軸方向に動かす
+	void MoveZAxis(float f);
 
 	void MoveForward(float f);
 
@@ -120,6 +126,5 @@ protected:
 	XMMATRIX		wMtx;	// ワールドマトリックス
 
 
-	BOOL isTransformComponent;
 };
 

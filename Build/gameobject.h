@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Coreminimal.h"
+#include "component.h"
 
 typedef enum
 {
@@ -16,7 +17,8 @@ typedef enum
 }ObjectTag;
 
 typedef enum
-{
+{	
+	Sky,
 	Default,
 	Field,
 	Water,
@@ -59,13 +61,25 @@ public:
 	GameObject* GetChild(int index);
 
 	vector<Component*>& GetComponentList(void);
+
+	//指定したアトリビュートを持つコンポーネントの中でn番目のコンポーネントのポインタを取得
+	Component* GetComponentAttrbute(Component::Attribute attr, int n);
+
+	template<class T>
+	T* GetComponent(void);
+
+	string GetName(void);
+	void SetName(string name);
+
 protected:
 	Scene* pScene;
 	TransformComponent* transformComponent;
 	ColliderComponent* collider;
 
+
 	vector<Component*> componentList;
 
+	string name;
 	ObjectTag tag;
 	Layer layer;
 
@@ -75,4 +89,6 @@ protected:
 	vector <GameObject*> child;
 
 };
+
+
 

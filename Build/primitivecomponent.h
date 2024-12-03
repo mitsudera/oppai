@@ -2,6 +2,11 @@
 #include "TransformComponent.h"
 
 class Material;
+class LambartMaterial;
+class PhongMaterial;
+class SkyMaterial;
+class UIMaterial;
+
 
 class PrimitiveComponent : public TransformComponent
 {
@@ -22,9 +27,18 @@ public:
 
 	Material* GetMaterial(void);
 
+
+	template<class T>
+	T* GetMaterial(void);
+
+	void SetMaterial(Material* m);
+
+
+
 protected:
 
 	BOOL hasShadow;
 	BOOL drawShadow;
 	Material* material;
 };
+

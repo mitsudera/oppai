@@ -32,6 +32,12 @@ class CameraComponent : public TransformComponent
 {
 public:
 
+	enum class ClearMode
+	{
+		None,
+		Color,
+	};
+
 	struct CameraCBuffer
 	{
 		XMFLOAT4 camPos;
@@ -48,12 +54,10 @@ public:
 
 
 	void SetViewPort(int m_type);
-	void GetViewPort(XMFLOAT2& size, XMFLOAT2& pos);
 	int GetViewPortType(void);
 
 	virtual void Init(void) override;
 	virtual void Update(void) override;
-	virtual void Draw(void) override;
 	virtual void Uninit(void) override;
 
 	void Render(void);
@@ -75,6 +79,8 @@ public:
 	ID3D11DepthStencilView* GetDepthStencilView(void);
 	void SetDepthStencilView(ID3D11DepthStencilView* dsv);
 
+	void SetClearMode(ClearMode mode);
+	void SetClearColor(XMFLOAT4 color);
 
 private:
 	void SetCamera(void);
@@ -105,5 +111,7 @@ private:
 	ID3D11RenderTargetView* renderTarget;
 	ID3D11DepthStencilView* depthTarget;
 	XMFLOAT4 clearColor;	// îwåiêF
+
+	ClearMode clearMode;
 
 };

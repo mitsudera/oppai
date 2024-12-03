@@ -46,8 +46,15 @@ void GameEngine::Init()
 
 void GameEngine::Update()
 {
+	this->mouseDeltaX = input->GetMouseX() - oldMousePosX;
+	this->mouseDeltaY = input->GetMouseY() - oldMousePosY;
+
+
+	this->oldMousePosX = input->GetMouseX();
+	this->oldMousePosY = input->GetMouseY();
+
 	this->input->Update();
-	this->activeScene->Update();
+ 	this->activeScene->Update();
 	lightManager->Update();
 
 }
@@ -82,14 +89,14 @@ void GameEngine::Uninit()
 
 }
 
-long GameEngine::GetMousePosX(void)
+long GameEngine::GetMouseMoveX(void)
 {
-	return main->GetMousePosX();
+	return mouseDeltaX;
 }
 
-long GameEngine::GetMousePosY(void)
+long GameEngine::GetMouseMoveY(void)
 {
-	return main->GetMousePosY();
+	return mouseDeltaY;
 }
 
 float GameEngine::GetDeltaTime(void)

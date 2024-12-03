@@ -136,7 +136,7 @@ void VSmain( in  float4 inPosition		: POSITION0,
     outPosSM.y = (-pos4.y + 1.0) / 2.0;
     outPosSM.z = pos4.z;
 
-	
+
 }
 
 

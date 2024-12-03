@@ -28,7 +28,6 @@ TransformComponent::TransformComponent()
 	this->wMtx = XMMatrixIdentity();
 	this->fDirection = { 0.0f,0.0f,1.0f };
 
-	isTransformComponent = TRUE;
 }
 
 TransformComponent::TransformComponent(GameObject* gameObject)
@@ -59,7 +58,6 @@ TransformComponent::TransformComponent(GameObject* gameObject)
 
 	this->pGameObject = gameObject;
 
-	isTransformComponent = TRUE;
 }
 
 TransformComponent::~TransformComponent()
@@ -69,6 +67,8 @@ TransformComponent::~TransformComponent()
 }
 void TransformComponent::Init(void)
 {
+	Component::Init();
+
 	attribute = Attribute::Transform;
 
 
@@ -99,6 +99,7 @@ void TransformComponent::Init(void)
 
 void TransformComponent::Uninit(void)
 {
+	Component::Uninit();
 }
 
 void TransformComponent::Update(void)
@@ -371,7 +372,7 @@ void TransformComponent::SetTransForm(XMFLOAT3 pos, XMFLOAT3 rot, XMFLOAT3 scl)
 
 XMFLOAT3 TransformComponent::GetWorldPos(void)
 {
-	XMFLOAT3 lPos = XMFLOAT3(0.0f,0.0f,0.0f);
+	XMFLOAT3 lPos = this->pos;
 
 	XMVECTOR wPos = XMLoadFloat3(&lPos);
 	wPos = XMVector3Transform(wPos,GetWorldMtx());
@@ -401,6 +402,43 @@ void TransformComponent::MoveZ(float f)
 {
 	this->pos.z += f;
 	this->PosUpdate();
+
+}
+
+void TransformComponent::MoveXAxis(float f)
+{
+
+	XMFLOAT3 a;
+
+	XMStoreFloat3(&a, this->axisX);
+
+	MoveX(a.x*f);
+	MoveY(a.y*f);
+	MoveZ(a.z*f);
+
+}
+
+void TransformComponent::MoveYAxis(float f)
+{
+	XMFLOAT3 a;
+
+	XMStoreFloat3(&a, this->axisY);
+
+	MoveX(a.x * f);
+	MoveY(a.y * f);
+	MoveZ(a.z * f);
+
+}
+
+void TransformComponent::MoveZAxis(float f)
+{
+	XMFLOAT3 a;
+
+	XMStoreFloat3(&a, this->axisZ);
+
+	MoveX(a.x * f);
+	MoveY(a.y * f);
+	MoveZ(a.z * f);
 
 }
 

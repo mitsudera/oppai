@@ -77,25 +77,21 @@ void CameraComponent::Init(void)
 
 	this->attribute = Attribute::Camera;
 
+	this->mode = MODE::WORLD;
+
 	this->SetTransForm(XMFLOAT3(0.0f, 0.0f, 0.0f),XMFLOAT3(0.0f, 0.0f, 0.0f),XMFLOAT3(1.0f, 1.0f, 1.0f));
 
-	this->at = { 0.0f, 0.0f, 0.0f };
+	this->at = { 0.0f, 0.0f, -1.0f };
 	this->up = { 0.0f, 1.0f, 0.0f };
 
-	// 視点と注視点の距離を計算
-	float vx, vz;
-	XMFLOAT3 location = { 0.0f,0.0f,10.0f };
-	vx = location.x - this->at.x;
-	vz = location.z - this->at.z;
-	this->len = sqrtf(vx * vx + vz * vz);
 
-
+	clearMode = ClearMode::Color;
 
 	// 仮
-	this->aspect = VIEW_ASPECT;	// アスペクト比 
-	this->angle = VIEW_ANGLE;	// 視野角
-	this->nearZ = VIEW_NEAR_Z;
-	this->farZ = VIEW_FAR_Z;
+	this->aspect = 16.0f / 9.0f;	// アスペクト比 
+	this->angle = XMConvertToRadians(90.0f);	// 視野角
+	this->nearZ = 10.0f;
+	this->farZ = 10000.0f;
 
 	this->len = 50.0f;
 
@@ -105,10 +101,11 @@ void CameraComponent::Init(void)
 		layerCulling[i] = FALSE;
 	}
 
-	this->clearColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	this->clearColor = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 
 	// ビューポートタイプの初期化
 	SetViewPort(VIEWPORT_TYPE::TYPE_FULL_SCREEN);
+	this->mtxProj = XMMatrixPerspectiveFovLH(this->angle, this->aspect, this->nearZ, this->farZ);
 }
 
 void CameraComponent::Update(void)
@@ -117,22 +114,9 @@ void CameraComponent::Update(void)
 
 
 
+
 }
 
-void CameraComponent::Draw(void)
-{
-	TransformComponent::Draw();
-	Renderer* renderer = GetGameObject()->GetScene()->GetGameEngine()->GetRenderer();
-
-
-
-
-	SetViewPort(ViewPortType);
-	SetCamera();
-
-
-	//SetCameraAT(XMFLOAT3(0, 0, 1));
-}
 
 void CameraComponent::Uninit(void)
 {
@@ -144,11 +128,30 @@ void CameraComponent::Uninit(void)
 void CameraComponent::Render(void)
 {
 
+	switch (this->mode)
+	{
+	case MODE::TRACKING:
 
-	//描画ターゲットのクリア
-	const float cc[4] = { 1.0f,1.0f,1.0f,1.0f };
-	pRenderer->GetDeviceContext()->ClearRenderTargetView(this->renderTarget, cc);
-	pRenderer->GetDeviceContext()->ClearDepthStencilView(this->depthTarget, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+		this->at = this->pGameObject->GetParent()->GetTransFormComponent()->GetWorldPos();
+		this->mtxView = XMMatrixLookAtLH(XMLoadFloat3(&this->GetWorldPos()), XMLoadFloat3(&this->at), XMLoadFloat3(&this->up));
+
+		break;
+	case MODE::TRACKING_SKY:
+
+
+		this->mtxView = XMMatrixLookAtLH(XMLoadFloat3(&this->GetWorldPos()), XMLoadFloat3(&this->at), XMLoadFloat3(&this->up));
+
+		break;
+	case MODE::WORLD:
+
+		this->mtxView=XMMatrixLookToLH(XMLoadFloat3(&this->GetWorldPos()), axisZ, this->axisY);
+		break;
+
+	default:
+		break;
+	}
+
 
 	//ビューポートセット
 	pRenderer->GetDeviceContext()->RSSetViewports(1, &vp);
@@ -157,40 +160,70 @@ void CameraComponent::Render(void)
 	pRenderer->GetDeviceContext()->OMSetRenderTargets(1, &this->renderTarget, this->depthTarget);
 
 	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetViewMtx(&this->mtxView);
+
 	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetCameraBuffer(cameraBuffer);
+
+	const float cc[4] = { clearColor.x,clearColor.y,clearColor.z,clearColor.w };
+
+	//描画ターゲットのクリア
+	switch (clearMode)
+	{
+
+	case ClearMode::None:
+
+
+		break;
+	case ClearMode::Color:
+
+
+		
+		pRenderer->GetDeviceContext()->ClearRenderTargetView(this->renderTarget, cc);
+		pRenderer->GetDeviceContext()->ClearDepthStencilView(this->depthTarget, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+		break;
+	}
+
 	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetProjectionMtx(&this->mtxProj);
 
-	for (int i = 0; i < ShaderSet::ShaderIndex::MAX; i++)
+
+	for (int i = 0; i < Layer::LayerMax; i++)
 	{
-		pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->SetShader((ShaderSet::ShaderIndex)i);
 
+		//カリングがtrueの場合は描画しない
+		if (layerCulling[i] == TRUE)
+			continue;
 
-		//描画処理
-		for (GameObject* gameObject : pGameObject->GetScene()->GetGameObject())
+		for (int j = 0; j < ShaderSet::ShaderIndex::MAX; j++)
 		{
-			//カリングがtrueの場合は描画しない
-			if (layerCulling[gameObject->GetLayer()] == TRUE)
-				continue;
+			pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->SetShader((ShaderSet::ShaderIndex)j);
 
-			for (Component* component : gameObject->GetComponentList())
+
+			//描画処理
+			for (GameObject* gameObject : pGameObject->GetScene()->GetGameObject())
 			{
-				if (component->GetAttribute() != Component::Attribute::Primitive)
+				if (gameObject->GetLayer() != i)
 					continue;
 
-				PrimitiveComponent* primitiveComponent = static_cast<PrimitiveComponent*>(component);
 
-				//現在セットしてるシェーダーを使っている場合描画
-				if (primitiveComponent->GetMaterial()->GetShaderSet()->GetShaderIndex() != i)
-					continue;
+				for (Component* component : gameObject->GetComponentList())
+				{
+					if (component->GetAttribute() != Component::Attribute::Primitive)
+						continue;
 
-				primitiveComponent->Draw();
+					PrimitiveComponent* primitiveComponent = static_cast<PrimitiveComponent*>(component);
+
+					//現在セットしてるシェーダーを使っている場合描画
+					if (primitiveComponent->GetMaterial()->GetShaderSet()->GetShaderIndex() != j)
+						continue;
+
+					primitiveComponent->Draw();
+
+				}
 
 			}
 
 		}
-
 	}
-
 }
 
 
@@ -226,6 +259,17 @@ void CameraComponent::SetDepthStencilView(ID3D11DepthStencilView* dsv)
 	this->depthTarget = dsv;
 }
 
+void CameraComponent::SetClearMode(ClearMode mode)
+{
+	this->clearMode = mode;
+}
+
+void CameraComponent::SetClearColor(XMFLOAT4 color)
+{
+	this->clearColor = color;
+}
+
+
 //=============================================================================
 // カメラの更新
 //=============================================================================
@@ -244,53 +288,6 @@ void CameraComponent::SetCamera(void)
 
 
 
-	switch (this->mode)
-	{
-	case MODE::TRACKING:
-
-		XMMATRIX pMtx = this->lookObject->GetTransFormComponent()->GetWorldMtx();
-		XMFLOAT3 lPos = this->pos;
-		XMVECTOR wPos = XMLoadFloat3(&lPos);
-		wPos = XMVector3Transform(wPos, pMtx);
-		XMStoreFloat3(&lPos, wPos);
-		pos = lPos;
-		break;
-	case MODE::TRACKING_SKY:
-
-		
-		XMStoreFloat3(&this->up, lookObject->GetTransFormComponent()->GetAxisY());
-
-
-		XMFLOAT3 pPos = lookObject->GetTransFormComponent()->GetPosition();
-
-		XMVECTOR pPosVec = XMLoadFloat3(&pPos);
-		this->at = pPos;
-		
-
-		XMVECTOR lxVec = lookObject->GetTransFormComponent()->GetAxisX();
-		XMVECTOR lyVec = lookObject->GetTransFormComponent()->GetAxisY();
-		XMVECTOR lzVec = lookObject->GetTransFormComponent()->GetAxisZ();
-
-
-		lxVec *= this->pos.x;
-		lyVec *= this->pos.y;
-		lzVec *= this->pos.z;
-
-		XMVECTOR v = (lxVec+lyVec+lzVec);
-
-		v = v + pPosVec;
-
-		XMStoreFloat3(&pos, v);
-
-		break;
-	case MODE::WORLD:
-		
-		pos = this->pos;
-		break;
-
-	default:
-		break;
-	}
 
 	XMFLOAT3 At = this->at;
 	XMFLOAT3 Up = this->up;

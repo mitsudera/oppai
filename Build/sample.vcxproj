@@ -151,12 +151,14 @@
     <ClInclude Include="AssetsManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="CameraControllerComponent.h" />
     <ClInclude Include="CBufferManager.h" />
     <ClInclude Include="ColliderComponent.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="CollisionManger.h" />
     <ClInclude Include="component.h" />
     <ClInclude Include="Coreminimal.h" />
+    <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="DX11Texture.h" />
     <ClInclude Include="FbxConvertDX11.h" />
     <ClInclude Include="GameEngine.h" />
@@ -180,9 +182,13 @@
     <ClInclude Include="primitivecomponent.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="Robot.h" />
+    <ClInclude Include="RobotComponent.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderSet.h" />
+    <ClInclude Include="SkyMaterial.h" />
+    <ClInclude Include="SkyShader.h" />
+    <ClInclude Include="SkySphere.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TitleLogo.h" />
     <ClInclude Include="TitleManager.h" />
@@ -197,11 +203,13 @@
     <ClCompile Include="AssetsManager.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
+    <ClCompile Include="CameraControllerComponent.cpp" />
     <ClCompile Include="CBufferManager.cpp" />
     <ClCompile Include="ColliderComponent.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="CollisionManger.cpp" />
     <ClCompile Include="component.cpp" />
+    <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="DX11Texture.cpp" />
     <ClCompile Include="FbxConvertDX11.cpp" />
     <ClCompile Include="GameEngine.cpp" />
@@ -225,9 +233,13 @@
     <ClCompile Include="primitivecomponent.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="Robot.cpp" />
+    <ClCompile Include="RobotComponent.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShaderSet.cpp" />
+    <ClCompile Include="SkyMaterial.cpp" />
+    <ClCompile Include="SkyShader.cpp" />
+    <ClCompile Include="SkySphere.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TitleLogo.cpp" />
     <ClCompile Include="TitleManager.cpp" />
@@ -249,6 +261,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="shaders\ShadowShader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shaders\SkyShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="shaders\TerrainShader.hlsl">

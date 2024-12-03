@@ -1,4 +1,9 @@
 #include "GameManagerComponent.h"
+#include "GameScene.h"
+#include "gameobject.h"
+#include "GameEngine.h"
+#include "input.h"
+#include "CameraComponent.h"
 
 GameManagerComponent::GameManagerComponent(GameObject* gameObject)
 {
@@ -13,7 +18,11 @@ void GameManagerComponent::Init(void)
 {
 	Component::Init();
 	attribute = Attribute::Manager;
+	this->gameScene = pGameObject->GetScene();
+	this->gameCamera = gameScene->GetGameObjectName("Robot")->GetComponentAttrbute(Component::Attribute::Camera,0);
+	this->debugCamera = gameScene->GetGameObjectName("DebugCamera")->GetComponentAttrbute(Component::Attribute::Camera, 0);
 
+	SetCameraModeGame();
 }
 
 void GameManagerComponent::Uninit(void)
@@ -24,4 +33,26 @@ void GameManagerComponent::Uninit(void)
 void GameManagerComponent::Update(void)
 {
 	Component::Update();
+	if(input->GetKeyboardTrigger(DIK_1))
+	{
+		SetCameraModeGame();
+	}
+	if(input->GetKeyboardTrigger(DIK_2))
+	{
+		SetCameraModeDebug();
+	}
 }
+
+void GameManagerComponent::SetCameraModeGame(void)
+{
+	gameCamera->SetActive(TRUE);
+	debugCamera->SetActive(FALSE);
+}
+
+void GameManagerComponent::SetCameraModeDebug(void)
+{
+	gameCamera->SetActive(FALSE);
+	debugCamera->SetActive(TRUE);
+
+}
+

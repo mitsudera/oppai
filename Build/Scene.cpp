@@ -25,18 +25,26 @@ void Scene::Init()
 {
 	this->coliisionManager->Init();
 
-	for (int i = 0; i < gameObjectList.size(); i++)
+
+	for (GameObject* gameObject : GetGameObject())
 	{
-		gameObjectList[i]->Init();
+		gameObject->Init();
+
 	}
+
 }
 
 void Scene::Update()
 {
-	for (int i = 0; i < gameObjectList.size(); i++)
+
+	for (GameObject* gameObject : GetGameObject())
 	{
-		gameObjectList[i]->Update();
+		if (!gameObject->GetActive())
+			continue;
+		gameObject->Update();
+
 	}
+
 }
 
 void Scene::Draw()
@@ -44,10 +52,12 @@ void Scene::Draw()
 	//•`‰æˆ—
 	for (GameObject* gameObject :GetGameObject())
 	{
+		if (!gameObject->GetActive())
+			continue;
 
 		for (Component* component : gameObject->GetComponentList())
 		{
-			if (component->GetAttribute() != Component::Attribute::Camera)
+			if (component->GetAttribute() != Component::Attribute::Camera||!component->GetActive())
 				continue;
 
 			CameraComponent* cameraComponent = static_cast<CameraComponent*>(component);
@@ -64,11 +74,11 @@ void Scene::Draw()
 
 void Scene::Uninit()
 {
-	for (int i = 0; i < gameObjectList.size(); i++)
+	for (GameObject* gameObject : GetGameObject())
 	{
-		gameObjectList[i]->Uninit();
-	}
+		gameObject->Uninit();
 
+	}
 	this->coliisionManager->Uninit();
 
 }
@@ -86,4 +96,18 @@ CollisionManger* Scene::GetCollisionManager(void)
 vector<GameObject*>& Scene::GetGameObject(void)
 {
 	return this->gameObjectList;
+}
+
+GameObject* Scene::GetGameObjectName(string name)
+{
+	for (GameObject* object:gameObjectList)
+	{
+		if (object->GetName() == name)
+		{
+			return object;
+
+		}
+
+	}
+	return nullptr;
 }

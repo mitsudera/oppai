@@ -13,8 +13,9 @@ TitleManager::~TitleManager()
 void TitleManager::Init(void)
 {
 	GameObject::Init();
-
+	this->name = "TitleManager";
 	TitleManagerComponent* titleManager = new TitleManagerComponent(this);
+	titleManager->Init();
 	this->componentList.push_back(titleManager);
 
 
