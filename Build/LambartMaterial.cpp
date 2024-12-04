@@ -53,20 +53,6 @@ void LambartMaterial::SetBufferMaterial(void)
 
 }
 
-void LambartMaterial::LoadDiffuseTex(string fName)
-{
-	textureDiffuseIndex = pAssetsManager->LoadTexture(fName);
-}
-
-void LambartMaterial::LoadNormalTex(string fName)
-{
-	textureNormalIndex = pAssetsManager->LoadTexture(fName);
-}
-
-void LambartMaterial::LoadArmTex(string fName)
-{
-	textureArmIndex = pAssetsManager->LoadTexture(fName);
-}
 
 void LambartMaterial::LoadFbxMaterial(FbxSurfaceMaterial* fbxmaterial)
 {

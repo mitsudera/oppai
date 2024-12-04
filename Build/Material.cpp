@@ -1,7 +1,7 @@
 #include "Material.h"
 #include "renderer.h"
 #include "ShaderSet.h"
-
+#include "AssetsManager.h"
 
 Material::Material()
 {
@@ -21,4 +21,20 @@ void Material::SetShaderRenderer(void)
 ShaderSet* Material::GetShaderSet(void)
 {
 	return this->pShader;
+}
+
+
+void Material::LoadDiffuseTex(string fName)
+{
+	textureDiffuseIndex = pAssetsManager->LoadTexture(fName);
+}
+
+void Material::LoadNormalTex(string fName)
+{
+	textureNormalIndex = pAssetsManager->LoadTexture(fName);
+}
+
+void Material::LoadArmTex(string fName)
+{
+	textureArmIndex = pAssetsManager->LoadTexture(fName);
 }

@@ -341,6 +341,7 @@ void MeshDataList::LoadFbxFile(string filepath, AssetsManager* p)
 		FbxMesh* mesh = scene->GetSrcObject<FbxMesh>(i);
 
 		this->meshdata[i].LoadFbxMesh(mesh,p);
+		
 
 	}
 

@@ -100,6 +100,9 @@
     <Filter Include="Shader\SkyShader">
       <UniqueIdentifier>{57da6a5d-4755-47c1-8fc9-11b513d57d5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="gameobject\3D\Tree">
+      <UniqueIdentifier>{7865ab42-64d5-40ae-a228-fb638bb7700b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coreminimal.h">
@@ -240,17 +243,14 @@
     <ClInclude Include="Robot.h">
       <Filter>gameobject\3D\Robot</Filter>
     </ClInclude>
-    <ClInclude Include="TitleLogo.h">
-      <Filter>gameobject\2D\Title</Filter>
-    </ClInclude>
     <ClInclude Include="SkySphere.h">
       <Filter>gameobject\3D</Filter>
     </ClInclude>
-    <ClInclude Include="SkyMaterial.h">
-      <Filter>Shader\SkyShader</Filter>
+    <ClInclude Include="Tree.h">
+      <Filter>gameobject\3D\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="SkyShader.h">
-      <Filter>Shader\SkyShader</Filter>
+    <ClInclude Include="TitleLogo.h">
+      <Filter>gameobject\2D\Title</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -395,11 +395,8 @@
     <ClCompile Include="SkySphere.cpp">
       <Filter>gameobject\3D</Filter>
     </ClCompile>
-    <ClCompile Include="SkyMaterial.cpp">
-      <Filter>Shader\SkyShader</Filter>
-    </ClCompile>
-    <ClCompile Include="SkyShader.cpp">
-      <Filter>Shader\SkyShader</Filter>
+    <ClCompile Include="Tree.cpp">
+      <Filter>gameobject\3D\Tree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -420,9 +417,6 @@
     </FxCompile>
     <FxCompile Include="shaders\UIShader.hlsl">
       <Filter>Shader\UIShader</Filter>
-    </FxCompile>
-    <FxCompile Include="shaders\SkyShader.hlsl">
-      <Filter>Shader\SkyShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

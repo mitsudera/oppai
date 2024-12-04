@@ -17,6 +17,7 @@ public:
 
 	virtual void Draw(void) override;
 
+	void UpdateMtx(void);//描画処理の直前で行列を更新
 
 	virtual XMFLOAT3 GetPosition(void);
 

@@ -106,10 +106,6 @@ void TransformComponent::Update(void)
 {
 	Component::Update();
 
-	lMtx = XMMatrixIdentity();
-	lMtx = XMMatrixMultiply(lMtx, mtxscl);
-	lMtx = XMMatrixMultiply(lMtx, mtxrot);
-	lMtx = XMMatrixMultiply(lMtx, mtxpos);
 
 
 	XMVECTOR v = XMLoadFloat3(&fDirection);
@@ -129,9 +125,23 @@ void TransformComponent::Update(void)
 
 }
 
+
+
 void TransformComponent::Draw(void)
 {
 	Component::Draw();
+
+
+
+}
+
+void TransformComponent::UpdateMtx(void)
+{
+	lMtx = XMMatrixIdentity();
+	lMtx = XMMatrixMultiply(lMtx, mtxscl);
+	lMtx = XMMatrixMultiply(lMtx, mtxrot);
+	lMtx = XMMatrixMultiply(lMtx, mtxpos);
+
 }
 
 XMFLOAT3 TransformComponent::GetPosition(void)
@@ -216,6 +226,7 @@ XMMATRIX TransformComponent::GetMtxRotZ(void)
 
 XMMATRIX TransformComponent::GetWorldMtx(XMMATRIX mtx)
 {
+	UpdateMtx();
 	XMMATRIX ans = XMMatrixMultiply(mtx,lMtx);
 
 	this->attribute;

@@ -27,6 +27,7 @@ private:
 	XMMATRIX mtx;
 	XMMATRIX blendMtx;
 	Material* material;
+
 };
 
 class MeshComponent :public PrimitiveComponent

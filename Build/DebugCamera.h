@@ -13,7 +13,6 @@ public:
 
 	virtual void Init(void) override;
 
-	CameraComponent* GetCameraComponent(void);
 
 private:
 	CameraComponent* cameraComponent;

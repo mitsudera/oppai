@@ -24,7 +24,6 @@ public:
 		Lambart,
 		Phong,
 		UI,
-		Sky,
 		MAX,
 
 	}ShaderIndex;
@@ -49,6 +48,8 @@ public:
 	void CreatePS(string filePath,string shaderName);
 
 	ShaderIndex GetShaderIndex(void);
+
+
 
 private:
 

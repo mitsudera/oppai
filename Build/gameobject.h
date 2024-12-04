@@ -68,6 +68,9 @@ public:
 	template<class T>
 	T* GetComponent(void);
 
+	template<class T>
+	void AddComponent(void);
+
 	string GetName(void);
 	void SetName(string name);
 

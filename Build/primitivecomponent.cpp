@@ -10,6 +10,11 @@ PrimitiveComponent::PrimitiveComponent()
 
 }
 
+PrimitiveComponent::PrimitiveComponent(GameObject* gameObject)
+{
+	this->pGameObject = gameObject;
+}
+
 PrimitiveComponent::~PrimitiveComponent()
 {
 }
@@ -39,6 +44,7 @@ void PrimitiveComponent::Uninit(void)
 
 void PrimitiveComponent::Draw(void)
 {
+	TransformComponent::Draw();
 	if (drawShadow)
 	{
 

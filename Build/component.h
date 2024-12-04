@@ -37,6 +37,10 @@ public:
 	void SetActive(BOOL b);
 	BOOL GetActive(void);
 
+	template<class T>
+	T* GetComponent(void);
+
+
 protected:
 	GameObject* pGameObject;
 	Attribute attribute;

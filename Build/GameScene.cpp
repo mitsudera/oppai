@@ -4,6 +4,8 @@
 #include "Camera.h"
 #include "DebugCamera.h"
 #include "SkySphere.h"
+#include "MeshComponent.h"
+#include "Tree.h"
 
 GameScene::GameScene(GameEngine* pGameEngine)
 {
@@ -16,15 +18,19 @@ GameScene::~GameScene()
 
 void GameScene::Init()
 {
+
+
 	SkySphere* sky = new SkySphere(this);
 	this->gameObjectList.push_back(sky);
+
 	Robot* robot = new Robot(this);
 	this->gameObjectList.push_back(robot);
-	//Camera* gameCamera=new Camera(this);
-	//this->gameObjectList.push_back(gameCamera);
+
+	Tree* tree = new Tree(this);
+	this->gameObjectList.push_back(tree);
+
 	DebugCamera* debugCamera=new DebugCamera(this);
 	this->gameObjectList.push_back(debugCamera);
-
 
 
 

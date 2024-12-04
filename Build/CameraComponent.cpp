@@ -15,6 +15,7 @@
 #include "primitivecomponent.h"
 #include "Material.h"
 #include "AssetsManager.h"
+#include "component.h"
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -113,8 +114,6 @@ void CameraComponent::Update(void)
 	TransformComponent::Update();
 
 
-
-
 }
 
 
@@ -153,6 +152,7 @@ void CameraComponent::Render(void)
 	}
 
 
+
 	//ビューポートセット
 	pRenderer->GetDeviceContext()->RSSetViewports(1, &vp);
 
@@ -162,6 +162,9 @@ void CameraComponent::Render(void)
 	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetViewMtx(&this->mtxView);
 
 	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetCameraBuffer(cameraBuffer);
+
+	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetProjectionMtx(&this->mtxProj);
+
 
 	const float cc[4] = { clearColor.x,clearColor.y,clearColor.z,clearColor.w };
 
@@ -181,9 +184,33 @@ void CameraComponent::Render(void)
 		pRenderer->GetDeviceContext()->ClearDepthStencilView(this->depthTarget, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 		break;
+
+	case ClearMode::SkySphere:
+
+
+		//スカイスフィアで背景クリアをする場合
+
+		layerCulling[Layer::Sky] = TRUE;
+		pRenderer->SetDepthEnable(FALSE);
+		this->sky->GetComponent<TransformComponent>()->SetPosition(this->GetWorldPos());
+		this->sky->GetComponent<TransformComponent>()->UpdateMtx();
+
+		for (Component* component : sky->GetComponentList())
+		{
+			if (component->GetAttribute() != Component::Attribute::Primitive)
+				continue;
+
+			PrimitiveComponent* primitiveComponent = static_cast<PrimitiveComponent*>(component);
+
+			pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->SetShader(primitiveComponent->GetMaterial()->GetShaderSet()->GetShaderIndex());
+
+			primitiveComponent->Draw();
+
+		}
+
+
 	}
 
-	pGameObject->GetScene()->GetGameEngine()->GetCBufferManager()->SetProjectionMtx(&this->mtxProj);
 
 
 	for (int i = 0; i < Layer::LayerMax; i++)
@@ -224,6 +251,8 @@ void CameraComponent::Render(void)
 
 		}
 	}
+
+
 }
 
 
@@ -268,6 +297,13 @@ void CameraComponent::SetClearColor(XMFLOAT4 color)
 {
 	this->clearColor = color;
 }
+
+void CameraComponent::SetSky(GameObject* sky)
+{
+	this->sky = sky;
+	clearMode = ClearMode::SkySphere;
+}
+
 
 
 //=============================================================================

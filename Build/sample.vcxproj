@@ -186,8 +186,6 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderSet.h" />
-    <ClInclude Include="SkyMaterial.h" />
-    <ClInclude Include="SkyShader.h" />
     <ClInclude Include="SkySphere.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TitleLogo.h" />
@@ -195,6 +193,7 @@
     <ClInclude Include="TitleManagerComponent.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="transformcomponent.h" />
+    <ClInclude Include="Tree.h" />
     <ClInclude Include="UIManagerComponent.h" />
     <ClInclude Include="UIMaterial.h" />
     <ClInclude Include="UIShader.h" />
@@ -237,8 +236,6 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShaderSet.cpp" />
-    <ClCompile Include="SkyMaterial.cpp" />
-    <ClCompile Include="SkyShader.cpp" />
     <ClCompile Include="SkySphere.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TitleLogo.cpp" />
@@ -246,6 +243,7 @@
     <ClCompile Include="TitleManagerComponent.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="transformcomponent.cpp" />
+    <ClCompile Include="Tree.cpp" />
     <ClCompile Include="UIManagerComponent.cpp" />
     <ClCompile Include="UIMaterial.cpp" />
     <ClCompile Include="UIShader.cpp" />
@@ -261,9 +259,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="shaders\ShadowShader.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="shaders\SkyShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="shaders\TerrainShader.hlsl">

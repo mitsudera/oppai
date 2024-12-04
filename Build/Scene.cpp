@@ -3,6 +3,8 @@
 #include "gameobject.h"
 #include "CollisionManger.h"
 #include "CameraComponent.h"
+#include "component.h"
+#include "transformcomponent.h"
 
 Scene::Scene()
 {
@@ -44,6 +46,27 @@ void Scene::Update()
 		gameObject->Update();
 
 	}
+
+
+	for (GameObject* gameObject : GetGameObject())
+	{
+		if (!gameObject->GetActive())
+			continue;
+
+		for (Component* component : gameObject->GetComponentList())
+		{
+			if (component->GetAttribute() != Component::Attribute::Transform)
+				continue;
+
+			TransformComponent* transformComponent = static_cast<TransformComponent*>(component);
+
+			transformComponent->UpdateMtx();
+
+		}
+
+	}
+
+
 
 }
 

@@ -198,7 +198,7 @@ T* GameObject::GetComponent(void)
 }
 // 具体的な型に対する明示的なインスタンス化
 template Component* GameObject::GetComponent<Component>();
-template CameraComponent* GameObject::GetComponent<CameraComponent>();
+template TransformComponent* GameObject::GetComponent<TransformComponent>();
 template CameraComponent* GameObject::GetComponent<CameraComponent>();
 template CameraControllerComponent* GameObject::GetComponent<CameraControllerComponent>();
 template GameManagerComponent* GameObject::GetComponent<GameManagerComponent>();
@@ -209,3 +209,20 @@ template SpriteComponent* GameObject::GetComponent<SpriteComponent>();
 template TitleManagerComponent* GameObject::GetComponent<TitleManagerComponent>();
 template UIManagerComponent* GameObject::GetComponent<UIManagerComponent>();
 
+template<class T>
+void GameObject::AddComponent(void)
+{
+	T* com = new T(this);
+	this->componentList.push_back(com);
+}
+template void GameObject::AddComponent<Component>();
+template void GameObject::AddComponent<TransformComponent>();
+template void GameObject::AddComponent<CameraComponent>();
+template void GameObject::AddComponent<CameraControllerComponent>();
+template void GameObject::AddComponent<GameManagerComponent>();
+template void GameObject::AddComponent<LightComponent>();
+template void GameObject::AddComponent<MeshComponent>();
+template void GameObject::AddComponent<PrimitiveComponent>();
+template void GameObject::AddComponent<SpriteComponent>();
+template void GameObject::AddComponent<TitleManagerComponent>();
+template void GameObject::AddComponent<UIManagerComponent>();

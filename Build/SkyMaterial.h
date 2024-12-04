@@ -22,14 +22,6 @@ public:
 
 private:
 
-	XMFLOAT4	diffuse;
-	int			noDiffuseTex;
-	int			noNormalTex;
-	int			noArmTex;
-	
-	int textureDiffuseIndex;
-	int textureNormalIndex;
-	int textureArmIndex;
 
 
 

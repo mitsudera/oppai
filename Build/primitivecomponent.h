@@ -12,6 +12,7 @@ class PrimitiveComponent : public TransformComponent
 {
 public:
 	PrimitiveComponent();
+	PrimitiveComponent(GameObject* gameObject);
 	~PrimitiveComponent();
 
 	BOOL GetHasShadow(void);

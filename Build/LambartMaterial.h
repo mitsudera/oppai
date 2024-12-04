@@ -13,22 +13,10 @@ public:
 	virtual void SetBufferMaterial(void) override;
 
 
-	void LoadDiffuseTex(string fName);
-	void LoadNormalTex(string fName);
-	void LoadArmTex(string fName);
 
 	void LoadFbxMaterial(FbxSurfaceMaterial* fbxmaterial);
 
 private:
-
-	XMFLOAT4	diffuse;
-	int			noDiffuseTex;
-	int			noNormalTex;
-	int			noArmTex;
-	
-	int textureDiffuseIndex;
-	int textureNormalIndex;
-	int textureArmIndex;
 
 
 

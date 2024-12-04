@@ -10,6 +10,8 @@
 
 class Renderer;
 
+class MeshComponent;
+
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -36,6 +38,7 @@ public:
 	{
 		None,
 		Color,
+		SkySphere,
 	};
 
 	struct CameraCBuffer
@@ -82,6 +85,8 @@ public:
 	void SetClearMode(ClearMode mode);
 	void SetClearColor(XMFLOAT4 color);
 
+	void SetSky(GameObject* sky);
+
 private:
 	void SetCamera(void);
 
@@ -113,5 +118,7 @@ private:
 	XMFLOAT4 clearColor;	// 背景色
 
 	ClearMode clearMode;
+
+	GameObject* sky;
 
 };

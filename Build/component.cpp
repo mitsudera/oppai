@@ -67,3 +67,8 @@ BOOL Component::GetActive(void)
 	return this->isActive;
 }
 
+template<class T>
+T* Component::GetComponent(void)
+{
+	return pGameObject->GetComponent<T>();
+}

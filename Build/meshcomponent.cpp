@@ -515,11 +515,31 @@ void MeshComponent::SetMeshDataList(void)
 	Renderer* renderer = pGameEngine->GetRenderer();
 
 	this->MeshDataListIndex = pGameEngine->GetAssetsManager()->LoadMesh(this->meshFilePath);
-	if (pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Lambart)
+	MeshDataList* l = pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex);
+
+	MeshData* md=nullptr;
+
+
+	DX11_SUBSET* sub = nullptr;
+	int rootNum;
+
+	for (int i = 0; i < l->GetMeshDataNum(); i++)
+	{
+		md = &l->GetMeshData()[i];
+		sub = &md->GetSubset()[0];
+
+		if (sub != nullptr)
+		{
+			rootNum = i;
+			break;
+		}
+	}
+
+	if (md->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Lambart)
 	{
 		this->material = new LambartMaterial(dynamic_cast<LambartMaterial*>( pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()->GetSubset()->GetMaterial()));
 	}
-	else if (pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Phong)
+	else if (md->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Phong)
 	{
 		this->material = new PhongMaterial(dynamic_cast<PhongMaterial*>(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()->GetSubset()->GetMaterial()));
 
@@ -529,6 +549,9 @@ void MeshComponent::SetMeshDataList(void)
 
 	for (int i = 0; i < this->meshNum; i++)
 	{
+		if (pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()[i].GetSubset() == nullptr)
+			continue;
+
 		mesh[i].SetMtx(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()[i].GetOffset());
 		mesh[i].SetMaterial(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()[i].GetSubset()->GetMaterial());
 	}

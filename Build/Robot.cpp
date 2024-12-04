@@ -28,7 +28,6 @@ void Robot::Init(void)
 	MeshComponent* mesh = new MeshComponent(this);
 	mesh->Init();
 	mesh->SetMeshComponent("robot.fbx");
-	mesh->SetMeshDataList();
 	this->componentList.push_back(mesh);
 
 	
@@ -43,6 +42,9 @@ void Robot::Init(void)
 	cameraComponent->SetDepthStencilView(pScene->GetGameEngine()->GetRenderer()->GetBackBufferDSV());
 
 	cameraComponent->SetPosition(XMFLOAT3(0.0f, 0.5f, -10.0f));
+
+	cameraComponent->SetSky(pScene->GetGameObjectName("SkySphere"));
+
 	this->componentList.push_back(cameraComponent);
 
 }

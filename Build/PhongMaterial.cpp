@@ -57,20 +57,6 @@ void PhongMaterial::SetBufferMaterial(void)
 }
 
 
-void PhongMaterial::LoadDiffuseTex(string fName)
-{
-	textureDiffuseIndex = pAssetsManager->LoadTexture(fName);
-}
-
-void PhongMaterial::LoadNormalTex(string fName)
-{
-	textureNormalIndex = pAssetsManager->LoadTexture(fName);
-}
-
-void PhongMaterial::LoadArmTex(string fName)
-{
-	textureArmIndex = pAssetsManager->LoadTexture(fName);
-}
 
 void PhongMaterial::LoadFbxMaterial(FbxSurfaceMaterial* fbxmaterial)
 {
