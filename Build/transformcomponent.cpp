@@ -135,7 +135,7 @@ void TransformComponent::Draw(void)
 
 }
 
-void TransformComponent::UpdateMtx(void)
+void TransformComponent::UpdateMatrix(void)
 {
 	lMtx = XMMatrixIdentity();
 	lMtx = XMMatrixMultiply(lMtx, mtxscl);
@@ -226,7 +226,6 @@ XMMATRIX TransformComponent::GetMtxRotZ(void)
 
 XMMATRIX TransformComponent::GetWorldMtx(XMMATRIX mtx)
 {
-	UpdateMtx();
 	XMMATRIX ans = XMMatrixMultiply(mtx,lMtx);
 
 	this->attribute;
@@ -235,7 +234,7 @@ XMMATRIX TransformComponent::GetWorldMtx(XMMATRIX mtx)
 	{
 		ans = pGameObject->GetTransFormComponent()->GetWorldMtx(ans);
 	}
-	if (pGameObject->GetParent() != nullptr)
+	else if (pGameObject->GetParent() != nullptr)
 	{
 		ans = pGameObject->GetParent()->GetTransFormComponent()->GetWorldMtx(ans);
 
@@ -383,13 +382,14 @@ void TransformComponent::SetTransForm(XMFLOAT3 pos, XMFLOAT3 rot, XMFLOAT3 scl)
 
 XMFLOAT3 TransformComponent::GetWorldPos(void)
 {
-	XMFLOAT3 lPos = this->pos;
+	XMFLOAT3 lPos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	XMVECTOR wPos = XMLoadFloat3(&lPos);
 	wPos = XMVector3Transform(wPos,GetWorldMtx());
 
 	XMStoreFloat3(&lPos, wPos);
-	
+	XMMATRIX mtx = GetWorldMtx();
+
 	return lPos;
 
 

@@ -25,11 +25,12 @@ public:
 
 	GameObject* GetGameObjectName(string name);
 
+	void AddCamera(CameraComponent* camera);
+
 protected:
 	GameEngine* pGameEngine;
 	vector <GameObject*> gameObjectList;
 	CollisionManger* coliisionManager;
-	CameraComponent* mainCamera;
 	vector<CameraComponent*> cameraArray;
 
 };

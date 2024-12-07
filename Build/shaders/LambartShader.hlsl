@@ -35,31 +35,33 @@ cbuffer MaterialBuffer : register( b3 )
 	MATERIAL	Material;
 }
 
+
+#define MAX_LIGHT (8)
+
 // ライト用バッファ
 struct LIGHT
 {
-    float4 Position;
-    float4 Direction;
+    float4 Position[MAX_LIGHT];
+    float4 Direction[MAX_LIGHT];
+    float4 Diffuse[MAX_LIGHT];
+    float4 Ambient[MAX_LIGHT];
+    
+    float4 Attenuation[MAX_LIGHT];
+    float4 Intensity[MAX_LIGHT];
+    //float4 other[MAX_LIGHT];
+    int4 flags[MAX_LIGHT];//x=enable,y=pointORdirection
+    int enable;
+    int dummy[3];
 
-    float4 Diffuse;
-    float4 Ambient;
-    float4 Attenuation;
-    float4 Intensity;
-    int Flags;
-    int Enable;
-    int Dummy[2]; //16byte境界用
+    
 };
 
-#define MAX_LIGHT (8)
 
 
 cbuffer LightBuffer : register(b4)
 {
-    LIGHT Light[MAX_LIGHT];
+    LIGHT Light;
     
-    int LightEnable;
-    int Dummy[3]; //16byte境界用
-
     
 }
 
@@ -293,7 +295,7 @@ void PSmain(in float4 inPosition : SV_POSITION,
 
     float alpha = color.a;
     
-    if (LightEnable == 0)
+    if (Light.enable==0)
     {
         color = color * Material.Diffuse * sma;
     }
@@ -307,26 +309,26 @@ void PSmain(in float4 inPosition : SV_POSITION,
             float3 lightDir;
             float light;
 
-            if (Light[i].Enable == 1)
+            if (Light.flags[i].x == 1)
             {
-                if (Light[i].Flags == 0)
+                if (Light.flags[i].y == 0)
                 {
-                    lightDir = normalize(Light[i].Direction.xyz);
+                    lightDir = normalize(Light.Direction[i].xyz);
                     light = dot(lightDir, normal.xyz);
 
                     light = (0.5 - 0.5 * light) * sma;
-                    tempColor = color * Material.Diffuse * light * Light[i].Diffuse;
+                    tempColor = color * Material.Diffuse * light * Light.Diffuse[i];
                 }
-                else if (Light[i].Flags == 1)
+                else if (Light.flags[i].y== 1)
                 {
-                    lightDir = normalize(Light[i].Position.xyz - inWorldPos.xyz);
+                    lightDir = normalize(Light.Position[i].xyz - inWorldPos.xyz);
                     light = dot(lightDir, normal.xyz);
 
-                    tempColor = color * Material.Diffuse * light * Light[i].Diffuse;
+                    tempColor = color * Material.Diffuse * light * Light.Diffuse[i];
 
-                    float distance = length(inWorldPos - Light[i].Position);
+                    float distance = length(inWorldPos - Light.Position[i]);
 
-                    float att = saturate((Light[i].Attenuation.x - distance) / Light[i].Attenuation.x);
+                    float att = saturate((Light.Attenuation[i].x - distance) / Light.Attenuation[i].x);
                     tempColor *= att;
                 }
                 else

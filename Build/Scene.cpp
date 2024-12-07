@@ -53,16 +53,7 @@ void Scene::Update()
 		if (!gameObject->GetActive())
 			continue;
 
-		for (Component* component : gameObject->GetComponentList())
-		{
-			if (component->GetAttribute() != Component::Attribute::Transform)
-				continue;
-
-			TransformComponent* transformComponent = static_cast<TransformComponent*>(component);
-
-			transformComponent->UpdateMtx();
-
-		}
+		gameObject->UpdateMatrix();
 
 	}
 
@@ -72,27 +63,14 @@ void Scene::Update()
 
 void Scene::Draw()
 {
-	//•`‰æˆ—
-	for (GameObject* gameObject :GetGameObject())
+
+	for (CameraComponent* camera:cameraArray)
 	{
-		if (!gameObject->GetActive())
+		if (!camera->GetActive())
 			continue;
 
-		for (Component* component : gameObject->GetComponentList())
-		{
-			if (component->GetAttribute() != Component::Attribute::Camera||!component->GetActive())
-				continue;
-
-			CameraComponent* cameraComponent = static_cast<CameraComponent*>(component);
-
-
-			cameraComponent->Render();
-
-		}
-
+		camera->Render();
 	}
-
-
 }
 
 void Scene::Uninit()
@@ -133,4 +111,10 @@ GameObject* Scene::GetGameObjectName(string name)
 
 	}
 	return nullptr;
+}
+
+void Scene::AddCamera(CameraComponent* camera)
+{
+
+	this->cameraArray.push_back(camera);
 }

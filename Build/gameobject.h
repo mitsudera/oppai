@@ -2,6 +2,7 @@
 
 #include "Coreminimal.h"
 #include "component.h"
+#include "ShaderSet.h"
 
 typedef enum
 {
@@ -33,6 +34,7 @@ class ColliderComponent;
 class Scene;
 class TransformComponent;
 class Component;
+class MeshData;
 
 class GameObject
 {
@@ -45,7 +47,9 @@ public:
 	virtual void Init(void);
 	virtual void Uninit(void);
 	virtual void Update(void);
-	virtual void Draw(void);
+	virtual void UpdateMatrix(void);
+	virtual void Draw(ShaderSet::ShaderIndex index);
+	
 
 	Scene* GetScene(void);
 	TransformComponent* GetTransFormComponent(void);
@@ -58,7 +62,10 @@ public:
 	void SetActive(BOOL isActive);
 
 	GameObject* GetParent(void);
+	GameObject* GetRootObject(void);
+
 	GameObject* GetChild(int index);
+	vector<GameObject*>& GetChild();
 
 	vector<Component*>& GetComponentList(void);
 
@@ -69,10 +76,14 @@ public:
 	T* GetComponent(void);
 
 	template<class T>
-	void AddComponent(void);
+	T* AddComponent(void);
 
 	string GetName(void);
 	void SetName(string name);
+
+	void LoadFbxFileMesh(string fName);
+
+	void LoadMeshNode(MeshData* node);
 
 protected:
 	Scene* pScene;
@@ -89,9 +100,28 @@ protected:
 	BOOL isActive;
 
 	GameObject* parent;
-	vector <GameObject*> child;
+	vector <GameObject*> childList;
 
 };
 
 
 
+template<class T>
+T* GameObject::GetComponent(void)
+{
+	for (Component* com : componentList) {
+		T* buff = dynamic_cast<T*>(com);
+		if (buff != nullptr)
+			return buff;
+	}
+	return nullptr;
+
+}
+
+template<class T>
+T* GameObject::AddComponent(void)
+{
+	T* com = new T(this);
+	this->componentList.push_back(com);
+	return com;
+}

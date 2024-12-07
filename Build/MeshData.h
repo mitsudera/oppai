@@ -17,64 +17,35 @@ class MeshData;
 class MeshDataList;
 class AssetsManager;
 
-class Material;
 
 
-// 描画サブセットクラス
-class DX11_SUBSET
-{
-	MeshData* pmeshdata;
-	unsigned short	StartIndex;
-	unsigned short	IndexNum;
-	Material*		material;
-
-public:
-	DX11_SUBSET();
-	~DX11_SUBSET();
-
-
-
-	void SetStartIndex(unsigned short n);
-	unsigned short GetStartIndex(void);
-
-	void SetIndexNum(unsigned short n);
-	unsigned short GetIndexNum(void);
-
-
-	Material* GetMaterial(void);
-	void SetMaterial(Material* material);
-
-	void SetpMeshData(MeshData* meshdata);
-	MeshData* GetpMeshData(void);
-
-
-
-};
 
 
  class MeshData
  {
 	 AssetsManager* pAssetsManager;
 
-	 BOOL nomesh;
+	 int index;
 
 	 ID3D11Buffer* VertexBuffer;
-
 	 unsigned int indexnum;
 	 ID3D11Buffer* IndexBuffer;
-	 XMMATRIX	offset;
-	 unsigned short	subsetnum;
-	 DX11_SUBSET* SubsetArray;
+	 XMMATRIX	worldOffset;
+	 XMMATRIX   localOffset;
+	 MeshData* parent;
 	 int childcnt;
-	 MeshData* Child;
+	 vector <MeshData*> childArray;
 
+	 int materialIndex;
+	 BOOL isRoot;
+
+	 string name;
+	 string fileName;
 
  public:
 	 MeshData();
 	 ~MeshData();
 
-	 void SetNoMesh(BOOL no);
-	 BOOL GetNoMesh(void);
 
 	 void CreateVertexBuffer(int n);
 	 ID3D11Buffer* GetVertexBuffer(void);
@@ -85,69 +56,34 @@ public:
 	 void CreateIndexBuffer(int n);
 	 ID3D11Buffer* GetIndexBuffer(void);
 
-	 void SetChildCnt(int n);
 	 int GetChildCount(void);
 
-	 void CreateChildArray(int childnum);
-	 MeshData* GetChild(int n);
+	 vector <MeshData*> &GetChild(void);
 
-	 void SetOffset(XMMATRIX offsetmtx);
-	 XMMATRIX GetOffset(void);
+	 void SetWorldOffset(XMMATRIX offsetmtx);
+	 XMMATRIX GetWorldOffset(void);
 
-	 void SetSubsetNum(int n);
-	 unsigned short GetSubsetNum(void);
-
-
-
-	 void CreateSubsetArray(int n);
-	 DX11_SUBSET* GetSubset(void);
-	 void SetSubset(int n, DX11_SUBSET sub);
 
 	 void BufferSetVertex(void);
 	 void BufferSetIndex(void);
 
-	 void LoadFbxMesh(FbxMesh* mesh, AssetsManager* p);
 
-	 void SetpAssetsManager(AssetsManager* pa);
+	 void LoadFbxFile(string fileName, AssetsManager* p);
+
+	 void LoadFbxMesh(FbxMesh* mesh, AssetsManager* p,MeshData* parent);
+
+	 string GetName(void);
+	 string GetFileName(void);
 
 	 AssetsManager* GetpAssetsManager(void);
 
- private:
+	 int GetMaterialIndex(void);
 
- };
+	 BOOL GetIsRoot(void);
 
- class MeshDataList
- {
-	 AssetsManager* pManager;
-	 int meshdatanum;
-	 MeshData* meshdata;
-	 string filepath;
-
- public:
-	 MeshDataList();
-	 ~MeshDataList();
-
-	 void SetMeshDataNum(int n);
-	 int GetMeshDataNum(void);
-
-	 void CreateMeshDataArray(int n);
-	 MeshData* GetMeshData(void);
-
-
-	 void SetFilePath(std::string fn);
-	 std::string GetFilePath(void);
-
-	 void LoadFbxFile(string filepath, AssetsManager* p);
-
-	 AssetsManager*GetpAssetsManager(void);
-	 void SetpAssetsManager(AssetsManager* pa);
-
+	 int GetIndex(void);
 
  private:
 
  };
-
-//*****************************************************************************
-// プロトタイプ宣言
-//*****************************************************************************
 

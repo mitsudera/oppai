@@ -47,6 +47,7 @@ CameraComponent::CameraComponent(GameObject* gameObject)
 
 	pRenderer = gameObject->GetScene()->GetGameEngine()->GetRenderer();
 
+	gameObject->GetScene()->AddCamera(this);
 	for (int i = 0; i < Layer::LayerMax; i++)
 	{
 		layerCulling[i] = FALSE;
@@ -193,18 +194,20 @@ void CameraComponent::Render(void)
 		layerCulling[Layer::Sky] = TRUE;
 		pRenderer->SetDepthEnable(FALSE);
 		this->sky->GetComponent<TransformComponent>()->SetPosition(this->GetWorldPos());
-		this->sky->GetComponent<TransformComponent>()->UpdateMtx();
 
-		for (Component* component : sky->GetComponentList())
+		this->sky->GetComponent<TransformComponent>()->UpdateMatrix();
+
+		XMFLOAT3 p1 = this->GetWorldPos();
+		XMFLOAT3 p2 = this->sky->GetComponent<TransformComponent>()->GetWorldPos();
+		for (int j = 0; j < ShaderSet::ShaderIndex::MAX; j++)
 		{
-			if (component->GetAttribute() != Component::Attribute::Primitive)
-				continue;
+			pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->SetShader((ShaderSet::ShaderIndex)j);
 
-			PrimitiveComponent* primitiveComponent = static_cast<PrimitiveComponent*>(component);
 
-			pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->SetShader(primitiveComponent->GetMaterial()->GetShaderSet()->GetShaderIndex());
+			sky->Draw((ShaderSet::ShaderIndex)j);
 
-			primitiveComponent->Draw();
+
+			
 
 		}
 
@@ -230,22 +233,8 @@ void CameraComponent::Render(void)
 			{
 				if (gameObject->GetLayer() != i)
 					continue;
+				gameObject->Draw((ShaderSet::ShaderIndex)j);
 
-
-				for (Component* component : gameObject->GetComponentList())
-				{
-					if (component->GetAttribute() != Component::Attribute::Primitive)
-						continue;
-
-					PrimitiveComponent* primitiveComponent = static_cast<PrimitiveComponent*>(component);
-
-					//現在セットしてるシェーダーを使っている場合描画
-					if (primitiveComponent->GetMaterial()->GetShaderSet()->GetShaderIndex() != j)
-						continue;
-
-					primitiveComponent->Draw();
-
-				}
 
 			}
 

@@ -60,8 +60,6 @@ void LambartMaterial::LoadFbxMaterial(FbxSurfaceMaterial* fbxmaterial)
 	// Lambertにダウンキャスト
 	FbxSurfaceLambert* lambert = (FbxSurfaceLambert*)fbxmaterial;
 
-
-
 	//ディフューズ
 	FbxDouble3 fbxdiffuse = lambert->Diffuse;
 

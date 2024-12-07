@@ -12,21 +12,6 @@ class DX11Texture;
 
 class Mesh
 {
-public:
-	Mesh();
-	~Mesh();
-	void SetMtx(XMMATRIX mtx);
-	void SetBlendMtx(XMMATRIX mtx);
-	void SetMaterial(Material* m);
-
-	XMMATRIX GetMtx(void);
-	XMMATRIX GetBlendMtx(void);
-	Material* GetMaterial(void);
-
-private:
-	XMMATRIX mtx;
-	XMMATRIX blendMtx;
-	Material* material;
 
 };
 
@@ -72,20 +57,18 @@ public:
 
 	void SetBlendFrame(int frame);
 
-	virtual void SetMeshDataList(void);
+	//virtual void SetMeshDataList(void);
 	virtual void SetAnimationArray(void);
 
 	void CreatepAnimDataArray(int n);
 	void SetpKeyFrameAnimData(int n, KeyFrameAnimData* p);
 
 	void CreateMeshArray(int n);
-	void SetBlendMtx(void);
 	virtual void SwichAnimIndex(int n);
 	virtual void StartOneTimeAnimIndex(int n);
 
 
 
-	virtual void DrawMesh(int n);
 
 	void SetCullingMode(int cullMode);
 	int GetCullingMode(void);
@@ -116,14 +99,22 @@ public:
 	void SetOcclusionCulling(bool occlusionCulling);
 	bool GetOcclusionCulling(void);
 
-	Mesh* GetMesh(int n);
+
+	void SetMeshDataIndex(int index);
+
+	void SetMtx(XMMATRIX mtx);
+	void SetBlendMtx(void);
+
+	XMMATRIX GetMtx(void);
+	XMMATRIX GetBlendMtx(void);
+
 
 protected:
 
 	string meshFilePath;
 	vector<string> animFilePath;
 	
-	int MeshDataListIndex;
+	int MeshDataIndex;
 	vector<int> AnimDataIndexArray;
 
 	//GameEngine* pGameEngine;
@@ -163,5 +154,8 @@ protected:
 	bool isShow;
 
 	bool m_occlusionCulling;
+
+	XMMATRIX mtx;
+	XMMATRIX blendMtx;
 };
 

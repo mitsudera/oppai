@@ -15,6 +15,7 @@ LightManager::~LightManager()
 
 void LightManager::Init()
 {
+
 	// 定数バッファ生成
 	D3D11_BUFFER_DESC hBufferDesc;
 	hBufferDesc.ByteWidth = sizeof(LIGHT_CBUFFER);
@@ -37,28 +38,28 @@ void LightManager::Update()
 {
 
 
-	int setNum = 0;
-	for (int i = 0; i < lightList.size(); i++)
-	{
+	//int setNum = 0;
+	//for (int i = 0; i < lightList.size(); i++)
+	//{
 
-		if (lightList[i]->GetActive() && lightList[i]->GetLightParam().m_Flags == 0)
-		{
-			activeLightIndex[setNum] = i;
+	//	if (lightList[i]->GetActive() && lightList[i]->GetLightParam().m_Flags == 0)
+	//	{
+	//		activeLightIndex[setNum] = i;
 
-		}
-		if (setNum > MAX_LIGHT-1) break;
-	}
-
-
-	ZeroMemory(&this->lightCBufferStruct, sizeof(LIGHT_CBUFFER));
-
-	for (int i = 0; i < setNum; i++)
-	{
-		SetLight(lightList[activeLightIndex[i]], i);
-	}
+	//	}
+	//	if (setNum > MAX_LIGHT-1) break;
+	//}
 
 
-	pGameEngine->GetRenderer()->GetDeviceContext()->UpdateSubresource(this->lightBuffer, 0, NULL, &this->lightCBufferStruct, 0, 0);
+	//ZeroMemory(&this->lightCBufferStruct, sizeof(LIGHT_CBUFFER));
+
+	//for (int i = 0; i < setNum; i++)
+	//{
+	//	SetLight(lightList[activeLightIndex[i]], i);
+	//}
+
+
+	//pGameEngine->GetRenderer()->GetDeviceContext()->UpdateSubresource(this->lightBuffer, 0, NULL, &this->lightCBufferStruct, 0, 0);
 }
 
 void LightManager::Draw()
@@ -74,5 +75,11 @@ void LightManager::Uninit()
 
 void LightManager::SetLight(LightComponent* lightComponent,int index)
 {
-	this->lightCBufferStruct.m_lightParam[index] = lightComponent->GetLightParam();
+	this->lightCBufferStruct.m_Position[index] = lightComponent->GetLightParam().m_Position;
+	this->lightCBufferStruct.m_Direction[index] = lightComponent->GetLightParam().m_Direction;
+	this->lightCBufferStruct.m_Diffuse[index] = lightComponent->GetLightParam().m_Diffuse;
+	this->lightCBufferStruct.m_Ambient[index] = lightComponent->GetLightParam().m_Ambient;
+	this->lightCBufferStruct.m_Attenuation[index] = lightComponent->GetLightParam().m_Attenuation;
+	this->lightCBufferStruct.m_intensity[index] = lightComponent->GetLightParam().m_intensity;
+	this->lightCBufferStruct.m_Flags[index] = lightComponent->GetLightParam().m_Flags;
 }

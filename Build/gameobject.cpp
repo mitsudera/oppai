@@ -4,17 +4,11 @@
 #include "Scene.h"
 #include "ColliderComponent.h"
 #include "component.h"
-#include "CameraComponent.h"
-#include "CameraControllerComponent.h"
-#include "ColliderComponent.h"
-#include "GameManagerComponent.h"
-#include "LightComponent.h"
-#include "MeshComponent.h"
 #include "primitivecomponent.h"
-#include "SpriteComponent.h"
-#include "TitleManagerComponent.h"
-#include "transformcomponent.h"
-#include "UIManagerComponent.h"
+#include "AssetsManager.h"
+#include "MeshData.h"
+#include "MeshComponent.h"
+#include "Material.h"
 
 GameObject::GameObject()
 {
@@ -22,6 +16,7 @@ GameObject::GameObject()
 	this->transformComponent = new TransformComponent(this);
 
 	tag = ObjectTag::TagNone;
+
 }
 
 
@@ -29,12 +24,19 @@ GameObject::GameObject(Scene* scene)
 {
 	this->parent = nullptr;
 	this->pScene = scene;
+	tag = ObjectTag::TagNone;
+
+	this->layer = Layer::Default;
+
 }
 
 GameObject::GameObject(GameObject* parent)
 {
 	this->parent = parent;
 	this->pScene = parent->GetScene();
+	this->tag = parent->GetTag();
+
+	this->layer = parent->GetLayer();
 }
 
 GameObject::~GameObject()
@@ -50,7 +52,6 @@ void GameObject::Init(void)
 	componentList.push_back(transformComponent);
 	this->collider = nullptr;
 	this->isActive = TRUE;
-	this->layer = Layer::Default;
 
 }
 
@@ -60,15 +61,18 @@ void GameObject::Uninit(void)
 	{
 		componentList[i]->Uninit();
 	}
-	for (int i = 0; i < child.size(); i++)
+	for (int i = 0; i < childList.size(); i++)
 	{
-		child[i]->Uninit();
+		childList[i]->Uninit();
 	}
 
 }
 
 void GameObject::Update(void)
 {
+	if (!isActive)
+		return;
+
 	for (Component* com:componentList)
 	{
 		if (!com->GetActive())
@@ -76,7 +80,7 @@ void GameObject::Update(void)
 
 		com->Update();
 	}
-	for (GameObject* gameObject:child)
+	for (GameObject* gameObject:childList)
 	{
 		if (!gameObject->GetActive())
 			continue;
@@ -86,18 +90,64 @@ void GameObject::Update(void)
 
 }
 
-void GameObject::Draw(void)
+void GameObject::UpdateMatrix(void)
 {
-	for (int i = 0; i < this->componentList.size(); i++)
+	if (!isActive)
+		return;
+
+
+	for (Component* com : componentList)
 	{
-		componentList[i]->Draw();
+		if (!com->GetActive())
+			continue;
+
+		TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(com);
+
+		if (transformComponent == nullptr)
+			continue;
+
+		transformComponent->UpdateMatrix();
+
 	}
-	for (int i = 0; i < child.size(); i++)
+	for (GameObject* gameObject : childList)
 	{
-		child[i]->Draw();
+		if (!gameObject->GetActive())
+			continue;
+
+		gameObject->UpdateMatrix();
 	}
 
 }
+
+void GameObject::Draw(ShaderSet::ShaderIndex index)
+{
+	if (!isActive)
+		return;
+	this;
+
+	for (Component* component : GetComponentList())
+	{
+		if (component->GetAttribute() != Component::Attribute::Primitive)
+			continue;
+
+		PrimitiveComponent* primitiveComponent = static_cast<PrimitiveComponent*>(component);
+
+		//現在セットしてるシェーダーを使っている場合描画
+		if (pScene->GetGameEngine()->GetAssetsManager()->GetMaterial(primitiveComponent->GetMaterialIndex())->GetShaderSet()->GetShaderIndex() != index)
+			continue;
+
+		primitiveComponent->Draw();
+
+	}
+	for (GameObject* child:childList)
+	{
+		if (!child->GetActive())
+			return;
+		child->Draw(index);
+	}
+
+}
+
 
 Scene* GameObject::GetScene(void)
 {
@@ -140,9 +190,28 @@ GameObject* GameObject::GetParent(void)
 	return this->parent;
 }
 
+GameObject* GameObject::GetRootObject(void)
+{
+	if (this->parent == nullptr)
+	{
+		return this;
+
+	}
+	else
+	{
+		return this->parent->GetRootObject();
+	}
+
+}
+
 GameObject* GameObject::GetChild(int index)
 {
-	return this->child[index];
+	return this->childList[index];
+}
+
+vector<GameObject*>& GameObject::GetChild()
+{
+	return this->childList;
 }
 
 vector<Component*>& GameObject::GetComponentList(void)
@@ -182,47 +251,42 @@ void GameObject::SetName(string name)
 	this->name = name;
 }
 
-
-
-
-template<class T>
-T* GameObject::GetComponent(void)
+void GameObject::LoadFbxFileMesh(string fName)
 {
-	for (Component* com : componentList) {
-		T* buff = dynamic_cast<T*>(com);
-		if (buff != nullptr)
-			return buff;
+	int treeIndex = pScene->GetGameEngine()->GetAssetsManager()->LoadMeshNode(fName);
+
+	MeshData* root = pScene->GetGameEngine()->GetAssetsManager()->GetMeshTree(treeIndex);
+
+
+	LoadMeshNode(root);
+
+}
+
+void GameObject::LoadMeshNode(MeshData* node)
+{
+	if (!node->GetIsRoot())
+	{
+		MeshComponent* mesh = this->AddComponent<MeshComponent>();
+		mesh->Init();
+		mesh->SetMeshDataIndex(node->GetIndex());
+
 	}
-	return nullptr;
+
+
+	for (MeshData* childData: node->GetChild())
+	{
+		GameObject* newObj = new GameObject(this);
+		newObj->Init();
+		newObj->name = childData->GetName();
+		newObj->LoadMeshNode(childData);
+		this->childList.push_back(newObj);
+
+	}
 
 }
-// 具体的な型に対する明示的なインスタンス化
-template Component* GameObject::GetComponent<Component>();
-template TransformComponent* GameObject::GetComponent<TransformComponent>();
-template CameraComponent* GameObject::GetComponent<CameraComponent>();
-template CameraControllerComponent* GameObject::GetComponent<CameraControllerComponent>();
-template GameManagerComponent* GameObject::GetComponent<GameManagerComponent>();
-template LightComponent* GameObject::GetComponent<LightComponent>();
-template MeshComponent* GameObject::GetComponent<MeshComponent>();
-template PrimitiveComponent* GameObject::GetComponent<PrimitiveComponent>();
-template SpriteComponent* GameObject::GetComponent<SpriteComponent>();
-template TitleManagerComponent* GameObject::GetComponent<TitleManagerComponent>();
-template UIManagerComponent* GameObject::GetComponent<UIManagerComponent>();
 
-template<class T>
-void GameObject::AddComponent(void)
-{
-	T* com = new T(this);
-	this->componentList.push_back(com);
-}
-template void GameObject::AddComponent<Component>();
-template void GameObject::AddComponent<TransformComponent>();
-template void GameObject::AddComponent<CameraComponent>();
-template void GameObject::AddComponent<CameraControllerComponent>();
-template void GameObject::AddComponent<GameManagerComponent>();
-template void GameObject::AddComponent<LightComponent>();
-template void GameObject::AddComponent<MeshComponent>();
-template void GameObject::AddComponent<PrimitiveComponent>();
-template void GameObject::AddComponent<SpriteComponent>();
-template void GameObject::AddComponent<TitleManagerComponent>();
-template void GameObject::AddComponent<UIManagerComponent>();
+
+
+
+
+

@@ -8,6 +8,7 @@
 #include "LambartShader.h"
 #include "PhongShader.h"
 #include "UIShader.h"
+#include "Material.h"
 
 #define MESH_PATH "data/MODEL/mesh/"
 #define SKINMESH_PATH "data/MODEL/skinmesh/"
@@ -46,12 +47,12 @@ void AssetsManager::Init(void)
 void AssetsManager::Uninit(void)
 {
 
-	for (int i = 0; i < this->MeshDataListArray.size(); i++)
+	for (int i = 0; i < this->MeshDataTree.size(); i++)
 	{
-		delete this->MeshDataListArray[i];
+		delete this->MeshDataTree[i];
 
 	}
-	this->MeshDataListArray.clear();
+	this->MeshDataTree.clear();
 
 	for (int i = 0; i < this->KeyFrameAnimDataArray.size(); i++)
 	{
@@ -83,15 +84,15 @@ void AssetsManager::Uninit(void)
 	if (skinMeshCompute) skinMeshCompute->Release();
 }
 
-int AssetsManager::LoadMesh(string filepath)
+int AssetsManager::LoadMeshNode(string filepath)
 {
 	int p = -1;
 	BOOL find = FALSE;
-	for (int i = 0; i < MeshDataListArray.size(); i++)
+	for (int i = 0; i < MeshDataTree.size(); i++)
 	{
 		 
-		string fp = MeshDataListArray[i]->GetFilePath();
-		if ((MESH_PATH+ filepath) == MeshDataListArray[i]->GetFilePath())
+		string filename = MeshDataTree[i]->GetFileName();
+		if ((MESH_PATH+ filepath) == filename)
 		{
 			p = i;
 			find = TRUE;
@@ -102,24 +103,34 @@ int AssetsManager::LoadMesh(string filepath)
 	if (find == FALSE)
 	{
 
-		MeshDataList* meshdatalist = new MeshDataList;
+		MeshData* meshdata = new MeshData;
 
 
 		string path = MESH_PATH+filepath;
 
 		
-		meshdatalist->LoadFbxFile(path, this);
+		meshdata->LoadFbxFile(path, this);
 
-		this->MeshDataListArray.push_back(meshdatalist);
-		p = (int)MeshDataListArray.size() - 1;
+		this->MeshDataTree.push_back(meshdata);
+		p = (int)MeshDataTree.size() - 1;
 
 	}
 
 	return p;
 }
-MeshDataList* AssetsManager::GetMeshDataList(int n)
+MeshData* AssetsManager::GetMeshTree(int n)
 {
-	return this->MeshDataListArray[n];
+	return MeshDataTree[n];
+}
+int AssetsManager::AddMesh(MeshData* data)
+{
+	MeshDataArray.push_back(data);
+
+	return MeshDataArray.size()-1;
+}
+MeshData* AssetsManager::GetMeshData(int n)
+{
+	return this->MeshDataArray[n];
 }
 
 KeyFrameAnimData* AssetsManager::GetKeyFrameAnimData(int n)
@@ -157,7 +168,7 @@ int AssetsManager::LoadMeshAnim(string filepath)
 		animdata->LoadKeyFrameAnim(path);
 
 		this->KeyFrameAnimDataArray.push_back(animdata);
-		p = (int)MeshDataListArray.size() - 1;
+		p = (int)KeyFrameAnimDataArray.size() - 1;
 	}
 
 	return p;
@@ -329,3 +340,14 @@ void AssetsManager::SetShader(ShaderSet::ShaderIndex index)
 	}
 }
 
+Material* AssetsManager::GetMaterial(int index)
+{
+	return MaterialArray[index];
+}
+
+int AssetsManager::LoadMaterial(Material* material)
+{
+
+	this->MaterialArray.push_back(material);
+	return MaterialArray.size() - 1;
+}

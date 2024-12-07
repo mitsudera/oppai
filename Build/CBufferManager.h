@@ -15,16 +15,24 @@ struct LIGHT_PARAM
 	XMFLOAT4	m_Ambient;		    // 環境光の色
 	XMFLOAT4	m_Attenuation;	    // 減衰率    
 	XMFLOAT4    m_intensity;       // ライトの強度
-	int     	m_Flags;		    // ライト種別0=dir,1=point
+	XMINT4     	m_Flags;		    // ライト種別0=dir,1=point
 	int			m_Enable;
 	int         dummy[2];
 };
+
+
 // ライト用定数バッファ構造体
 struct LIGHT_CBUFFER
 {
-	LIGHT_PARAM  m_lightParam[MAX_LIGHT];
-	int			m_Enable;					            // ライティング有効・無効フラグ
-	int			m_Dummy[3];				                // 16byte境界用
+	XMFLOAT4	m_Position[MAX_LIGHT];	    // ライトの位置
+	XMFLOAT4	m_Direction[MAX_LIGHT];	    // ライトの方向
+	XMFLOAT4	m_Diffuse[MAX_LIGHT];	        // 拡散光の色
+	XMFLOAT4	m_Ambient[MAX_LIGHT];		    // 環境光の色
+	XMFLOAT4	m_Attenuation[MAX_LIGHT];	    // 減衰率    
+	XMFLOAT4    m_intensity[MAX_LIGHT];       // ライトの強度
+	XMINT4     	m_Flags[MAX_LIGHT];		    // x=enable,y=ライト種別0=dir,1=point
+	int			m_Enable;
+	int         dummy[3];
 };
 
 

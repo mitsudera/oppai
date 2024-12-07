@@ -27,7 +27,7 @@ MeshComponent::MeshComponent()
 	framenum = 0;
 	lastanimindex = 0;
 	meshNum = 0;
-	MeshDataListIndex = 0;
+	MeshDataIndex = 0;
 	frameBlendMode = TRUE;
 	cullMode = CULL_MODE::CULL_MODE_FRONT;
 	defaultAnimIndex = 0;
@@ -56,7 +56,7 @@ MeshComponent::MeshComponent(GameObject* gameObject)
 	framenum = 0;
 	lastanimindex = 0;
 	meshNum = 0;
-	MeshDataListIndex = 0;
+	MeshDataIndex = 0;
 	frameBlendMode = TRUE;
 	cullMode = CULL_MODE::CULL_MODE_FRONT;
 	defaultAnimIndex = 0;
@@ -129,7 +129,7 @@ void MeshComponent::Update(void)
 			XMMATRIX mtx2 = pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i);
 
 
-			mesh[i].SetMtx((mtx1 * w1) + (mtx2 * w2));
+			SetMtx((mtx1 * w1) + (mtx2 * w2));
 
 
 		}
@@ -176,11 +176,11 @@ void MeshComponent::Update(void)
 			float w2 = framecnt - (float)(int)(framecnt);
 			float w1 = 1.0f - w2;
 
-			XMMATRIX mtx1= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i) * blendweight1) + (this->mesh[i].GetBlendMtx() * blendweight2);
-			XMMATRIX mtx2= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i) * blendweight1) + (this->mesh[i].GetBlendMtx() * blendweight2);
+			XMMATRIX mtx1= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i) * blendweight1) + (this->GetBlendMtx() * blendweight2);
+			XMMATRIX mtx2= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i) * blendweight1) + (this->GetBlendMtx() * blendweight2);
 
 
-			mesh[i].SetMtx((mtx1 * w1) + (mtx2 * w2));
+			SetMtx((mtx1 * w1) + (mtx2 * w2));
 
 
 
@@ -214,12 +214,12 @@ void MeshComponent::Update(void)
 			float w2 = framecnt - (float)(int)(framecnt);
 			float w1 = 1.0f - w2;
 
-			XMMATRIX mtx1= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i) * blendweight1) + (this->mesh[i].GetBlendMtx() * blendweight2);
-			XMMATRIX mtx2= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i) * blendweight1) + (this->mesh[i].GetBlendMtx() * blendweight2);
+			XMMATRIX mtx1= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i) * blendweight1) + (this->GetBlendMtx() * blendweight2);
+			XMMATRIX mtx2= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i) * blendweight1) + (this->GetBlendMtx() * blendweight2);
 
 
 
-			mesh[i].SetMtx((mtx1* w1) + (mtx2 * w2));
+			SetMtx((mtx1* w1) + (mtx2 * w2));
 
 
 
@@ -267,53 +267,30 @@ void MeshComponent::Draw(void)
 		renderer->SetAlphaTestEnable(TRUE);
 	}
 	
-	for (int i = 0; i < this->meshNum; i++)
-	{
-		this->DrawMesh(i);
-	}
-	renderer->SetAlphaTestEnable(FALSE);
-
-}
-
-void MeshComponent::DrawMesh(int n)
-{
-	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
-
-	Renderer* renderer = pGameEngine->GetRenderer();
-
-	MeshDataList* list = pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex);
+	MeshData* meshData = pGameEngine->GetAssetsManager()->GetMeshData(this->MeshDataIndex);
 
 
 	renderer->SetCullingMode((CULL_MODE)cullMode);
-	list->GetMeshData()[n].BufferSetVertex();
-	list->GetMeshData()[n].BufferSetIndex();
+	meshData->BufferSetVertex();
+	meshData->BufferSetIndex();
 
 
-	TransformComponent*trans= this->pGameObject->GetTransFormComponent();
+	TransformComponent* trans = this->pGameObject->GetTransFormComponent();
 
 	XMMATRIX world = XMMatrixIdentity();
-	world = XMMatrixMultiply(world, this->mesh[n].GetMtx());
+	world = XMMatrixMultiply(world, GetMtx());
 	world = GetWorldMtx(world);
 	pGameEngine->GetCBufferManager()->SetWorldMtx(&world);
 
 
-	//マテリアルテクスチャ設定
-	int subsetnum = list->GetMeshData()[n].GetSubsetNum();
+	pGameEngine->GetAssetsManager()->GetMaterial(this->materialIndex)->SetBufferMaterial();
 
-	for (unsigned short i = 0; i < subsetnum; i++)
-	{
-		//list->GetMeshData()[n].GetSubset()[0].GetMaterial()->SetBufferMaterial();
-		//if (isOriginalDiffuse)
-		//{
-		//	pGameEngine->GetAssetsManager()->GetTexture(diffuseIndex)->SetShaderResourcePS(0);
-		//}
-		mesh[n].GetMaterial()->SetBufferMaterial();
+	renderer->GetDeviceContext()->DrawIndexed(meshData->GetIndexNum(), 0, 0);
 
-		renderer->GetDeviceContext()->DrawIndexed(list->GetMeshData()[n].GetIndexNum(), 0, 0);
-	}
-
+	renderer->SetAlphaTestEnable(FALSE);
 
 }
+
 
 void MeshComponent::SetCullingMode(int cullMode)
 {
@@ -396,9 +373,24 @@ bool MeshComponent::GetOcclusionCulling(void)
 	return m_occlusionCulling;
 }
 
-Mesh* MeshComponent::GetMesh(int n)
+void MeshComponent::SetMeshDataIndex(int index)
 {
-	return this->mesh;
+	this->MeshDataIndex = index;
+	animation = FALSE;
+
+	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
+
+	Renderer* renderer = pGameEngine->GetRenderer();
+
+	MeshData* meshData = pGameEngine->GetAssetsManager()->GetMeshData(index);
+
+	this->materialIndex = meshData->GetMaterialIndex();
+
+	SetMtx(meshData->GetWorldOffset());
+	this->SetBlendMtx();
+	isOriginalDiffuse = FALSE;
+
+
 }
 
 
@@ -486,7 +478,7 @@ void MeshComponent::SetMeshComponent(
 	animation = TRUE;
 	animstate = ANIM_STATE::DATA_ANIM;
 
-	SetMeshDataList();
+	//SetMeshDataList();
 	SetAnimationArray();
 }
 
@@ -495,7 +487,7 @@ void MeshComponent::SetMeshComponent(string meshFilePath)		//メッシュデー�
 {
 	SetMeshFilePath(meshFilePath);
 	animation = FALSE;
-	SetMeshDataList();
+	//SetMeshDataList();
 
 }
 
@@ -507,57 +499,57 @@ void MeshComponent::SetBlendFrame(int frame)
 
 
 
-void MeshComponent::SetMeshDataList(void)
-{
-
-	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
-
-	Renderer* renderer = pGameEngine->GetRenderer();
-
-	this->MeshDataListIndex = pGameEngine->GetAssetsManager()->LoadMesh(this->meshFilePath);
-	MeshDataList* l = pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex);
-
-	MeshData* md=nullptr;
-
-
-	DX11_SUBSET* sub = nullptr;
-	int rootNum;
-
-	for (int i = 0; i < l->GetMeshDataNum(); i++)
-	{
-		md = &l->GetMeshData()[i];
-		sub = &md->GetSubset()[0];
-
-		if (sub != nullptr)
-		{
-			rootNum = i;
-			break;
-		}
-	}
-
-	if (md->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Lambart)
-	{
-		this->material = new LambartMaterial(dynamic_cast<LambartMaterial*>( pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()->GetSubset()->GetMaterial()));
-	}
-	else if (md->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Phong)
-	{
-		this->material = new PhongMaterial(dynamic_cast<PhongMaterial*>(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()->GetSubset()->GetMaterial()));
-
-	}
-
-	this->CreateMeshArray(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshDataNum());
-
-	for (int i = 0; i < this->meshNum; i++)
-	{
-		if (pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()[i].GetSubset() == nullptr)
-			continue;
-
-		mesh[i].SetMtx(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()[i].GetOffset());
-		mesh[i].SetMaterial(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataListIndex)->GetMeshData()[i].GetSubset()->GetMaterial());
-	}
-	this->SetBlendMtx();
-	isOriginalDiffuse = FALSE;
-}
+//void MeshComponent::SetMeshDataList(void)
+//{
+//
+//	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
+//
+//	Renderer* renderer = pGameEngine->GetRenderer();
+//
+//	this->MeshDataIndex = pGameEngine->GetAssetsManager()->LoadMeshTree(this->meshFilePath);
+//	MeshDataList* l = pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex);
+//
+//	MeshData* md=nullptr;
+//
+//
+//	DX11_SUBSET* sub = nullptr;
+//	int rootNum;
+//
+//	for (int i = 0; i < l->GetMeshDataNum(); i++)
+//	{
+//		md = &l->GetMeshData()[i];
+//		sub = &md->GetSubset()[0];
+//
+//		if (sub != nullptr)
+//		{
+//			rootNum = i;
+//			break;
+//		}
+//	}
+//
+//	if (md->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Lambart)
+//	{
+//		this->material = new LambartMaterial(dynamic_cast<LambartMaterial*>( pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshData()->GetSubset()->GetMaterial()));
+//	}
+//	else if (md->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Phong)
+//	{
+//		this->material = new PhongMaterial(dynamic_cast<PhongMaterial*>(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshData()->GetSubset()->GetMaterial()));
+//
+//	}
+//
+//	this->CreateMeshArray(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshDataNum());
+//
+//	for (int i = 0; i < this->meshNum; i++)
+//	{
+//		if (pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshData()[i].GetSubset() == nullptr)
+//			continue;
+//
+//		mesh[i].SetMtx(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshData()[i].GetWorldOffset());
+//		mesh[i].SetMaterial(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshData()[i].GetSubset()->GetMaterial());
+//	}
+//	this->SetBlendMtx();
+//	isOriginalDiffuse = FALSE;
+//}
 
 void MeshComponent::SetAnimationArray(void)
 {
@@ -582,15 +574,6 @@ void MeshComponent::CreateMeshArray(int n)
 {
 	meshNum = n;
 	mesh = new Mesh[n];
-}
-
-void MeshComponent::SetBlendMtx(void)
-{
-	for (int i = 0; i < meshNum; i++)
-	{
-		mesh[i].SetBlendMtx(mesh[i].GetMtx());
-	}
-
 }
 
 void MeshComponent::SwichAnimIndex(int n)
@@ -630,40 +613,23 @@ void MeshComponent::StartOneTimeAnimIndex(int n)
 
 }
 
-Mesh::Mesh()
-{
-}
-
-Mesh::~Mesh()
-{
-}
-
-void Mesh::SetMtx(XMMATRIX mtx)
+void MeshComponent::SetMtx(XMMATRIX mtx)
 {
 	this->mtx = mtx;
 }
 
-void Mesh::SetBlendMtx(XMMATRIX mtx)
+void MeshComponent::SetBlendMtx(void)
 {
-	this->blendMtx = mtx;
+	this->blendMtx = this->mtx;
 }
 
-void Mesh::SetMaterial(Material* m)
-{
-	this->material = m;
-}
-
-XMMATRIX Mesh::GetMtx(void)
+XMMATRIX MeshComponent::GetMtx(void)
 {
 	return this->mtx;
 }
 
-XMMATRIX Mesh::GetBlendMtx(void)
+XMMATRIX MeshComponent::GetBlendMtx(void)
 {
 	return this->blendMtx;
 }
 
-Material* Mesh::GetMaterial(void)
-{
-	return this->material;
-}

@@ -17,90 +17,16 @@
 //*****************************************************************************
 #define TEXTURE_PATH	"data/TEXTURE/"
 
-//*****************************************************************************
-// 構造体定義
-//*****************************************************************************
-
-
-
-
-//*****************************************************************************
-// グローバル変数
-//*****************************************************************************
-
-
-
-//*****************************************************************************
-// クラス関数
-//*****************************************************************************
-
-
-DX11_SUBSET::DX11_SUBSET()
-{
-	this->StartIndex = 0;
-	this->IndexNum = 0;
-	this->pmeshdata = nullptr;
-
-}
-DX11_SUBSET::~DX11_SUBSET()
-{
-	
-}
-
-void DX11_SUBSET::SetStartIndex(unsigned short n)
-{
-	this->StartIndex = n;
-}
-unsigned short DX11_SUBSET::GetStartIndex(void)
-{
-	return this->StartIndex;
-}
-
-void DX11_SUBSET::SetIndexNum(unsigned short n)
-{
-	this->IndexNum = n;
-}
-unsigned short DX11_SUBSET::GetIndexNum(void)
-{
-	return this->IndexNum;
-}
-
-
-Material* DX11_SUBSET::GetMaterial(void)
-{
-	return material;
-}
-
-void DX11_SUBSET::SetMaterial(Material* material)
-{
-	this->material = material;
-}
-
-
-MeshData* DX11_SUBSET::GetpMeshData(void)
-{
-	return this->pmeshdata;
-}
-
-void DX11_SUBSET::SetpMeshData(MeshData* meshdata)
-{
-	this->pmeshdata = meshdata;
-}
-
 
 
 
 MeshData::MeshData()
 {
-	this->nomesh = TRUE;
 	this->VertexBuffer = nullptr;
 	this->indexnum = 0;
 	this->IndexBuffer = nullptr;
-	this->offset = XMMatrixIdentity();
-	this->subsetnum = 0;
-	this->SubsetArray = nullptr;
+	this->worldOffset = XMMatrixIdentity();
 	this->childcnt = 0;
-	this->Child = nullptr;
 	this->pAssetsManager = nullptr;
 }
 
@@ -110,18 +36,9 @@ MeshData::~MeshData()
 	if(IndexBuffer) IndexBuffer->Release();
 
 
-	delete[]SubsetArray;
 }
 
 
-void MeshData::SetNoMesh(BOOL no)
-{
-	this->nomesh = no;
-}
-BOOL MeshData::GetNoMesh(void)
-{
-	return this->nomesh;
-}
 
 
 
@@ -176,67 +93,23 @@ ID3D11Buffer* MeshData::GetIndexBuffer(void)
 	return IndexBuffer;
 }
 
-void MeshData::SetChildCnt(int n)
-{
-	childcnt = n;
-}
 int MeshData::GetChildCount(void)
 {
-	return childcnt;
+	return (int)this->childArray.size();
 }
 
-void MeshData::CreateChildArray(int n)
+vector<MeshData*>& MeshData::GetChild(void)
 {
-	this->Child = new MeshData[n];
+	return this->childArray;
 }
 
-
-
-MeshData* MeshData::GetChild(int n)
+void MeshData::SetWorldOffset(XMMATRIX offsetmtx)
 {
-	return &this->Child[n];
+	worldOffset = offsetmtx;
 }
-
-void MeshData::SetOffset(XMMATRIX offsetmtx)
+XMMATRIX MeshData::GetWorldOffset(void)
 {
-	offset = offsetmtx;
-}
-XMMATRIX MeshData::GetOffset(void)
-{
-	return offset;
-}
-
-
-
-void MeshData::SetSubsetNum(int n)
-{
-	this->subsetnum = n;
-}
-
-unsigned short MeshData::GetSubsetNum(void)
-{
-	return this->subsetnum;
-}
-
-void MeshData::CreateSubsetArray(int n)
-{
-	this->SubsetArray = new DX11_SUBSET[n];
-
-	for (int i = 0; i < n; i++)
-	{
-		this->SubsetArray[i].SetpMeshData(this);
-	}
-}
-
-
-DX11_SUBSET* MeshData::GetSubset(void)
-{
-	return this->SubsetArray;
-}
-
-void MeshData::SetSubset(int n, DX11_SUBSET sub)
-{
-	this->SubsetArray[n] = sub;
+	return worldOffset;
 }
 
 void MeshData::BufferSetVertex(void)
@@ -244,9 +117,9 @@ void MeshData::BufferSetVertex(void)
 
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
-	UINT offset = 0;
+	UINT worldOffset = 0;
 
-	this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->IASetVertexBuffers(0, 1, &this->VertexBuffer, &stride, &offset);
+	this->GetpAssetsManager()->GetGameEngine()->GetRenderer()->GetDeviceContext()->IASetVertexBuffers(0, 1, &this->VertexBuffer, &stride, &worldOffset);
 }
 
 void MeshData::BufferSetIndex(void)
@@ -266,57 +139,31 @@ AssetsManager* MeshData::GetpAssetsManager(void)
 	return this->pAssetsManager;
 }
 
-
-
-MeshDataList::MeshDataList()
+int MeshData::GetMaterialIndex(void)
 {
-	this->meshdatanum = 0;
-	this->meshdata = nullptr;
-	this->pManager = nullptr;
-}
-
-MeshDataList::~MeshDataList()
-{
-	if (meshdata) delete[]meshdata;
+	return this->materialIndex;
 }
 
 
-void MeshDataList::SetMeshDataNum(int n)
+BOOL MeshData::GetIsRoot(void)
 {
-	this->meshdatanum = n;
-}
-int MeshDataList::GetMeshDataNum(void)
-{
-	return this->meshdatanum;
+	return this->isRoot;
 }
 
-
-void MeshDataList::CreateMeshDataArray(int n)
+int MeshData::GetIndex(void)
 {
-	meshdata = new MeshData[n];
+	return this->index;
 }
 
-MeshData* MeshDataList::GetMeshData(void)
-{
-	return meshdata;
-}
 
-void MeshDataList::SetFilePath(std::string fn)
-{
-	filepath = fn;
-}
 
-std::string MeshDataList::GetFilePath(void)
-{
-	return filepath;
 
-}
-void MeshDataList::LoadFbxFile(string filepath, AssetsManager* p)
-{
-	
-	this->pManager = p;
-	SetFilePath(filepath);
 
+void MeshData::LoadFbxFile(string fileName, AssetsManager* p)
+{
+	this->pAssetsManager = p;
+	this->fileName = fileName;
+	this->name = fileName;
 	FbxManager* manager;
 	FbxIOSettings* ioSettings;
 	manager = FbxManager::Create();
@@ -324,7 +171,7 @@ void MeshDataList::LoadFbxFile(string filepath, AssetsManager* p)
 	// Importerを生成
 	FbxImporter* importer = FbxImporter::Create(manager, "");
 
-	if (importer->Initialize(filepath.c_str(), -1, manager->GetIOSettings()) == false)
+	if (importer->Initialize(fileName.c_str(), -1, manager->GetIOSettings()) == false)
 	{
 		// インポートエラー
 	}
@@ -333,39 +180,48 @@ void MeshDataList::LoadFbxFile(string filepath, AssetsManager* p)
 	FbxScene* scene = FbxScene::Create(manager, "scene");
 	importer->Import(scene);
 
-	int meshcount = scene->GetSrcObjectCount<FbxMesh>();
-	this->SetMeshDataNum(meshcount);
-	this->CreateMeshDataArray(meshcount);
-	for (int i = 0; i < meshcount; i++)
-	{
-		FbxMesh* mesh = scene->GetSrcObject<FbxMesh>(i);
+	FbxNode* root = scene->GetRootNode();
+	this->isRoot = TRUE;
+	this->index = pAssetsManager->AddMesh(this);
 
-		this->meshdata[i].LoadFbxMesh(mesh,p);
-		
+	for (int i = 0; i < root->GetChildCount(); i++)
+	{
+		FbxNode* child = root->GetChild(i);
+
+		if (child->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::eMesh)
+		{
+			MeshData* childData = new MeshData();
+			childData->LoadFbxMesh(child->GetMesh(), p, this);
+			childArray.push_back(childData);
+			
+		}
+
+
 
 	}
+
+
+
+
 
 	scene->Destroy();
 	importer->Destroy(); // シーンを流し込んだらImporterは解放
 	manager->Destroy();//fbxファイルの読み込みが終わったらマネージャーは解放する
 
-
-
-}
-AssetsManager* MeshDataList::GetpAssetsManager(void)
-{
-
-	return this->pManager;
 }
 
 
-
-void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
+void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap,MeshData* parent)
 {
 	using namespace fbxsdk;
 	this->pAssetsManager = ap;
 	FbxNode* node = mesh->GetNode();
-	
+	name = mesh->GetName();
+	this->parent = parent;
+	this->index = pAssetsManager->AddMesh(this);
+	this->isRoot = FALSE;
+	this->fileName = parent->GetFileName();
+	this->name = mesh->GetName();
 
 	int PolygonNum = mesh->GetPolygonCount();               //総ポリゴン数
 	if (PolygonNum==0)
@@ -579,22 +435,6 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 		}
 
 	}
-	////インデックス配列を埋める
-	//unsigned int* IndexArry = nullptr;
-	//IndexArry = new unsigned int[indexnum];
-	//int ic = 0;
-
-	//for (int i = 0; i < PolygonNum; i++)
-	//{
-
-	//	IndexArry[i * 3] = ic;
-	//	ic++;
-	//	IndexArry[i * 3 + 1] = ic;
-	//	ic++;
-	//	IndexArry[i * 3 + 2] = ic;
-	//	ic++;
-	//}
-
 
 	// 頂点バッファ生成
 	this->CreateVertexBuffer(ic);
@@ -638,16 +478,14 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 
 
 
-	FbxMatrix offset = node->EvaluateGlobalTransform(FBXSDK_TIME_INFINITE);//オフセット行列の取得
-	this->SetOffset(FbxMatrixConvertToXMMATRIX(offset));
+	FbxMatrix worldOffset = node->EvaluateGlobalTransform(FBXSDK_TIME_INFINITE);//オフセット行列の取得
+	this->SetWorldOffset(FbxMatrixConvertToXMMATRIX(worldOffset));
 
 
 	// マテリアルの数
 
 	int mtlcnt = node->GetMaterialCount();
 
-	this->SetSubsetNum(mtlcnt);
-	this->CreateSubsetArray(mtlcnt);
 
 	// マテリアル情報を取得
 	for (int i = 0; i < mtlcnt; i++)
@@ -671,8 +509,7 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 
 				lambart->LoadFbxMaterial(fbxmaterial);
 
-				this->GetSubset()->SetMaterial(lambart);
-
+				this->materialIndex = pAssetsManager->LoadMaterial(lambart);
 
 
 			}
@@ -684,8 +521,7 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 
 				phong->LoadFbxMaterial(fbxmaterial);
 
-				this->GetSubset()->SetMaterial(phong);
-
+				this->materialIndex = pAssetsManager->LoadMaterial(phong);
 
 
 			}
@@ -694,27 +530,41 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap)
 
 			}
 
-			this->GetSubset()[i].SetpMeshData(this);
 		}
 	}
-
-
 	delete[] uv;
 	delete[] IndexArry;
 	delete[] VertexArray;
 
 
+	for (int i = 0; i < node->GetChildCount(); i++)
+	{
+		FbxNode* child = node->GetChild(i);
+
+		if (child->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::eMesh)
+		{
+			MeshData* childData = new MeshData();
+			childData->LoadFbxMesh(child->GetMesh(), ap, this);
+			childArray.push_back(childData);
+
+		}
+
+
+
+	}
+
 
 
 }
 
-
-void MeshData::SetpAssetsManager(AssetsManager* pa)
+string MeshData::GetName(void)
 {
-	this->pAssetsManager = pa;
+	return this->name;
 }
-void MeshDataList::SetpAssetsManager(AssetsManager* pa)
-{
-	this->pManager = pa;
 
+string MeshData::GetFileName(void)
+{
+	return this->fileName;
 }
+
+

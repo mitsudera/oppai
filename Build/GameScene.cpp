@@ -26,8 +26,8 @@ void GameScene::Init()
 	Robot* robot = new Robot(this);
 	this->gameObjectList.push_back(robot);
 
-	Tree* tree = new Tree(this);
-	this->gameObjectList.push_back(tree);
+	//Tree* tree = new Tree(this);
+	//this->gameObjectList.push_back(tree);
 
 	DebugCamera* debugCamera=new DebugCamera(this);
 	this->gameObjectList.push_back(debugCamera);

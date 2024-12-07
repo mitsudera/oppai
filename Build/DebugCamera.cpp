@@ -34,6 +34,7 @@ void DebugCamera::Init(void)
 	cameraComponent->SetDepthStencilView(pScene->GetGameEngine()->GetRenderer()->GetBackBufferDSV());
 	cameraComponent->SetSky(pScene->GetGameObjectName("SkySphere"));
 
+
 	this->componentList.push_back(cameraComponent);
 
 	CameraControllerComponent* cameraController = new CameraControllerComponent(this);

@@ -26,20 +26,14 @@ public:
 	virtual void Uninit(void) override;
 	virtual void Draw(void) override;
 
-	Material* GetMaterial(void);
 
-
-	template<class T>
-	T* GetMaterial(void);
-
-	void SetMaterial(Material* m);
-
+	int GetMaterialIndex(void);
 
 
 protected:
 
 	BOOL hasShadow;
 	BOOL drawShadow;
-	Material* material;
+	int materialIndex;
 };
 

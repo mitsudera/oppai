@@ -23,12 +23,10 @@ void Robot::Init(void)
 
 	this->name = "Robot";
 	this->transformComponent->SetPosition(XMFLOAT3(0.0f, 0.0f, 10.0f));
-	this->transformComponent->SetScale(XMFLOAT3(10.0f, 10.0f, 10.0f));
+	this->transformComponent->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
-	MeshComponent* mesh = new MeshComponent(this);
-	mesh->Init();
-	mesh->SetMeshComponent("robot.fbx");
-	this->componentList.push_back(mesh);
+	this->LoadFbxFileMesh("robot.fbx");
+
 
 	
 	RobotComponent* robotComponent = new RobotComponent(this);
@@ -41,7 +39,7 @@ void Robot::Init(void)
 	cameraComponent->SetRenderTarget(pScene->GetGameEngine()->GetRenderer()->GetBackBuffer());
 	cameraComponent->SetDepthStencilView(pScene->GetGameEngine()->GetRenderer()->GetBackBufferDSV());
 
-	cameraComponent->SetPosition(XMFLOAT3(0.0f, 0.5f, -10.0f));
+	cameraComponent->SetPosition(XMFLOAT3(0.0f, 0.0f, 10.0f));
 
 	cameraComponent->SetSky(pScene->GetGameObjectName("SkySphere"));
 

@@ -25,7 +25,9 @@ void SpriteComponent::Init(void)
 {
 	PrimitiveComponent::Init();
 	CreateVertexBuffer();
-	this->material = new UIMaterial(pGameObject->GetScene()->GetGameEngine()->GetAssetsManager());
+	Material* uiMaterial = new UIMaterial(pGameObject->GetScene()->GetGameEngine()->GetAssetsManager());
+	this->materialIndex = pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->LoadMaterial(uiMaterial);
+
 }
 
 void SpriteComponent::Update(void)
