@@ -23,31 +23,6 @@ class AssetsManager;
 
  class MeshData
  {
-	 AssetsManager* pAssetsManager;
-
-	 int index;
-
-	 ID3D11Buffer* VertexBuffer;
-	 unsigned int indexnum;
-	 ID3D11Buffer* IndexBuffer;
-	 XMMATRIX	worldOffset;
-	 XMMATRIX   localOffset;
-	 XMFLOAT3	posOffset;
-	 XMFLOAT3	sclOffset;
-	 XMFLOAT3	rotOffset;
-
-	 MeshData* parent;
-	 int childcnt;
-	 vector <MeshData*> childArray;
-
-	 int materialIndex;
-	 BOOL isRoot;
-
-	 string name;
-	 string fileName;
-
-
-
  public:
 	 MeshData();
 	 ~MeshData();
@@ -89,6 +64,29 @@ class AssetsManager;
 	 XMFLOAT3 GetSclOffset(void);
 	 XMFLOAT3 GetRotOffset(void);
  private:
+	 AssetsManager* pAssetsManager;
+
+	 int index;
+
+	 ID3D11Buffer* VertexBuffer;
+	 unsigned int indexnum;
+	 ID3D11Buffer* IndexBuffer;
+	 XMMATRIX	worldOffset;
+	 XMMATRIX   localOffset;
+	 XMFLOAT3	posOffset;
+	 XMFLOAT3	sclOffset;
+	 XMFLOAT3	rotOffset;
+
+	 MeshData* parent;
+	 int childcnt;
+	 vector <MeshData*> childArray;
+
+	 int materialIndex;
+	 BOOL isRoot;
+
+	 string name;
+	 string fileName;
+
 
  };
 

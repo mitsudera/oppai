@@ -33,3 +33,9 @@ void AnimationControlerComponent::Uninit(void)
 {
 	Component::Uninit();
 }
+
+void AnimationControlerComponent::LoadAnimationData(string fileName)
+{
+	pAssetsManager->LoadAnimationData(fileName);
+
+}

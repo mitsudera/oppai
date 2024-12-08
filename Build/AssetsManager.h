@@ -17,6 +17,8 @@ class GameEngine;
 
 class Material;
 
+class AnimationData;
+
 //shader
 class LambartShader;
 class PhongShader;
@@ -40,6 +42,8 @@ public:
 
 	int LoadMeshNode(string filepath);
 
+	int LoadAnimationData(string filepath);
+
 	MeshData* GetMeshTree(int n);
 
 	int AddMesh(MeshData* data);
@@ -47,7 +51,7 @@ public:
 
 	MeshData* GetMeshData(int n);
 
-	KeyFrameAnimData* GetKeyFrameAnimData(int n);
+	//KeyFrameAnimData* GetKeyFrameAnimData(int n);
 
 
 	GameEngine* GetGameEngine(void);
@@ -84,7 +88,9 @@ private:
 	GameEngine* pGameEngine;
 	vector<MeshData*> MeshDataTree;//メッシュデータのルートの配列
 	vector<MeshData*> MeshDataArray;
-	vector<KeyFrameAnimData*>  KeyFrameAnimDataArray;
+	vector<AnimationData*> AnimDataArray;
+
+	//vector<KeyFrameAnimData*>  KeyFrameAnimDataArray;
 	//vector<SkinMeshDataList*> SkinMeshDataListArray;
 	//vector<SkeletonAnimData*> SkeletonAnimDataArray;
 	vector<Material*> MaterialArray;

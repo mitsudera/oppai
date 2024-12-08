@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "GameEngine.h"
 #include "renderer.h"
+#include "AnimationControlerComponent.h"
 
 Robot::Robot(Scene* scene)
 {
@@ -27,7 +28,8 @@ void Robot::Init(void)
 
 	this->LoadFbxFileMesh("robot.fbx");
 
-
+	AnimationControlerComponent* animControler = this->AddComponent<AnimationControlerComponent>();
+	animControler->LoadAnimationData("robotwalk.fbx");
 	
 	RobotComponent* robotComponent = new RobotComponent(this);
 	robotComponent->Init();

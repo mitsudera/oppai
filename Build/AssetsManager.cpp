@@ -9,12 +9,13 @@
 #include "PhongShader.h"
 #include "UIShader.h"
 #include "Material.h"
+#include "AnimationData.h"
 
 #define MESH_PATH "data/MODEL/mesh/"
 #define SKINMESH_PATH "data/MODEL/skinmesh/"
 
-#define MESH_ANIM_PATH "data/animation/mesh/"
-#define SKINMESH_ANIM_PATH "data/animation/skinmesh/"
+#define ANIMATION_PATH "data/Animation/"
+
 
 AssetsManager::AssetsManager()
 {
@@ -54,11 +55,11 @@ void AssetsManager::Uninit(void)
 	}
 	this->MeshDataTree.clear();
 
-	for (int i = 0; i < this->KeyFrameAnimDataArray.size(); i++)
-	{
-		delete this->KeyFrameAnimDataArray[i];
-	}
-	this->KeyFrameAnimDataArray.clear();
+	//for (int i = 0; i < this->KeyFrameAnimDataArray.size(); i++)
+	//{
+	//	delete this->KeyFrameAnimDataArray[i];
+	//}
+	//this->KeyFrameAnimDataArray.clear();
 
 	//for (int i = 0; i < this->SkinMeshDataListArray.size(); i++)
 	//{
@@ -118,6 +119,44 @@ int AssetsManager::LoadMeshNode(string filepath)
 
 	return p;
 }
+
+int AssetsManager::LoadAnimationData(string filepath)
+{
+	int p = -1;
+	BOOL find = FALSE;
+	for (int i = 0; i < AnimDataArray.size(); i++)
+	{
+		 
+		string filename = AnimDataArray[i]->GetFileName();
+		if ((ANIMATION_PATH+ filepath) == filename)
+		{
+			p = i;
+			find = TRUE;
+			break;
+		}
+	}
+
+	if (find == FALSE)
+	{
+
+		AnimationData* animdata = new AnimationData;
+
+
+		string path = ANIMATION_PATH+filepath;
+
+		
+		animdata->LoadAnimation(path, this);
+
+		this->AnimDataArray.push_back(animdata);
+		p = (int)AnimDataArray.size() - 1;
+
+	}
+
+	return p;
+}
+
+
+
 MeshData* AssetsManager::GetMeshTree(int n)
 {
 	return MeshDataTree[n];
@@ -133,10 +172,6 @@ MeshData* AssetsManager::GetMeshData(int n)
 	return this->MeshDataArray[n];
 }
 
-KeyFrameAnimData* AssetsManager::GetKeyFrameAnimData(int n)
-{
-	return this->KeyFrameAnimDataArray[n];
-}
 
 
 GameEngine* AssetsManager::GetGameEngine(void)
@@ -145,34 +180,34 @@ GameEngine* AssetsManager::GetGameEngine(void)
 }
 
 
-int AssetsManager::LoadMeshAnim(string filepath)
-{
-	int p = -1;
-	BOOL find = FALSE;
-	for (int i = 0; i < KeyFrameAnimDataArray.size(); i++)
-	{
-		if ((MESH_ANIM_PATH + filepath) == KeyFrameAnimDataArray[i]->GetFilePath())
-		{
-			p = i;
-			find = TRUE;
-			break;
-		}
-	}
-
-	if (find == FALSE)
-	{
-
-		string path = MESH_ANIM_PATH + filepath;
-
-		KeyFrameAnimData* animdata = new KeyFrameAnimData;
-		animdata->LoadKeyFrameAnim(path);
-
-		this->KeyFrameAnimDataArray.push_back(animdata);
-		p = (int)KeyFrameAnimDataArray.size() - 1;
-	}
-
-	return p;
-}
+//int AssetsManager::LoadMeshAnim(string filepath)
+//{
+//	int p = -1;
+//	BOOL find = FALSE;
+//	for (int i = 0; i < KeyFrameAnimDataArray.size(); i++)
+//	{
+//		if ((MESH_ANIM_PATH + filepath) == KeyFrameAnimDataArray[i]->GetFilePath())
+//		{
+//			p = i;
+//			find = TRUE;
+//			break;
+//		}
+//	}
+//
+//	if (find == FALSE)
+//	{
+//
+//		string path = MESH_ANIM_PATH + filepath;
+//
+//		KeyFrameAnimData* animdata = new KeyFrameAnimData;
+//		animdata->LoadKeyFrameAnim(path);
+//
+//		this->KeyFrameAnimDataArray.push_back(animdata);
+//		p = (int)KeyFrameAnimDataArray.size() - 1;
+//	}
+//
+//	return p;
+//}
 
 //int AssetsManager::LoadSkinMesh(string filepath)
 //{
