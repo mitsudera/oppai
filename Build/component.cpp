@@ -67,8 +67,23 @@ BOOL Component::GetActive(void)
 	return this->isActive;
 }
 
-template<class T>
-T* Component::GetComponent(void)
+XMMATRIX Component::GetWorldMtx(XMMATRIX world)
 {
-	return pGameObject->GetComponent<T>();
+	return this->pGameObject->GetTransFormComponent()->GetWorldMtx(world);
 }
+
+XMMATRIX Component::GetWorldMtx(void)
+{
+	return this->pGameObject->GetTransFormComponent()->GetWorldMtx();
+}
+
+XMFLOAT3 Component::GetWorldPos()
+{
+	return this->pGameObject->GetTransFormComponent()->GetWorldPos();
+}
+
+TransformComponent* Component::GetTransFormComponent(void)
+{
+	return this->pGameObject->GetTransFormComponent();
+}
+

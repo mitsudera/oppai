@@ -103,6 +103,9 @@
     <Filter Include="gameobject\3D\Tree">
       <UniqueIdentifier>{7865ab42-64d5-40ae-a228-fb638bb7700b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="component\primitiveComponent">
+      <UniqueIdentifier>{de7b19b0-1a9a-4289-ac0e-20b0b7d80bb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coreminimal.h">
@@ -134,9 +137,6 @@
     </ClInclude>
     <ClInclude Include="CameraComponent.h">
       <Filter>component\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="primitivecomponent.h">
-      <Filter>component</Filter>
     </ClInclude>
     <ClInclude Include="transformcomponent.h">
       <Filter>component</Filter>
@@ -174,9 +174,6 @@
     <ClInclude Include="GameScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteComponent.h">
-      <Filter>component</Filter>
-    </ClInclude>
     <ClInclude Include="LightComponent.h">
       <Filter>component</Filter>
     </ClInclude>
@@ -190,9 +187,6 @@
       <Filter>component</Filter>
     </ClInclude>
     <ClInclude Include="TitleManagerComponent.h">
-      <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshComponent.h">
       <Filter>component</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
@@ -252,6 +246,15 @@
     <ClInclude Include="TitleLogo.h">
       <Filter>gameobject\2D\Title</Filter>
     </ClInclude>
+    <ClInclude Include="MeshComponent.h">
+      <Filter>component\primitiveComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="primitivecomponent.h">
+      <Filter>component\primitiveComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteComponent.h">
+      <Filter>component\primitiveComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -280,9 +283,6 @@
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
       <Filter>component\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="primitivecomponent.cpp">
-      <Filter>component</Filter>
     </ClCompile>
     <ClCompile Include="transformcomponent.cpp">
       <Filter>component</Filter>
@@ -320,9 +320,6 @@
     <ClCompile Include="GameScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteComponent.cpp">
-      <Filter>component</Filter>
-    </ClCompile>
     <ClCompile Include="LightComponent.cpp">
       <Filter>component</Filter>
     </ClCompile>
@@ -336,9 +333,6 @@
       <Filter>component</Filter>
     </ClCompile>
     <ClCompile Include="TitleManagerComponent.cpp">
-      <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshComponent.cpp">
       <Filter>component</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
@@ -397,6 +391,15 @@
     </ClCompile>
     <ClCompile Include="Tree.cpp">
       <Filter>gameobject\3D\Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshComponent.cpp">
+      <Filter>component\primitiveComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="primitivecomponent.cpp">
+      <Filter>component\primitiveComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteComponent.cpp">
+      <Filter>component\primitiveComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

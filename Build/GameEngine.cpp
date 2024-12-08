@@ -129,15 +129,6 @@ Input* GameEngine::GetInput(void)
 	return this->input;
 }
 
-CameraComponent* GameEngine::GetMainCamera(void)
-{
-	return mainCamera;
-}
-
-void GameEngine::SetMainCamera(CameraComponent* cam)
-{
-	this->mainCamera = cam;
-}
 
 Scene* GameEngine::GetActiveScene(void)
 {

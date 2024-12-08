@@ -32,6 +32,10 @@ class AssetsManager;
 	 ID3D11Buffer* IndexBuffer;
 	 XMMATRIX	worldOffset;
 	 XMMATRIX   localOffset;
+	 XMFLOAT3	posOffset;
+	 XMFLOAT3	sclOffset;
+	 XMFLOAT3	rotOffset;
+
 	 MeshData* parent;
 	 int childcnt;
 	 vector <MeshData*> childArray;
@@ -41,6 +45,8 @@ class AssetsManager;
 
 	 string name;
 	 string fileName;
+
+
 
  public:
 	 MeshData();
@@ -63,6 +69,7 @@ class AssetsManager;
 	 void SetWorldOffset(XMMATRIX offsetmtx);
 	 XMMATRIX GetWorldOffset(void);
 
+	 XMMATRIX GetLocalOffset(void);
 
 	 void BufferSetVertex(void);
 	 void BufferSetIndex(void);
@@ -83,6 +90,9 @@ class AssetsManager;
 
 	 int GetIndex(void);
 
+	 XMFLOAT3 GetPosOffset(void);
+	 XMFLOAT3 GetSclOffset(void);
+	 XMFLOAT3 GetRotOffset(void);
  private:
 
  };

@@ -4,6 +4,7 @@
 #include "GameEngine.h"
 #include "input.h"
 #include "CameraComponent.h"
+#include "RobotComponent.h"
 
 GameManagerComponent::GameManagerComponent(GameObject* gameObject)
 {
@@ -19,7 +20,7 @@ void GameManagerComponent::Init(void)
 	Component::Init();
 	attribute = Attribute::Manager;
 	this->gameScene = pGameObject->GetScene();
-	this->gameCamera = gameScene->GetGameObjectName("Robot")->GetComponentAttrbute(Component::Attribute::Camera,0);
+	this->gameCamera = gameScene->GetGameObjectName("Robot")->GetChild("Camera")->GetComponentAttrbute(Component::Attribute::Camera, 0);
 	this->debugCamera = gameScene->GetGameObjectName("DebugCamera")->GetComponentAttrbute(Component::Attribute::Camera, 0);
 
 	SetCameraModeGame();
@@ -47,12 +48,15 @@ void GameManagerComponent::SetCameraModeGame(void)
 {
 	gameCamera->SetActive(TRUE);
 	debugCamera->SetActive(FALSE);
+	pGameObject->GetScene()->GetGameObjectName("Robot")->GetComponent<RobotComponent>()->SetActive(TRUE);
+
 }
 
 void GameManagerComponent::SetCameraModeDebug(void)
 {
 	gameCamera->SetActive(FALSE);
 	debugCamera->SetActive(TRUE);
+	pGameObject->GetScene()->GetGameObjectName("Robot")->GetComponent<RobotComponent>()->SetActive(FALSE);
 
 }
 

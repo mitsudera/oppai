@@ -14,6 +14,7 @@ TitleScene::~TitleScene()
 void TitleScene::Init()
 {
 
+	Scene::Init();
 
 
 	TitleLogo* titleLogo = new TitleLogo(this);
@@ -28,6 +29,6 @@ void TitleScene::Init()
 	TitleManager* titleManager = new TitleManager(this);
 	this->gameObjectList.push_back(titleManager);
 
+	Scene::InitAllObject();
 
-	Scene::Init();
 }

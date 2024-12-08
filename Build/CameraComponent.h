@@ -5,7 +5,7 @@
 //
 //=============================================================================
 #pragma once
-#include "TransformComponent.h"
+#include "Component.h"
 #include "gameobject.h"
 
 class Renderer;
@@ -30,7 +30,7 @@ enum VIEWPORT_TYPE
 };
 
 
-class CameraComponent : public TransformComponent
+class CameraComponent : public Component
 {
 public:
 
@@ -67,7 +67,7 @@ public:
 
 	enum class MODE
 	{
-		TRACKING,
+		TRACKING_PARENT,
 		TRACKING_SKY,
 		
 		WORLD,

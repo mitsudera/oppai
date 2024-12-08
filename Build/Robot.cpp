@@ -33,16 +33,22 @@ void Robot::Init(void)
 	robotComponent->Init();
 	this->componentList.push_back(robotComponent);
 
-	CameraComponent* cameraComponent = new CameraComponent(this);
-	cameraComponent->Init();
 
-	cameraComponent->SetRenderTarget(pScene->GetGameEngine()->GetRenderer()->GetBackBuffer());
-	cameraComponent->SetDepthStencilView(pScene->GetGameEngine()->GetRenderer()->GetBackBufferDSV());
+	//子オブジェクトとしてカメラを作成
+	{
+		//ゲームオブジェクト生成
+		GameObject* child = AddChild("Camera");
+		child->Init();
+		child->GetTransFormComponent()->SetPosition(XMFLOAT3(0.0f, 0.0f, 10.0f));
 
-	cameraComponent->SetPosition(XMFLOAT3(0.0f, 0.0f, 10.0f));
+		//カメラコンポーネントの生成
+		CameraComponent* cameraComponent = child->AddComponent<CameraComponent>();
+		cameraComponent->Init();
+		cameraComponent->SetRenderTarget(pScene->GetGameEngine()->GetRenderer()->GetBackBuffer());
+		cameraComponent->SetDepthStencilView(pScene->GetGameEngine()->GetRenderer()->GetBackBufferDSV());
+		cameraComponent->SetSky(pScene->GetGameObjectName("SkySphere"));
 
-	cameraComponent->SetSky(pScene->GetGameObjectName("SkySphere"));
 
-	this->componentList.push_back(cameraComponent);
+	}
 
 }

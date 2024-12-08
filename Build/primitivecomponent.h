@@ -1,5 +1,5 @@
 #pragma once
-#include "TransformComponent.h"
+#include "Component.h"
 
 class Material;
 class LambartMaterial;
@@ -8,7 +8,7 @@ class SkyMaterial;
 class UIMaterial;
 
 
-class PrimitiveComponent : public TransformComponent
+class PrimitiveComponent : public Component
 {
 public:
 	PrimitiveComponent();

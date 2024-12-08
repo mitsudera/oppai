@@ -45,25 +45,27 @@ cbuffer MaterialBuffer : register(b3)
 // ライト用バッファ
 struct LIGHT
 {
-    float4 Position;
-    float4 Direction;
+    float4 Position[MAX_LIGHT];
+    float4 Direction[MAX_LIGHT];
+    float4 Diffuse[MAX_LIGHT];
+    float4 Ambient[MAX_LIGHT];
+    
+    float4 Attenuation[MAX_LIGHT];
+    float4 Intensity[MAX_LIGHT];
+    //float4 other[MAX_LIGHT];
+    int4 flags[MAX_LIGHT]; //x=enable,y=pointORdirection
+    int enable;
+    int dummy[3];
 
-    float4 Diffuse;
-    float4 Ambient;
-    float4 Attenuation;
-    float4 Intensity;
-    int Flags;
-    int Enable;
-    int Dummy[2]; //16byte境界用
+    
 };
+
+
 
 cbuffer LightBuffer : register(b4)
 {
-    LIGHT Light[MAX_LIGHT];
+    LIGHT Light;
     
-    int LightEnable;
-    int Dummy[3]; //16byte境界用
-
     
 }
 
@@ -292,7 +294,7 @@ void PSmain(in float4 inPosition : SV_POSITION,
 
     float alpha = color.a;
     
-    if (LightEnable == 0)
+    if (Light.enable == 0)
     {
         color = color * Material.Diffuse * sma;
     }
@@ -310,13 +312,13 @@ void PSmain(in float4 inPosition : SV_POSITION,
             float3 iD;
             float3 iS;
                 
-            if (LightEnable == 1)
+            if (Light.flags[i].x == 1)
             {
-                lightDir = normalize(Light[i].Direction.xyz);
+                lightDir = normalize(Light.Direction[i].xyz);
                 light = dot(lightDir, normal.xyz);
                 light = (0.5 - 0.5 * light);
 
-                if (Light[i].Flags == 0)
+                if (Light.flags[i].y == 0)
                 {
            
 
@@ -325,11 +327,11 @@ void PSmain(in float4 inPosition : SV_POSITION,
                     float3 v = normalize(Camera.xyz - inWorldPos.xyz);
                         
                         
-                    iA = color.xyz * Material.Ambient.xyz * Light[i].Ambient.xyz;
+                    iA = color.xyz * Material.Ambient.xyz * Light.Ambient[i].xyz;
                         
                         
                         
-                    iD = color * Material.Diffuse * light * Light[i].Diffuse;
+                    iD = color * Material.Diffuse * light * Light.Diffuse[i];
                     iS = color.xyz * pow(saturate(dot(r, v)), Material.Shininess) * Material.Specular.xyz;
 
                     if (light > 0.5)
@@ -344,7 +346,7 @@ void PSmain(in float4 inPosition : SV_POSITION,
                     tempColor = float4(saturate((iA + iD + iS)), 1.0f);
 
                 }
-                else if (Light[i].Flags==1)
+                else if (Light.flags[i].y== 1)
                 {
                     //ポイントライトのphongshdinig
                 }

@@ -14,9 +14,12 @@ public:
 	~Scene();
 
 	virtual void Init();
+
 	void Update();
 	void Draw();
 	void Uninit();
+
+	void InitAllObject(void);
 
 	GameEngine* GetGameEngine(void);
 	CollisionManger* GetCollisionManager(void);

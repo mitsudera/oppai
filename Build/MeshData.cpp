@@ -112,6 +112,11 @@ XMMATRIX MeshData::GetWorldOffset(void)
 	return worldOffset;
 }
 
+XMMATRIX MeshData::GetLocalOffset(void)
+{
+	return this->localOffset;
+}
+
 void MeshData::BufferSetVertex(void)
 {
 
@@ -153,6 +158,21 @@ BOOL MeshData::GetIsRoot(void)
 int MeshData::GetIndex(void)
 {
 	return this->index;
+}
+
+XMFLOAT3 MeshData::GetPosOffset(void)
+{
+	return this->posOffset;
+}
+
+XMFLOAT3 MeshData::GetSclOffset(void)
+{
+	return this->sclOffset;
+}
+
+XMFLOAT3 MeshData::GetRotOffset(void)
+{
+	return this->rotOffset;
 }
 
 
@@ -216,7 +236,8 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap,MeshData* parent)
 	using namespace fbxsdk;
 	this->pAssetsManager = ap;
 	FbxNode* node = mesh->GetNode();
-	name = mesh->GetName();
+	name = mesh->GetNode()->GetName();
+
 	this->parent = parent;
 	this->index = pAssetsManager->AddMesh(this);
 	this->isRoot = FALSE;
@@ -479,8 +500,26 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap,MeshData* parent)
 
 
 	FbxMatrix worldOffset = node->EvaluateGlobalTransform(FBXSDK_TIME_INFINITE);//オフセット行列の取得
-	this->SetWorldOffset(FbxMatrixConvertToXMMATRIX(worldOffset));
+	this->worldOffset = FbxMatrixConvertToXMMATRIX(worldOffset);
 
+	FbxMatrix localOffset = node->EvaluateLocalTransform(FBXSDK_TIME_INFINITE);
+	this->localOffset = FbxMatrixConvertToXMMATRIX(localOffset);
+
+	FbxVector4 pos = node->EvaluateLocalTranslation(FBXSDK_TIME_INFINITE);
+	FbxVector4 scl = node->EvaluateLocalScaling(FBXSDK_TIME_INFINITE);
+	FbxVector4 rot = node->EvaluateLocalRotation(FBXSDK_TIME_INFINITE);
+
+	this->posOffset.x = pos[0];
+	this->posOffset.y = pos[1];
+	this->posOffset.z = pos[2];
+
+	this->sclOffset.x = scl[0];
+	this->sclOffset.y = scl[1];
+	this->sclOffset.z = scl[2];
+
+	this->rotOffset.x = rot[0];
+	this->rotOffset.y = rot[1];
+	this->rotOffset.z = rot[2];
 
 	// マテリアルの数
 

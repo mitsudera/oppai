@@ -7,7 +7,7 @@
 
 PrimitiveComponent::PrimitiveComponent()
 {
-
+	
 }
 
 PrimitiveComponent::PrimitiveComponent(GameObject* gameObject)
@@ -17,11 +17,12 @@ PrimitiveComponent::PrimitiveComponent(GameObject* gameObject)
 
 PrimitiveComponent::~PrimitiveComponent()
 {
+	
 }
 
 void PrimitiveComponent::Init(void)
 {
-	TransformComponent::Init();
+	Component::Init();
 	attribute = Attribute::Primitive;
 
 	hasShadow = FALSE;
@@ -30,21 +31,19 @@ void PrimitiveComponent::Init(void)
 
 void PrimitiveComponent::Update(void)
 {
-	TransformComponent::Update();
-
+	Component::Update();
 }
 
 void PrimitiveComponent::Uninit(void)
 {
-	TransformComponent::Uninit();
-
+	Component::Uninit();
 }
 
 
 
 void PrimitiveComponent::Draw(void)
 {
-	TransformComponent::Draw();
+	Component::Draw();
 	if (drawShadow)
 	{
 

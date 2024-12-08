@@ -228,20 +228,12 @@ XMMATRIX TransformComponent::GetWorldMtx(XMMATRIX mtx)
 {
 	XMMATRIX ans = XMMatrixMultiply(mtx,lMtx);
 
-	this->attribute;
 
-	if (this->attribute != Attribute::Transform)
-	{
-		ans = pGameObject->GetTransFormComponent()->GetWorldMtx(ans);
-	}
-	else if (pGameObject->GetParent() != nullptr)
+	if (pGameObject->GetParent() != nullptr)
 	{
 		ans = pGameObject->GetParent()->GetTransFormComponent()->GetWorldMtx(ans);
 
 	}
-
-
-
 	return ans;
 }
 

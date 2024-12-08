@@ -28,11 +28,6 @@ void Scene::Init()
 	this->coliisionManager->Init();
 
 
-	for (GameObject* gameObject : GetGameObject())
-	{
-		gameObject->Init();
-
-	}
 
 }
 
@@ -81,6 +76,17 @@ void Scene::Uninit()
 
 	}
 	this->coliisionManager->Uninit();
+
+}
+
+void Scene::InitAllObject(void)
+{
+
+	for (GameObject* gameObject : GetGameObject())
+	{
+		gameObject->Init();
+
+	}
 
 }
 

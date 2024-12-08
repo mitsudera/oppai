@@ -16,6 +16,8 @@
 #include "Material.h"
 #include "AssetsManager.h"
 #include "component.h"
+#include "transformcomponent.h"
+
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -75,13 +77,12 @@ CameraComponent::~CameraComponent()
 
 void CameraComponent::Init(void)
 {
-	TransformComponent::Init();
+	Component::Init();
 
 	this->attribute = Attribute::Camera;
 
 	this->mode = MODE::WORLD;
 
-	this->SetTransForm(XMFLOAT3(0.0f, 0.0f, 0.0f),XMFLOAT3(0.0f, 0.0f, 0.0f),XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 	this->at = { 0.0f, 0.0f, -1.0f };
 	this->up = { 0.0f, 1.0f, 0.0f };
@@ -112,7 +113,7 @@ void CameraComponent::Init(void)
 
 void CameraComponent::Update(void)
 {
-	TransformComponent::Update();
+	Component::Update();
 
 
 }
@@ -120,7 +121,7 @@ void CameraComponent::Update(void)
 
 void CameraComponent::Uninit(void)
 {
-	TransformComponent::Uninit();
+	Component::Uninit();
 
 
 }
@@ -130,7 +131,7 @@ void CameraComponent::Render(void)
 
 	switch (this->mode)
 	{
-	case MODE::TRACKING:
+	case MODE::TRACKING_PARENT:
 
 
 		this->at = this->pGameObject->GetParent()->GetTransFormComponent()->GetWorldPos();
@@ -145,7 +146,7 @@ void CameraComponent::Render(void)
 		break;
 	case MODE::WORLD:
 
-		this->mtxView=XMMatrixLookToLH(XMLoadFloat3(&this->GetWorldPos()), axisZ, this->axisY);
+		this->mtxView = XMMatrixLookToLH(XMLoadFloat3(&this->GetWorldPos()), this->GetTransFormComponent()->GetAxisZ(), this->GetTransFormComponent()->GetAxisY());
 		break;
 
 	default:
@@ -180,7 +181,7 @@ void CameraComponent::Render(void)
 	case ClearMode::Color:
 
 
-		
+
 		pRenderer->GetDeviceContext()->ClearRenderTargetView(this->renderTarget, cc);
 		pRenderer->GetDeviceContext()->ClearDepthStencilView(this->depthTarget, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
@@ -193,12 +194,10 @@ void CameraComponent::Render(void)
 
 		layerCulling[Layer::Sky] = TRUE;
 		pRenderer->SetDepthEnable(FALSE);
-		this->sky->GetComponent<TransformComponent>()->SetPosition(this->GetWorldPos());
+		this->sky->GetTransFormComponent()->SetPosition(this->GetWorldPos());
 
-		this->sky->GetComponent<TransformComponent>()->UpdateMatrix();
+		this->sky->GetTransFormComponent()->UpdateMatrix();
 
-		XMFLOAT3 p1 = this->GetWorldPos();
-		XMFLOAT3 p2 = this->sky->GetComponent<TransformComponent>()->GetWorldPos();
 		for (int j = 0; j < ShaderSet::ShaderIndex::MAX; j++)
 		{
 			pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->SetShader((ShaderSet::ShaderIndex)j);
@@ -207,7 +206,7 @@ void CameraComponent::Render(void)
 			sky->Draw((ShaderSet::ShaderIndex)j);
 
 
-			
+
 
 		}
 
@@ -216,32 +215,22 @@ void CameraComponent::Render(void)
 
 
 
-	for (int i = 0; i < Layer::LayerMax; i++)
+
+
+	//シェーダー毎に描画
+	for (int i = 0; i < ShaderSet::ShaderIndex::MAX; i++)
 	{
-
-		//カリングがtrueの場合は描画しない
-		if (layerCulling[i] == TRUE)
-			continue;
-
-		for (int j = 0; j < ShaderSet::ShaderIndex::MAX; j++)
+		pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->SetShader((ShaderSet::ShaderIndex)i);
+		//描画処理
+		for (GameObject* gameObject : pGameObject->GetScene()->GetGameObject())
 		{
-			pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->SetShader((ShaderSet::ShaderIndex)j);
+			//レイヤーのカリングチェック
+			if (layerCulling[gameObject->GetLayer()])
+				continue;
 
-
-			//描画処理
-			for (GameObject* gameObject : pGameObject->GetScene()->GetGameObject())
-			{
-				if (gameObject->GetLayer() != i)
-					continue;
-				gameObject->Draw((ShaderSet::ShaderIndex)j);
-
-
-			}
-
+			gameObject->Draw((ShaderSet::ShaderIndex)i);
 		}
 	}
-
-
 }
 
 
@@ -294,46 +283,6 @@ void CameraComponent::SetSky(GameObject* sky)
 }
 
 
-
-//=============================================================================
-// カメラの更新
-//=============================================================================
-void CameraComponent::SetCamera(void)
-{
-	Renderer* renderer = GetGameObject()->GetScene()->GetGameEngine()->GetRenderer();
-	// ビューマトリックス設定
-	XMMATRIX mtxView;
-
-
-	SetCameraAT(this->lookObject->GetTransFormComponent()->GetPosition());
-
-
-	XMFLOAT3 pos = {.0f,.0f,.0f};
-
-
-
-
-
-	XMFLOAT3 At = this->at;
-	XMFLOAT3 Up = this->up;
-
-
-	//mtxView = XMMatrixLookAtLH(XMLoadFloat3(&pos), XMLoadFloat3(&this->at), XMLoadFloat3(&this->up));
-
-	XMVECTOR posv = XMLoadFloat3(&pos);
-
-	mtxView = XMMatrixLookAtLH(posv, XMLoadFloat3(&At), XMLoadFloat3(&Up));
-	this->mtxView = mtxView;
-
-	XMMATRIX mtxInvView;
-	mtxInvView = XMMatrixInverse(nullptr, mtxView);
-
-
-	// プロジェクションマトリックス設定
-	XMMATRIX mtxProjection;
-	mtxProjection = XMMatrixPerspectiveFovLH(VIEW_ANGLE, VIEW_ASPECT, VIEW_NEAR_Z, VIEW_FAR_Z);
-
-}
 
 //=============================================================================
 // ビューポートの設定
@@ -412,20 +361,6 @@ int CameraComponent::GetViewPortType(void)
 	return ViewPortType;
 }
 
-
-
-// カメラの視点と注視点をセット
-void CameraComponent::SetCameraAT(XMFLOAT3 pos)
-{
-	this->at = pos;
-
-	
-}
-
-void CameraComponent::SetCameraUp(XMFLOAT3 up)
-{
-	this->up = up;
-}
 
 void CameraComponent::SetLookObject(GameObject* gameObject)
 {

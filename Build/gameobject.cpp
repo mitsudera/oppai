@@ -28,15 +28,22 @@ GameObject::GameObject(Scene* scene)
 
 	this->layer = Layer::Default;
 
+
+	this->transformComponent = new TransformComponent(this);
+
 }
 
 GameObject::GameObject(GameObject* parent)
 {
+
 	this->parent = parent;
 	this->pScene = parent->GetScene();
 	this->tag = parent->GetTag();
 
 	this->layer = parent->GetLayer();
+
+	this->transformComponent = new TransformComponent(this);
+
 }
 
 GameObject::~GameObject()
@@ -46,12 +53,9 @@ GameObject::~GameObject()
 
 void GameObject::Init(void)
 {
-	this->name = "notname";
-	this->transformComponent = new TransformComponent(this);
-	this->transformComponent->Init();
-	componentList.push_back(transformComponent);
 	this->collider = nullptr;
 	this->isActive = TRUE;
+	this->componentList.push_back(transformComponent);
 
 }
 
@@ -96,19 +100,8 @@ void GameObject::UpdateMatrix(void)
 		return;
 
 
-	for (Component* com : componentList)
-	{
-		if (!com->GetActive())
-			continue;
+	this->transformComponent->UpdateMatrix();
 
-		TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(com);
-
-		if (transformComponent == nullptr)
-			continue;
-
-		transformComponent->UpdateMatrix();
-
-	}
 	for (GameObject* gameObject : childList)
 	{
 		if (!gameObject->GetActive())
@@ -146,6 +139,19 @@ void GameObject::Draw(ShaderSet::ShaderIndex index)
 		child->Draw(index);
 	}
 
+}
+
+void GameObject::InitAllComponentAndChild(void)
+{
+	this->transformComponent->Init();
+	for (Component* com : componentList)
+	{
+		com->Init();
+	}
+	for (GameObject* obj:childList)
+	{
+		obj->InitAllComponentAndChild();
+	}
 }
 
 
@@ -209,6 +215,19 @@ GameObject* GameObject::GetChild(int index)
 	return this->childList[index];
 }
 
+GameObject* GameObject::GetChild(string name)
+{
+	for (GameObject* gameObj:childList)
+	{
+		if (gameObj->GetName()==name)
+		{
+			return gameObj;
+		}
+	}
+
+	return nullptr;
+}
+
 vector<GameObject*>& GameObject::GetChild()
 {
 	return this->childList;
@@ -239,6 +258,14 @@ Component* GameObject::GetComponentAttrbute(Component::Attribute attr, int n)
 		}
 	}
 	return nullptr;
+}
+
+GameObject* GameObject::AddChild(string name)
+{
+	GameObject* newObj = new GameObject(this);
+	newObj->name = name;
+	this->childList.push_back(newObj);
+	return newObj;
 }
 
 string GameObject::GetName(void)

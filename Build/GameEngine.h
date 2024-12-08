@@ -50,7 +50,6 @@ private:
 	Input* input;
 	LightManager* lightManager;
 
-	CameraComponent* mainCamera;
 	SceneManager* sceneManager;
 	Scene* activeScene;
 

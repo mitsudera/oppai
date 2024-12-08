@@ -4,7 +4,7 @@
 #include "GameEngine.h"
 #include "Scene.h"
 #include "input.h"
-
+#include "transformcomponent.h"
 CameraControllerComponent::CameraControllerComponent(GameObject* gameObject)
 {
 	this->pGameObject = gameObject;
@@ -17,7 +17,7 @@ CameraControllerComponent::~CameraControllerComponent()
 void CameraControllerComponent::Init(void)
 {
 	Component::Init();
-	this->camara = pGameObject->GetComponent<CameraComponent>();
+	this->camara = pGameObject;
 }
 
 void CameraControllerComponent::Uninit(void)
@@ -30,32 +30,32 @@ void CameraControllerComponent::Update(void)
 	Component::Update();
 	if (input->GetKeyboardPress(DIK_W))
 	{
-		this->camara->MoveZAxis(1.0f);
+		this->camara->GetTransFormComponent()->MoveZAxis(1.0f);
 
 	}
 	if (input->GetKeyboardPress(DIK_S))
 	{
-		this->camara->MoveZAxis(-1.0f);
+		this->camara->GetTransFormComponent()->MoveZAxis(-1.0f);
 
 	}
 	if (input->GetKeyboardPress(DIK_D))
 	{
-		this->camara->MoveXAxis(1.0f);
+		this->camara->GetTransFormComponent()->MoveXAxis(1.0f);
 
 	}
 	if (input->GetKeyboardPress(DIK_A))
 	{
-		this->camara->MoveXAxis(-1.0f);
+		this->camara->GetTransFormComponent()->MoveXAxis(-1.0f);
 
 	}
 	if (input->GetKeyboardPress(DIK_E))
 	{
-		this->camara->MoveYAxis(1.0f);
+		this->camara->GetTransFormComponent()->MoveYAxis(1.0f);
 
 	}
 	if (input->GetKeyboardPress(DIK_Q))
 	{
-		this->camara->MoveYAxis(-1.0f);
+		this->camara->GetTransFormComponent()->MoveYAxis(-1.0f);
 
 	}
 	if (input->IsMouseRightPressed())
@@ -69,8 +69,8 @@ void CameraControllerComponent::Update(void)
 		x *= 0.001f;
 		y *= 0.001f;
 
-		this->camara->RotYaw(x);
-		this->camara->RotPitch(y);
+		this->camara->GetTransFormComponent()->RotYaw(x);
+		this->camara->GetTransFormComponent()->RotPitch(y);
 
 	}
 

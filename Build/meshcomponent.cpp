@@ -12,6 +12,7 @@
 #include "Material.h"
 #include "LambartMaterial.h"
 #include "PhongMaterial.h"
+#include "transformcomponent.h"
 
 #define TEXTURE_PATH	"data/TEXTURE/"
 
@@ -254,8 +255,6 @@ void MeshComponent::Draw(void)
 {
 	PrimitiveComponent::Draw();
 
-	if (!isShow) return;
-
 	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
 
 	Renderer* renderer = pGameEngine->GetRenderer();
@@ -278,8 +277,7 @@ void MeshComponent::Draw(void)
 	TransformComponent* trans = this->pGameObject->GetTransFormComponent();
 
 	XMMATRIX world = XMMatrixIdentity();
-	world = XMMatrixMultiply(world, GetMtx());
-	world = GetWorldMtx(world);
+	world = this->pGameObject->GetTransFormComponent()->GetWorldMtx(world);
 	pGameEngine->GetCBufferManager()->SetWorldMtx(&world);
 
 
@@ -386,8 +384,14 @@ void MeshComponent::SetMeshDataIndex(int index)
 
 	this->materialIndex = meshData->GetMaterialIndex();
 
-	SetMtx(meshData->GetWorldOffset());
-	this->SetBlendMtx();
+	this->GetTransFormComponent()->SetPosition(meshData->GetPosOffset());
+	this->GetTransFormComponent()->SetRotation(meshData->GetRotOffset());
+	this->GetTransFormComponent()->SetScale(meshData->GetSclOffset());
+
+	this->GetTransFormComponent()->UpdateMatrix();
+
+	//SetMtx(meshData->GetLocalOffset());
+	//this->SetBlendMtx();
 	isOriginalDiffuse = FALSE;
 
 

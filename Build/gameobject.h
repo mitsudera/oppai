@@ -19,8 +19,8 @@ typedef enum
 
 typedef enum
 {	
-	Sky,
 	Default,
+	Sky,
 	Field,
 	Water,
 	UI,
@@ -50,6 +50,7 @@ public:
 	virtual void UpdateMatrix(void);
 	virtual void Draw(ShaderSet::ShaderIndex index);
 	
+	void InitAllComponentAndChild(void);
 
 	Scene* GetScene(void);
 	TransformComponent* GetTransFormComponent(void);
@@ -65,6 +66,7 @@ public:
 	GameObject* GetRootObject(void);
 
 	GameObject* GetChild(int index);
+	GameObject* GetChild(string name);
 	vector<GameObject*>& GetChild();
 
 	vector<Component*>& GetComponentList(void);
@@ -77,6 +79,9 @@ public:
 
 	template<class T>
 	T* AddComponent(void);
+
+	GameObject* AddChild(string name);
+
 
 	string GetName(void);
 	void SetName(string name);

@@ -40,6 +40,11 @@ public:
 	template<class T>
 	T* GetComponent(void);
 
+	XMMATRIX GetWorldMtx(XMMATRIX world);
+	XMMATRIX GetWorldMtx(void);
+	XMFLOAT3 GetWorldPos(void);
+
+	TransformComponent* GetTransFormComponent(void);
 
 protected:
 	GameObject* pGameObject;
@@ -50,3 +55,8 @@ protected:
 
 };
 
+template<class T>
+T* Component::GetComponent(void)
+{
+	return pGameObject->GetComponent<T>();
+}

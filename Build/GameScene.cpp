@@ -18,7 +18,7 @@ GameScene::~GameScene()
 
 void GameScene::Init()
 {
-
+	Scene::Init();
 
 	SkySphere* sky = new SkySphere(this);
 	this->gameObjectList.push_back(sky);
@@ -41,5 +41,5 @@ void GameScene::Init()
 
 
 	//ç≈å„Ç…çsÇ§
-	Scene::Init();
+	Scene::InitAllObject();
 }
