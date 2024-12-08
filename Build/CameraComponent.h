@@ -51,8 +51,6 @@ public:
 	~CameraComponent();
 
 
-	void SetCameraAT(XMFLOAT3 pos);
-	void SetCameraUp(XMFLOAT3 up);
 	void SetLookObject(GameObject* gameObject);
 
 

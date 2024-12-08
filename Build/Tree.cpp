@@ -24,11 +24,6 @@ void Tree::Init(void)
 	this->transformComponent->SetPosition(XMFLOAT3(0.0f, 0.0f, 10.0f));
 	this->transformComponent->SetScale(XMFLOAT3(10.0f, 10.0f, 10.0f));
 
-	MeshComponent* mesh = new MeshComponent(this);
-	mesh->Init();
-	mesh->SetMeshComponent("nanyousugi_under3000.fbx");
-	this->componentList.push_back(mesh);
-
 	
 
 }

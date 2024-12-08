@@ -103,19 +103,6 @@ vector<MeshData*>& MeshData::GetChild(void)
 	return this->childArray;
 }
 
-void MeshData::SetWorldOffset(XMMATRIX offsetmtx)
-{
-	worldOffset = offsetmtx;
-}
-XMMATRIX MeshData::GetWorldOffset(void)
-{
-	return worldOffset;
-}
-
-XMMATRIX MeshData::GetLocalOffset(void)
-{
-	return this->localOffset;
-}
 
 void MeshData::BufferSetVertex(void)
 {

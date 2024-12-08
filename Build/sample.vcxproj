@@ -148,6 +148,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationControlerComponent.h" />
+    <ClInclude Include="AnimationData.h" />
     <ClInclude Include="AssetsManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
@@ -199,6 +201,8 @@
     <ClInclude Include="UIShader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationControlerComponent.cpp" />
+    <ClCompile Include="AnimationData.cpp" />
     <ClCompile Include="AssetsManager.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraComponent.cpp" />

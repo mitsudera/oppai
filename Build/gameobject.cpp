@@ -284,9 +284,7 @@ void GameObject::LoadFbxFileMesh(string fName)
 
 	MeshData* root = pScene->GetGameEngine()->GetAssetsManager()->GetMeshTree(treeIndex);
 
-
 	LoadMeshNode(root);
-
 }
 
 void GameObject::LoadMeshNode(MeshData* node)
@@ -306,9 +304,16 @@ void GameObject::LoadMeshNode(MeshData* node)
 		newObj->Init();
 		newObj->name = childData->GetName();
 		newObj->LoadMeshNode(childData);
+
+		if (node->GetIsRoot())
+		{
+			newObj->name = "meshRoot";
+		}
+
 		this->childList.push_back(newObj);
 
 	}
+
 
 }
 

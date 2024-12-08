@@ -255,6 +255,12 @@
     <ClInclude Include="SpriteComponent.h">
       <Filter>component\primitiveComponent</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationControlerComponent.h">
+      <Filter>component</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationData.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -400,6 +406,12 @@
     </ClCompile>
     <ClCompile Include="SpriteComponent.cpp">
       <Filter>component\primitiveComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationControlerComponent.cpp">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationData.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

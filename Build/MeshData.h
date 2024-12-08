@@ -66,11 +66,6 @@ class AssetsManager;
 
 	 vector <MeshData*> &GetChild(void);
 
-	 void SetWorldOffset(XMMATRIX offsetmtx);
-	 XMMATRIX GetWorldOffset(void);
-
-	 XMMATRIX GetLocalOffset(void);
-
 	 void BufferSetVertex(void);
 	 void BufferSetIndex(void);
 
