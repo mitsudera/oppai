@@ -4,6 +4,18 @@
 class AssetsManager;
 class MeshData;
 
+class AnimationNode
+{
+public:
+	AnimationNode();
+	~AnimationNode();
+
+private:
+
+	AnimationNode* transferNode;
+
+};
+
 //つけるのはメッシュコンポーネントのルート
 class AnimationControlerComponent : public Component
 {
@@ -14,7 +26,13 @@ public:
 		NO_ANIM,
 		DATA_ANIM,
 		BLEND_ANIM,
-		CROSSFADE_ANIM, // クロスフェード補間を行うステート
+		CROSSFADE_ANIM, // クロスフェード補間を行うモード
+	};
+	enum class ANIM_STATE:int
+	{
+		STOP,
+		TRANSFER,
+		ANIMATION,
 	};
 
 
@@ -25,8 +43,8 @@ public:
 	virtual void Update(void) override;
 	virtual void Uninit(void) override;
 
-
 	void LoadAnimationData(string fileName);
+
 
 	int GetDefaultAnimIndex(void);
 	void SetDefaultAnimIndex(int n);
@@ -35,6 +53,7 @@ public:
 	void SetAnimationSpeed(float speed);
 	float GetAnimationSpeed(void);
 
+	void CreateAnimationNode(string name);
 
 protected:
 	
@@ -48,7 +67,7 @@ protected:
 	int framenum;
 	float blendcnt;
 	int blendcntmax;
-	ANIM_MODE animstate;
+	ANIM_MODE animMode;
 	BOOL motionblend;
 	BOOL animation;
 
@@ -59,6 +78,8 @@ protected:
 	int defaultAnimIndex;
 
 
+
+	vector<AnimationNode*>  animNodeArray;
 
 
 

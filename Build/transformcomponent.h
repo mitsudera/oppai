@@ -94,6 +94,9 @@ public:
 	void RotAxisAngle(XMVECTOR axis, float angle);
 	
 	float Length(TransformComponent* transform);
+
+	void SetMtxUpdate(BOOL flag);
+
 protected:
 
 	
@@ -126,6 +129,7 @@ protected:
 	XMMATRIX		lMtx;
 	XMMATRIX		wMtx;	// ワールドマトリックス
 
+	BOOL			isMtxUpdate;
 
 };
 

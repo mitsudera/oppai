@@ -36,6 +36,9 @@ void AnimationControlerComponent::Uninit(void)
 
 void AnimationControlerComponent::LoadAnimationData(string fileName)
 {
-	pAssetsManager->LoadAnimationData(fileName);
+	int index = pAssetsManager->LoadAnimationData(fileName);
+
+	AnimDataIndexArray.push_back(index);
+
 
 }

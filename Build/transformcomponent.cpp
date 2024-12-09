@@ -27,6 +27,7 @@ TransformComponent::TransformComponent()
 	this->lMtx = XMMatrixIdentity();
 	this->wMtx = XMMatrixIdentity();
 	this->fDirection = { 0.0f,0.0f,1.0f };
+	isMtxUpdate = TRUE;
 
 }
 
@@ -57,6 +58,7 @@ TransformComponent::TransformComponent(GameObject* gameObject)
 	this->fDirection = { 0.0f,0.0f,1.0f };
 
 	this->pGameObject = gameObject;
+	isMtxUpdate = TRUE;
 
 }
 
@@ -94,6 +96,7 @@ void TransformComponent::Init(void)
 	this->mtxrotz = XMMatrixRotationQuaternion(qtonZ);
 	this->lMtx = XMMatrixIdentity();
 	this->wMtx = XMMatrixIdentity();
+	isMtxUpdate = TRUE;
 
 }
 
@@ -137,6 +140,8 @@ void TransformComponent::Draw(void)
 
 void TransformComponent::UpdateMatrix(void)
 {
+	if (!this->isMtxUpdate)
+		return;
 	lMtx = XMMatrixIdentity();
 	lMtx = XMMatrixMultiply(lMtx, mtxscl);
 	lMtx = XMMatrixMultiply(lMtx, mtxrot);
@@ -518,6 +523,11 @@ void TransformComponent::RotAxisAngle(XMVECTOR axis, float angle)
 float TransformComponent::Length(TransformComponent* transform)
 {
 	return XMFLOAT3Length(this->GetWorldPos(), transform->GetWorldPos());
+}
+
+void TransformComponent::SetMtxUpdate(BOOL flag)
+{
+	this->isMtxUpdate = flag;
 }
 
 
