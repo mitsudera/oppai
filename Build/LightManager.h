@@ -2,8 +2,58 @@
 #include "Coreminimal.h"
 #include "CBufferManager.h"
 
-class LightComponent;
+
+#define MAX_DIREC_LIGHT (4)
+#define MAX_POINT_LIGHT (8)
+
+
+class DirectionalLightComponent;
+class PointLightComponent;
 class GameEngine;
+
+
+
+struct DIREC_LIGHT_PARAM
+{
+	XMFLOAT4	m_Direction;	    // ライトの方向
+	XMFLOAT4	m_Diffuse;	        // 拡散光の色
+	XMFLOAT4	m_Ambient;		    // 環境光の色
+	int			m_Enable;
+};
+// ライト用定数バッファ構造体
+struct DIREC_LIGHT_CBUFFER
+{
+	XMFLOAT4	m_Direction[MAX_DIREC_LIGHT];	    // ライトの方向
+	XMFLOAT4	m_Diffuse[MAX_DIREC_LIGHT];	        // 拡散光の色
+	XMFLOAT4	m_Ambient[MAX_DIREC_LIGHT];		    // 環境光の色
+	XMINT4		m_Enable[MAX_DIREC_LIGHT];
+	XMINT4		allEnable;
+
+};
+
+
+struct POINT_LIGHT_PARAM
+{
+	XMFLOAT4	m_Position;	    // ライトの方向
+	XMFLOAT4	m_Diffuse;	        // 拡散光の色
+	XMFLOAT4	m_Ambient;		    // 環境光の色
+	XMFLOAT4	m_Attenuation;	    // 減衰率    
+	XMFLOAT4    m_intensity;       // ライトの強度
+	int			m_Enable;
+};
+
+// ライト用定数バッファ構造体
+struct POINT_LIGHT_CBUFFER
+{
+	XMFLOAT4	m_Position[MAX_POINT_LIGHT];	    // ライトの位置
+	XMFLOAT4	m_Diffuse[MAX_POINT_LIGHT];	        // 拡散光の色
+	XMFLOAT4	m_Ambient[MAX_POINT_LIGHT];		    // 環境光の色
+	XMFLOAT4	m_Attenuation[MAX_POINT_LIGHT];	    // 減衰率    
+	XMFLOAT4    m_intensity[MAX_POINT_LIGHT];       // ライトの強度
+	XMINT4		m_Enable[MAX_POINT_LIGHT];
+	XMINT4		allEnable;
+
+};
 
 
 
@@ -18,26 +68,32 @@ public:
     ~LightManager();
 
     void Init();
-    void Update();
-    void Draw();
-    void Uninit();
+	void Update();
 
+    void SetLightNear(XMFLOAT3 pos);//指定のポジションに近いライトをオンにする
 
+	int AddLight(DirectionalLightComponent* com);
+	int AddLight(PointLightComponent* com);
 
-    void SetMainLight(LightComponent* lightComponent);
+	void SetPointLight(PointLightComponent* pointlightComponent, int index);
+	void SetDirecLight(DirectionalLightComponent* direclightComponent, int index);
 
+	void SetAllEnable(BOOL flag);
 private:
     GameEngine* pGameEngine;
+	CBufferManager* cBufferManager;
 
-    LIGHT_CBUFFER lightCBufferStruct;
+    DIREC_LIGHT_CBUFFER direcLightCBufferStruct;
+    POINT_LIGHT_CBUFFER pointLightCBufferStruct;
 
-    int activeLightIndex[MAX_LIGHT];
 
-    vector<LightComponent*> lightList;
+    vector<DirectionalLightComponent*> direcLightList;
+    vector<PointLightComponent*> pointLightList;
 
-    ID3D11Buffer* lightBuffer;
+    ID3D11Buffer* direcLightBuffer;
+    ID3D11Buffer* pointLightBuffer;
 
-    void SetLight(LightComponent* lightComponent, int index);
+
 
 };
 

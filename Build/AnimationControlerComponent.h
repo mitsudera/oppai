@@ -3,17 +3,23 @@
 
 class AssetsManager;
 class MeshData;
+class MtxNode;
 
 class AnimationNode
 {
 public:
-	AnimationNode();
+	AnimationNode(int animIndex,string name);
 	~AnimationNode();
+
+	int GetAnimIndex(void);
+	string GetName(void);
+
 
 private:
 
-	AnimationNode* transferNode;
 
+	string name;
+	int animDataIndex;
 };
 
 //つけるのはメッシュコンポーネントのルート
@@ -43,7 +49,10 @@ public:
 	virtual void Update(void) override;
 	virtual void Uninit(void) override;
 
-	void LoadAnimationData(string fileName);
+	int LoadAnimationData(string fileName, string name);
+
+	void UpdateAnimation(MtxNode* node, GameObject* gameObject);
+
 
 
 	int GetDefaultAnimIndex(void);
@@ -55,11 +64,11 @@ public:
 
 	void CreateAnimationNode(string name);
 
+
 protected:
 	
 	AssetsManager* pAssetsManager;
 
-	vector<int> AnimDataIndexArray;
 
 	int animindex;
 	int lastanimindex;

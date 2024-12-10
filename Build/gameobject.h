@@ -128,5 +128,6 @@ T* GameObject::AddComponent(void)
 {
 	T* com = new T(this);
 	this->componentList.push_back(com);
+
 	return com;
 }

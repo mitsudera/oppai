@@ -1,9 +1,3 @@
-
-
-//*****************************************************************************
-// 定数バッファ
-//*****************************************************************************
-
 // マトリクスバッファ
 cbuffer WorldBuffer : register(b0)
 {
@@ -40,37 +34,48 @@ cbuffer MaterialBuffer : register(b3)
     MATERIAL Material;
 }
 
-#define MAX_LIGHT (8)
+
+#define MAX_DIREC_LIGHT (4)
+#define MAX_POINT_LIGHT (8)
 
 // ライト用バッファ
-struct LIGHT
+struct DIREC_LIGHT
 {
-    float4 Position[MAX_LIGHT];
-    float4 Direction[MAX_LIGHT];
-    float4 Diffuse[MAX_LIGHT];
-    float4 Ambient[MAX_LIGHT];
-    
-    float4 Attenuation[MAX_LIGHT];
-    float4 Intensity[MAX_LIGHT];
-    //float4 other[MAX_LIGHT];
-    int4 flags[MAX_LIGHT]; //x=enable,y=pointORdirection
-    int enable;
-    int dummy[3];
+    float4 m_Direction[MAX_DIREC_LIGHT]; // ライトの方向
+    float4 m_Diffuse[MAX_DIREC_LIGHT]; // 拡散光の色
+    float4 m_Ambient[MAX_DIREC_LIGHT]; // 環境光の色
+    int4 m_Enable[MAX_DIREC_LIGHT];
+    int4 allEnable;
 
-    
 };
 
 
-
-cbuffer LightBuffer : register(b4)
+cbuffer DirecLightBuffer : register(b4)
 {
-    LIGHT Light;
+    DIREC_LIGHT direcLight;
+    
+    
+}
+// ライト用定数バッファ構造体
+struct POINT_LIGHT
+{
+    float4 m_Position[MAX_POINT_LIGHT]; // ライトの位置
+    float4 m_Diffuse[MAX_POINT_LIGHT]; // 拡散光の色
+    float4 m_Ambient[MAX_POINT_LIGHT]; // 環境光の色
+    float4 m_Attenuation[MAX_POINT_LIGHT]; // 減衰率    
+    float4 m_intensity[MAX_POINT_LIGHT]; // ライトの強度
+    int4 m_Enable[MAX_POINT_LIGHT];
+    int4 allEnable;
+};
+cbuffer PointLightBuffer : register(b5)
+{
+    POINT_LIGHT pointLight;
     
     
 }
 
 
-cbuffer CameraBuffer : register(b5)
+cbuffer CameraBuffer : register(b6)
 {
     float4 Camera;
 }
@@ -85,10 +90,15 @@ struct SHADOW
     int2 dummy;
 };
 
-cbuffer ShadowBuffer : register(b6)
+cbuffer ShadowBuffer : register(b7)
 {
     SHADOW Shadow;
 }
+
+
+
+
+
 
 //=============================================================================
 // 頂点シェーダ
@@ -137,7 +147,7 @@ void VSmain(in float4 inPosition : POSITION0,
     outPosSM.y = (-pos4.y + 1.0) / 2.0;
     outPosSM.z = pos4.z;
 
-	
+
 }
 
 
@@ -230,15 +240,9 @@ void PSmain(in float4 inPosition : SV_POSITION,
         
     }
     
-    
-    
-    
-    
     					//影
     if (Shadow.enable == 1)
     {
-
-		
         if (inPosSM.z > 1.0)
         {
             sma = 1.0;
@@ -254,16 +258,10 @@ void PSmain(in float4 inPosition : SV_POSITION,
 
 
             }
-            
-            
-            
         }
         else if (Shadow.mode == 1)
         {
             sma = GetVarianceDirectionalShadowFactor(inPosSM);
-        
- 
-        
             if (sma < 0.99f)
             {
                 sma = sma * sma;
@@ -293,8 +291,8 @@ void PSmain(in float4 inPosition : SV_POSITION,
     }
 
     float alpha = color.a;
-    
-    if (Light.enable == 0)
+    //ディレクショナルライト
+    if (direcLight.allEnable.x == 0)
     {
         color = color * Material.Diffuse * sma;
     }
@@ -303,70 +301,72 @@ void PSmain(in float4 inPosition : SV_POSITION,
         float4 tempColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
         float4 outColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
+        float3 lightDir;
+        float light;
+        float3 iA;
+        float3 iD;
+        float3 iS;
+
         
-        for (int i = 0; i < MAX_LIGHT; i++)
+        for (int i = 0; i < MAX_DIREC_LIGHT; i++)
         {
-            float3 lightDir;
-            float light;
-            float3 iA;
-            float3 iD;
-            float3 iS;
-                
-            if (Light.flags[i].x == 1)
+  
+            if (direcLight.m_Enable[i].x == 1)
             {
-                lightDir = normalize(Light.Direction[i].xyz);
+                lightDir = normalize(direcLight.m_Direction[i].xyz);
                 light = dot(lightDir, normal.xyz);
                 light = (0.5 - 0.5 * light);
 
-                if (Light.flags[i].y == 0)
+         
+
+                float3 r = 2.0 * normal.xyz * light - lightDir;
+
+                float3 v = normalize(Camera.xyz - inWorldPos.xyz);
+                        
+                        
+                iA = color.xyz * Material.Ambient.xyz * direcLight.m_Ambient[i].xyz;
+                        
+                        
+                        
+                iD = color * Material.Diffuse * light * direcLight.m_Diffuse[i];
+                iS = color.xyz * pow(saturate(dot(r, v)), Material.Shininess) * Material.Specular.xyz;
+
+                if (light > 0.5)
                 {
-           
-
-                    float3 r = 2.0 * normal.xyz * light - lightDir;
-
-                    float3 v = normalize(Camera.xyz - inWorldPos.xyz);
-                        
-                        
-                    iA = color.xyz * Material.Ambient.xyz * Light.Ambient[i].xyz;
-                        
-                        
-                        
-                    iD = color * Material.Diffuse * light * Light.Diffuse[i];
-                    iS = color.xyz * pow(saturate(dot(r, v)), Material.Shininess) * Material.Specular.xyz;
-
-                    if (light > 0.5)
-                    {
-                        iD *= sma;
-                    }
+                    iD *= sma;
+                }
                         
 
                        
                         
                         
-                    tempColor = float4(saturate((iA + iD + iS)), 1.0f);
+                tempColor = float4(saturate((iA + iD + iS)), 1.0f);
 
-                }
-                else if (Light.flags[i].y== 1)
+                
+            }
+            
+            for (int i = 0; i < MAX_POINT_LIGHT; i++)
+            {
+                if (pointLight.m_Enable[i].x == 1)
                 {
-                    //ポイントライトのphongshdinig
-                }
-                else
-                {
-                    tempColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
                 }
 
-                outColor += tempColor;
             }
 
+            
         }
-
         
-		
-
+        
+        
         color = outColor;
         color.a = alpha;
+        
     }
+		
 
+    
+    
     outDiffuse = color;
-
 }
+
+        

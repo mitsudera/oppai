@@ -62,8 +62,8 @@ void CameraControllerComponent::Update(void)
 	{
 		float x, y;
 
-		x = input->GetMouseX();
-		y = input->GetMouseY();
+		x = (float)input->GetMouseX();
+		y = (float)input->GetMouseY();
 
 
 		x *= 0.001f;

@@ -79,8 +79,8 @@ int Main::Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int
 		WS_OVERLAPPEDWINDOW, //WS_POPUPタイトルバー消す
 		CW_USEDEFAULT,																		// ウィンドウの左座標
 		CW_USEDEFAULT,																		// ウィンドウの上座標
-		screenWidth + GetSystemMetrics(SM_CXDLGFRAME) * 2,									// ウィンドウ横幅
-		screenHeight + GetSystemMetrics(SM_CXDLGFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION),	// ウィンドウ縦幅
+		(int)screenWidth + GetSystemMetrics(SM_CXDLGFRAME) * 2,									// ウィンドウ横幅
+		(int)screenHeight + GetSystemMetrics(SM_CXDLGFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION),	// ウィンドウ縦幅
 		NULL,
 		NULL,
 		hInstance,
@@ -212,4 +212,47 @@ LRESULT Main::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	return 0;
 }
+
+
+// フルスクリーン切り替え
+void Main::ToggleFullScreen(void) 
+{
+	static WINDOWPLACEMENT wpPrev = { sizeof(wpPrev) };
+	LONG lStyle = GetWindowLong(hWnd, GWL_STYLE);
+	if (lStyle & WS_OVERLAPPEDWINDOW) {
+		MONITORINFO mi = { sizeof(mi) };
+		if (GetWindowPlacement(hWnd, &wpPrev) && GetMonitorInfo(MonitorFromWindow(hWnd, MONITOR_DEFAULTTOPRIMARY), &mi)) {
+			SetWindowLong(hWnd, GWL_STYLE, lStyle &~ WS_OVERLAPPEDWINDOW);
+			SetWindowPos(hWnd, HWND_TOP,
+				mi.rcMonitor.left, mi.rcMonitor.top,
+				mi.rcMonitor.right - mi.rcMonitor.left,
+				mi.rcMonitor.bottom - mi.rcMonitor.top,
+				SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+		}
+	}
+	else {
+		SetWindowLong(hWnd, GWL_STYLE, lStyle| WS_OVERLAPPEDWINDOW);
+		SetWindowPlacement(hWnd, &wpPrev);
+		SetWindowPos(hWnd, NULL, 0, 0, 0, 0,
+			SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+	}
+}
+
+
+void Main::ChengeWindowSize(int width,int height) 
+{
+
+	// 現在のウィンドウスタイルを取得
+	LONG style = GetWindowLong(hWnd, GWL_STYLE);
+
+	// ウィンドウの枠の幅と高さを考慮して、クライアント領域のサイズを設定
+	RECT rect = { 0, 0, width, height };
+	AdjustWindowRect(&rect, style, FALSE);
+
+	// ウィンドウのサイズと位置を変更
+	SetWindowPos(hWnd, NULL, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER);
+
+}
+
+
 

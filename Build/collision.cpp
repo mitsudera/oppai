@@ -179,6 +179,23 @@ BOOL CollisionPointCapsule(XMFLOAT3 point, XMFLOAT3 pos1, XMFLOAT3 pos2,float r)
 	return ans;
 }
 
+BOOL CollisionPointBox(XMFLOAT3 point, XMFLOAT3 center, XMFLOAT3 size)
+{
+	// ボックスの各辺の最小および最大座標を計算
+	XMFLOAT3 min = XMFLOAT3(center.x - size.x / 2.0f, center.y - size.y / 2.0f, center.z - size.z / 2.0f);
+	XMFLOAT3 max = XMFLOAT3(center.x + size.x / 2.0f, center.y + size.y / 2.0f, center.z + size.z / 2.0f);
+
+	// 点がボックス内にあるかどうかをチェック
+	if (point.x >= min.x && point.x <= max.x &&
+		point.y >= min.y && point.y <= max.y &&
+		point.z >= min.z && point.z <= max.z)
+	{
+		return TRUE; // 点がボックス内にある場合
+	}
+	return FALSE; // 点がボックス内にない場合
+}
+
+
 
 
 
@@ -242,6 +259,11 @@ BOOL CollisionLineCapsule(XMFLOAT3 lp1, XMFLOAT3 lp2, XMFLOAT3 cp1, XMFLOAT3 cp2
 	return distSq <= (r * r);
 }
 
+BOOL CollisionLineBox(XMFLOAT3 lp1, XMFLOAT3 lp2, XMFLOAT3 center, XMFLOAT3 size)
+{
+	return 0;
+}
+
 
 
 
@@ -299,6 +321,11 @@ BOOL CollisionSphereCapsule(XMFLOAT3 center1, float r1, XMFLOAT3 cp1, XMFLOAT3 c
 	return ans;
 }
 
+BOOL CollisionSphereBox(XMFLOAT3 center1, float r1, XMFLOAT3 center, XMFLOAT3 size)
+{
+	return 0;
+}
+
 BOOL CollisionCapsuleCapsule(XMFLOAT3 cp1_1, XMFLOAT3 cp1_2, float r1, XMFLOAT3 cp2_1, XMFLOAT3 cp2_2, float r2)
 {
 	XMVECTOR p1_1 = XMLoadFloat3(&cp1_1);
@@ -321,6 +348,30 @@ BOOL CollisionCapsuleCapsule(XMFLOAT3 cp1_1, XMFLOAT3 cp1_2, float r1, XMFLOAT3 
 	float radiusSum = r1 + r2;
 
 	return distSq <= (radiusSum * radiusSum);
+}
+
+BOOL CollisionCapsuleBox(XMFLOAT3 cp1_1, XMFLOAT3 cp1_2, float r1, XMFLOAT3 center, XMFLOAT3 size)
+{
+	return 0;
+}
+
+
+BOOL CollisionBoxBox(XMFLOAT3 center1, XMFLOAT3 size1, XMFLOAT3 center2, XMFLOAT3 size2)
+{
+	// ボックス1の最小および最大座標を計算
+	XMFLOAT3 min1 = XMFLOAT3(center1.x - size1.x / 2.0f, center1.y - size1.y / 2.0f, center1.z - size1.z / 2.0f);
+	XMFLOAT3 max1 = XMFLOAT3(center1.x + size1.x / 2.0f, center1.y + size1.y / 2.0f, center1.z + size1.z / 2.0f);
+
+	// ボックス2の最小および最大座標を計算
+	XMFLOAT3 min2 = XMFLOAT3(center2.x - size2.x / 2.0f, center2.y - size2.y / 2.0f, center2.z - size2.z / 2.0f);
+	XMFLOAT3 max2 = XMFLOAT3(center2.x + size2.x / 2.0f, center2.y + size2.y / 2.0f, center2.z + size2.z / 2.0f);
+
+	// 各軸に対して重なりをチェック
+	if (min1.x > max2.x || max1.x < min2.x) return FALSE;
+	if (min1.y > max2.y || max1.y < min2.y) return FALSE;
+	if (min1.z > max2.z || max1.z < min2.z) return FALSE;
+
+	return TRUE; // ボックスが重なっている場合
 }
 
 void ClosestPtSegmentSegment(XMVECTOR p1, XMVECTOR d1, XMVECTOR p2, XMVECTOR d2, float& t1, float& t2, XMVECTOR& c1, XMVECTOR& c2)
@@ -384,6 +435,7 @@ void ClosestPtSegmentSegment(XMVECTOR p1, XMVECTOR d1, XMVECTOR p2, XMVECTOR d2,
 	c1 = XMVectorAdd(p1, XMVectorScale(d1, t1));
 	c2 = XMVectorAdd(p2, XMVectorScale(d2, t2));
 }
+
 
 
 

@@ -151,16 +151,19 @@
     <ClInclude Include="AnimationControlerComponent.h" />
     <ClInclude Include="AnimationData.h" />
     <ClInclude Include="AssetsManager.h" />
+    <ClInclude Include="BoxColliderComponent.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraControllerComponent.h" />
+    <ClInclude Include="CapsuleColliderComponent.h" />
     <ClInclude Include="CBufferManager.h" />
     <ClInclude Include="ColliderComponent.h" />
     <ClInclude Include="collision.h" />
-    <ClInclude Include="CollisionManger.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="component.h" />
     <ClInclude Include="Coreminimal.h" />
     <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="DirectionalLightComponent.h" />
     <ClInclude Include="DX11Texture.h" />
     <ClInclude Include="FbxConvertDX11.h" />
     <ClInclude Include="GameEngine.h" />
@@ -171,8 +174,8 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="LambartMaterial.h" />
     <ClInclude Include="LambartShader.h" />
-    <ClInclude Include="LightComponent.h" />
     <ClInclude Include="LightManager.h" />
+    <ClInclude Include="LineColliderComponent.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="math.h" />
@@ -181,6 +184,8 @@
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="PhongMaterial.h" />
     <ClInclude Include="PhongShader.h" />
+    <ClInclude Include="PointColliderComponent.h" />
+    <ClInclude Include="PointLightComponent.h" />
     <ClInclude Include="primitivecomponent.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="Robot.h" />
@@ -188,7 +193,29 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderSet.h" />
+    <ClInclude Include="ShadowMapping.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SkeletonAnimData.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SkinMeshComponent.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SkinMeshDataList.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SkyMaterial.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SkyShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="SkySphere.h" />
+    <ClInclude Include="sound.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SphereColliderComponent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TitleLogo.h" />
     <ClInclude Include="TitleManager.h" />
@@ -204,15 +231,18 @@
     <ClCompile Include="AnimationControlerComponent.cpp" />
     <ClCompile Include="AnimationData.cpp" />
     <ClCompile Include="AssetsManager.cpp" />
+    <ClCompile Include="BoxColliderComponent.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CameraControllerComponent.cpp" />
+    <ClCompile Include="CapsuleColliderComponent.cpp" />
     <ClCompile Include="CBufferManager.cpp" />
     <ClCompile Include="ColliderComponent.cpp" />
     <ClCompile Include="collision.cpp" />
-    <ClCompile Include="CollisionManger.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="component.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="DirectionalLightComponent.cpp" />
     <ClCompile Include="DX11Texture.cpp" />
     <ClCompile Include="FbxConvertDX11.cpp" />
     <ClCompile Include="GameEngine.cpp" />
@@ -223,8 +253,8 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="LambartMaterial.cpp" />
     <ClCompile Include="LambartShader.cpp" />
-    <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="LightManager.cpp" />
+    <ClCompile Include="LineColliderComponent.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="math.cpp" />
@@ -233,6 +263,8 @@
     <ClCompile Include="MeshData.cpp" />
     <ClCompile Include="PhongMaterial.cpp" />
     <ClCompile Include="PhongShader.cpp" />
+    <ClCompile Include="PointColliderComponent.cpp" />
+    <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="primitivecomponent.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="Robot.cpp" />
@@ -240,7 +272,29 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShaderSet.cpp" />
+    <ClCompile Include="ShadowMapping.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SkeletonAnimData.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SkinMeshComponent.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SkinMeshDataList.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SkyMaterial.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SkyShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="SkySphere.cpp" />
+    <ClCompile Include="sound.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SphereColliderComponent.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TitleLogo.cpp" />
     <ClCompile Include="TitleManager.cpp" />

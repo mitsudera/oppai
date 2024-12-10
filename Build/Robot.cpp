@@ -29,7 +29,8 @@ void Robot::Init(void)
 	this->LoadFbxFileMesh("robot.fbx");
 
 	AnimationControlerComponent* animControler = this->AddComponent<AnimationControlerComponent>();
-	animControler->LoadAnimationData("robotwalk.fbx");
+	animControler->Init();
+	animControler->LoadAnimationData("robotwalk.fbx","walk");
 	
 	RobotComponent* robotComponent = new RobotComponent(this);
 	robotComponent->Init();

@@ -14,28 +14,29 @@ struct HitResult
 
 
 
-enum class Shape
-{
 
-	Point,
-	Line,
-	Sphere,
-	Capsule,
-
-
-	//ñ¢é¿ëï
-	AABB,
-	CBB,
-
-};
-
-class ColliderComponent :public TransformComponent
+class ColliderComponent :public Component
 {
 public:
 
+	enum class Shape: int
+	{
+
+		Point,
+		Line,
+		Sphere,
+		Capsule,
+		Box,
+
+		//ñ¢é¿ëï
+		AABB,
+		CBB,
+
+	};
 
 
 
+	ColliderComponent();
 	ColliderComponent(GameObject* gameObject);
 	~ColliderComponent();
 
@@ -59,39 +60,22 @@ public:
 	void SetHitObject(GameObject* gameObject);
 	BOOL GetHitObject(GameObject* gameObject);
 
-	void SetRadius(float r);
-	float GetRadius(void);
 
-	void SetStart(XMFLOAT3 p);
-	XMFLOAT3 GetStart(void);
-
-	void SetEnd(XMFLOAT3 p);
-	XMFLOAT3 GetEnd(void);
-
-	void Clear(void);
-
-	void SetPointCollider(XMFLOAT3 pos);
-	void SetLineCollider(XMFLOAT3 pos, XMFLOAT3 spos, XMFLOAT3 epos);
-	void SetLineCollider(float maxSpeed);
-	void SetSphereCollider(XMFLOAT3 pos, float r);
-	void SetCapsuleCollider(XMFLOAT3 pos, XMFLOAT3 spos, XMFLOAT3 epos, float r);
-	float GetCheckRadius(void);
-
-	virtual XMFLOAT3 GetPosition(void) override;
 
 	void onCollider(void);
 	void offCollider(void);
+	void Clear(void);
+
+	XMFLOAT3 GetCenter(void);
+	float GetCheckRadius(void);
 
 
-private:
+protected:
 	HitResult result;
 	Shape shape;
-	float radius;
-	XMFLOAT3 sPos;
-	XMFLOAT3 ePos;
-	float check;
 
-	BOOL useOldPos;
+	XMFLOAT3 center;//íÜêS
+	float checkRadius;//ëÂÇ‹Ç©Ç»ìñÇΩÇËîªíËÇçsÇ§ÇΩÇﬂÇÃîºåa
 
 };
 

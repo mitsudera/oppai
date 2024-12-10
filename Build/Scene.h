@@ -3,7 +3,7 @@
 
 class SceneManager;
 class GameEngine;
-class CollisionManger;
+class CollisionManager;
 class CameraComponent;
 
 class Scene
@@ -22,7 +22,6 @@ public:
 	void InitAllObject(void);
 
 	GameEngine* GetGameEngine(void);
-	CollisionManger* GetCollisionManager(void);
 
 	vector <GameObject*>& GetGameObject(void);
 
@@ -33,7 +32,6 @@ public:
 protected:
 	GameEngine* pGameEngine;
 	vector <GameObject*> gameObjectList;
-	CollisionManger* coliisionManager;
 	vector<CameraComponent*> cameraArray;
 
 };

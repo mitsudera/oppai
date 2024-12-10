@@ -1,7 +1,6 @@
 #include "Scene.h"
 #include "GameEngine.h"
 #include "gameobject.h"
-#include "CollisionManger.h"
 #include "CameraComponent.h"
 #include "component.h"
 #include "transformcomponent.h"
@@ -13,19 +12,16 @@ Scene::Scene()
 Scene::Scene(GameEngine* pGameEngine)
 {
 	this->pGameEngine = pGameEngine;
-	this->coliisionManager = new CollisionManger(this);
 
 }
 
 Scene::~Scene()
 {
-	delete this->coliisionManager;
 
 }
 
 void Scene::Init()
 {
-	this->coliisionManager->Init();
 
 
 
@@ -75,7 +71,6 @@ void Scene::Uninit()
 		gameObject->Uninit();
 
 	}
-	this->coliisionManager->Uninit();
 
 }
 
@@ -93,11 +88,6 @@ void Scene::InitAllObject(void)
 GameEngine* Scene::GetGameEngine(void)
 {
 	return this->pGameEngine;
-}
-
-CollisionManger* Scene::GetCollisionManager(void)
-{
-	return this->coliisionManager;
 }
 
 vector<GameObject*>& Scene::GetGameObject(void)

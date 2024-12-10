@@ -1,6 +1,7 @@
 #pragma once
-#include "LightComponent.h"
-class DirectionalLightComponent :public LightComponent
+#include "Component.h"
+#include "LightManager.h"
+class DirectionalLightComponent :public Component
 {
 public:
 
@@ -11,6 +12,13 @@ public:
 	virtual void Uninit(void) override;
 	virtual void Update(void) override;
 
-	void SetLight(int index,XMFLOAT3 forward, XMFLOAT4 diffuse, XMFLOAT4 amb);
+	void SetLight(DIREC_LIGHT_PARAM direcLight);
+	DIREC_LIGHT_PARAM& GetLightParam(void);
+
+
+private:
+
+	DIREC_LIGHT_PARAM  param;
+	int index;
 };
 

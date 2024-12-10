@@ -155,6 +155,11 @@ int AssetsManager::LoadAnimationData(string filepath)
 	return p;
 }
 
+AnimationData* AssetsManager::GetAnimationData(int index)
+{
+	return AnimDataArray[index];
+}
+
 
 
 MeshData* AssetsManager::GetMeshTree(int n)
@@ -165,7 +170,7 @@ int AssetsManager::AddMesh(MeshData* data)
 {
 	MeshDataArray.push_back(data);
 
-	return MeshDataArray.size()-1;
+	return (int)MeshDataArray.size()-1;
 }
 MeshData* AssetsManager::GetMeshData(int n)
 {
@@ -384,5 +389,5 @@ int AssetsManager::LoadMaterial(Material* material)
 {
 
 	this->MaterialArray.push_back(material);
-	return MaterialArray.size() - 1;
+	return (int)MaterialArray.size() - 1;
 }

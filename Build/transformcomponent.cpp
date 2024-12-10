@@ -370,6 +370,11 @@ void TransformComponent::SetWorldMtx(XMMATRIX mtx)
 	this->wMtx = mtx;
 }
 
+void TransformComponent::SetLocalMtx(XMMATRIX mtx)
+{
+	this->lMtx = mtx;
+}
+
 void TransformComponent::SetTransForm(XMFLOAT3 pos, XMFLOAT3 rot, XMFLOAT3 scl)
 {
 	this->SetPosition(pos);

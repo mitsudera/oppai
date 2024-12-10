@@ -126,9 +126,15 @@ void CBufferManager::SetMaterialBuffer(ID3D11Buffer* material)
 
 }
 
-void CBufferManager::SetLightBuffer(ID3D11Buffer* light)
+void CBufferManager::SetDirectionalLightBuffer(ID3D11Buffer* dirLight)
 {
-	SetCBufferVSPS(light, BufferSlot::Light);
+	SetCBufferVSPS(dirLight, BufferSlot::DirectionalLight);
+
+}
+
+void CBufferManager::SetPointLightBuffer(ID3D11Buffer* pointLight)
+{
+	SetCBufferVSPS(pointLight, BufferSlot::PointLight);
 
 }
 

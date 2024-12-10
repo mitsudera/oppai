@@ -209,6 +209,7 @@ void CameraComponent::Render(void)
 
 
 		}
+		pRenderer->SetDepthEnable(TRUE);
 
 
 	}

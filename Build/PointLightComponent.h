@@ -1,0 +1,23 @@
+#pragma once
+#include "Component.h"
+#include "LightManager.h"
+
+class PointLightComponent :public Component
+{
+public:
+
+	PointLightComponent(GameObject* gameObject);
+	~PointLightComponent();
+
+	virtual void Init(void) override;
+	virtual void Uninit(void) override;
+	virtual void Update(void) override;
+
+	void SetLight(POINT_LIGHT_PARAM pointLight);
+	POINT_LIGHT_PARAM& GetLightParam(void);
+
+private:
+	POINT_LIGHT_PARAM param;
+	int index;
+};
+

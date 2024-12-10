@@ -7,6 +7,7 @@
 #include "Scene.h"
 #include "CBufferManager.h"
 #include "LightManager.h"
+#include "CollisionManager.h"
 
 GameEngine::GameEngine(Main* main)
 {
@@ -31,6 +32,10 @@ void GameEngine::Init()
 
 	this->cBufferManager = new CBufferManager(this);
 
+	this->collisionManager = new CollisionManager(this);
+
+
+
 	this->lightManager = new LightManager(this);
 	lightManager->Init();
 
@@ -42,6 +47,7 @@ void GameEngine::Init()
 
 	this->sceneManager = new SceneManager(this);
 	this->sceneManager->SetDefaultScene();
+	fullscreen = FALSE;
 }
 
 void GameEngine::Update()
@@ -55,8 +61,11 @@ void GameEngine::Update()
 
 	this->input->Update();
  	this->activeScene->Update();
-	lightManager->Update();
+	collisionManager->Update();
 
+	if (input->GetKeyboardTrigger(DIK_0))
+	{
+	}
 }
 
 void GameEngine::Draw()
@@ -80,7 +89,6 @@ void GameEngine::Uninit()
 	this->input->Uninit();
 	this->assetsManager->Uninit();
 	this->renderer->UninitRenderer();
-	this->lightManager->Uninit();
 
 	delete input;
 	delete assetsManager;
@@ -129,6 +137,16 @@ Input* GameEngine::GetInput(void)
 	return this->input;
 }
 
+CollisionManager* GameEngine::GetCollisionManager(void)
+{
+	return this->collisionManager;
+}
+
+LightManager* GameEngine::GetLightmanager(void)
+{
+	return this->lightManager;
+}
+
 
 Scene* GameEngine::GetActiveScene(void)
 {
@@ -147,5 +165,26 @@ SceneManager* GameEngine::GetSceneManager(void)
 {
 	return this->sceneManager;
 }
+
+void GameEngine::SetFullScreen(BOOL flag)
+{
+	if (flag == fullscreen)
+		return;
+
+	fullscreen = flag;
+	main->ToggleFullScreen();
+
+}
+
+void GameEngine::ChengeWindowSize(int width, int height)
+{
+	this->windowSize.x = width;
+	this->windowSize.y = height;
+	if (fullscreen)
+		return;
+
+	main->ChengeWindowSize(width, height);
+}
+
 
 

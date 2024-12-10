@@ -60,7 +60,7 @@ public:
 	void SetMtxRotY(XMMATRIX mtx);
 	void SetMtxRotZ(XMMATRIX mtx);
 	void SetWorldMtx(XMMATRIX mtx);
-
+	void SetLocalMtx(XMMATRIX mtx);
 	void SetTransForm(XMFLOAT3 pos, XMFLOAT3 rot, XMFLOAT3 scl);
 
 

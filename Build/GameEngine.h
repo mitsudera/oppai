@@ -10,6 +10,7 @@ class SceneManager;
 class Scene;
 class CBufferManager;
 class LightManager;
+class CollisionManager;
 
 class GameEngine
 {
@@ -34,13 +35,18 @@ public:
 	Renderer* GetRenderer(void);
 	CBufferManager* GetCBufferManager(void);
 	Input* GetInput(void);
-
-	CameraComponent* GetMainCamera(void);
-	void SetMainCamera(CameraComponent* cam);
+	CollisionManager* GetCollisionManager(void);
+	LightManager* GetLightmanager(void);
 
 	Scene* GetActiveScene(void);
 	void SetActiveScene(Scene* scene);
 	SceneManager* GetSceneManager(void);
+
+	void SetFullScreen(BOOL flag);
+
+	void ChengeWindowSize(int width, int height);
+
+
 private:
 
 	Main* main;
@@ -49,6 +55,7 @@ private:
 	CBufferManager* cBufferManager;
 	Input* input;
 	LightManager* lightManager;
+	CollisionManager* collisionManager;
 
 	SceneManager* sceneManager;
 	Scene* activeScene;
@@ -59,6 +66,7 @@ private:
 	long mouseDeltaX;
 	long mouseDeltaY;
 
+	BOOL fullscreen;
 
 
 	XMFLOAT2 windowSize;

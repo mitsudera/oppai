@@ -25,23 +25,8 @@
     <Filter Include="misc">
       <UniqueIdentifier>{c7d76af9-1c49-4485-bee2-982201477c30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager">
-      <UniqueIdentifier>{70da4c6b-54d9-4707-9895-07d8094c2aa9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core">
-      <UniqueIdentifier>{0b90fff3-36c1-46f4-baa2-63ecfb6f9a9f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Main">
-      <UniqueIdentifier>{06a6a4f6-6143-4568-b27f-cb07179338ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer">
-      <UniqueIdentifier>{6b986b38-cb3b-4544-803c-12f615aa04ad}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ModelAnimation">
       <UniqueIdentifier>{068f0cf0-e300-4e51-9f3d-ce27d8a92a2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Input">
-      <UniqueIdentifier>{a57e3c68-9334-4fae-aa89-3be1329fc009}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{92240370-249c-4cc6-b751-f4db8574ec29}</UniqueIdentifier>
@@ -106,13 +91,37 @@
     <Filter Include="component\primitiveComponent">
       <UniqueIdentifier>{de7b19b0-1a9a-4289-ac0e-20b0b7d80bb0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="component\ColliderComponent">
+      <UniqueIdentifier>{861bc099-2d31-40d5-be08-65d2a563171f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine">
+      <UniqueIdentifier>{b9dca675-2a2c-4887-b62c-0dc6ce728bd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Main">
+      <UniqueIdentifier>{06a6a4f6-6143-4568-b27f-cb07179338ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Manager">
+      <UniqueIdentifier>{70da4c6b-54d9-4707-9895-07d8094c2aa9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Input">
+      <UniqueIdentifier>{a57e3c68-9334-4fae-aa89-3be1329fc009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Renderer">
+      <UniqueIdentifier>{6b986b38-cb3b-4544-803c-12f615aa04ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\core">
+      <UniqueIdentifier>{0b90fff3-36c1-46f4-baa2-63ecfb6f9a9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="component\LightComponent">
+      <UniqueIdentifier>{2c043215-ebc7-4b5c-8f73-d441a412c6fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coreminimal.h">
-      <Filter>core</Filter>
+      <Filter>GameEngine\core</Filter>
     </ClInclude>
     <ClInclude Include="Main.h">
-      <Filter>Main</Filter>
+      <Filter>GameEngine\Main</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>Scene</Filter>
@@ -121,19 +130,13 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="renderer.h">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="GameEngine.h">
-      <Filter>Main</Filter>
+      <Filter>GameEngine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="AssetsManager.h">
-      <Filter>Manager</Filter>
+      <Filter>GameEngine\Manager</Filter>
     </ClInclude>
     <ClInclude Include="input.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="LightManager.h">
-      <Filter>Light</Filter>
+      <Filter>GameEngine\Input</Filter>
     </ClInclude>
     <ClInclude Include="CameraComponent.h">
       <Filter>component\Camera</Filter>
@@ -162,20 +165,14 @@
     <ClInclude Include="collision.h">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionManger.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="ColliderComponent.h">
-      <Filter>component</Filter>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>GameEngine\Manager</Filter>
     </ClInclude>
     <ClInclude Include="TitleScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="GameScene.h">
       <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="LightComponent.h">
-      <Filter>component</Filter>
     </ClInclude>
     <ClInclude Include="UIManagerComponent.h">
       <Filter>component</Filter>
@@ -211,7 +208,7 @@
       <Filter>Shader\PhongShader</Filter>
     </ClInclude>
     <ClInclude Include="CBufferManager.h">
-      <Filter>Manager</Filter>
+      <Filter>GameEngine\Manager</Filter>
     </ClInclude>
     <ClInclude Include="UIMaterial.h">
       <Filter>Shader\UIShader</Filter>
@@ -261,13 +258,64 @@
     <ClInclude Include="AnimationData.h">
       <Filter>Data</Filter>
     </ClInclude>
+    <ClInclude Include="ColliderComponent.h">
+      <Filter>component\ColliderComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="PointColliderComponent.h">
+      <Filter>component\ColliderComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereColliderComponent.h">
+      <Filter>component\ColliderComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LineColliderComponent.h">
+      <Filter>component\ColliderComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="CapsuleColliderComponent.h">
+      <Filter>component\ColliderComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxColliderComponent.h">
+      <Filter>component\ColliderComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEngine.h">
+      <Filter>GameEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMapping.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletonAnimData.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyShader.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinMeshComponent.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinMeshDataList.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyMaterial.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLightComponent.h">
+      <Filter>component\LightComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>GameEngine\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLightComponent.h">
+      <Filter>component\LightComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
-      <Filter>Main</Filter>
+      <Filter>GameEngine\Main</Filter>
     </ClCompile>
     <ClCompile Include="input.cpp">
-      <Filter>Input</Filter>
+      <Filter>GameEngine\Input</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>Scene</Filter>
@@ -276,16 +324,10 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="renderer.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="GameEngine.cpp">
-      <Filter>Main</Filter>
+      <Filter>GameEngine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="AssetsManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="LightManager.cpp">
-      <Filter>Light</Filter>
+      <Filter>GameEngine\Manager</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
       <Filter>component\Camera</Filter>
@@ -314,20 +356,14 @@
     <ClCompile Include="collision.cpp">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionManger.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="ColliderComponent.cpp">
-      <Filter>component</Filter>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>GameEngine\Manager</Filter>
     </ClCompile>
     <ClCompile Include="TitleScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="GameScene.cpp">
       <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="LightComponent.cpp">
-      <Filter>component</Filter>
     </ClCompile>
     <ClCompile Include="UIManagerComponent.cpp">
       <Filter>component</Filter>
@@ -363,7 +399,7 @@
       <Filter>Shader\PhongShader</Filter>
     </ClCompile>
     <ClCompile Include="CBufferManager.cpp">
-      <Filter>Manager</Filter>
+      <Filter>GameEngine\Manager</Filter>
     </ClCompile>
     <ClCompile Include="UIShader.cpp">
       <Filter>Shader\UIShader</Filter>
@@ -412,6 +448,57 @@
     </ClCompile>
     <ClCompile Include="AnimationData.cpp">
       <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderComponent.cpp">
+      <Filter>component\ColliderComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="PointColliderComponent.cpp">
+      <Filter>component\ColliderComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereColliderComponent.cpp">
+      <Filter>component\ColliderComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LineColliderComponent.cpp">
+      <Filter>component\ColliderComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="CapsuleColliderComponent.cpp">
+      <Filter>component\ColliderComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxColliderComponent.cpp">
+      <Filter>component\ColliderComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEngine.cpp">
+      <Filter>GameEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMapping.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletonAnimData.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyShader.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinMeshComponent.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinMeshDataList.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyMaterial.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLightComponent.cpp">
+      <Filter>component\LightComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>GameEngine\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLightComponent.cpp">
+      <Filter>component\LightComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

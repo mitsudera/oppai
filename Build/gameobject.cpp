@@ -305,10 +305,10 @@ void GameObject::LoadMeshNode(MeshData* node)
 		newObj->name = childData->GetName();
 		newObj->LoadMeshNode(childData);
 
-		if (node->GetIsRoot())
-		{
-			newObj->name = "meshRoot";
-		}
+		//if (node->GetIsRoot())
+		//{
+		//	newObj->name = "meshRoot";
+		//}
 
 		this->childList.push_back(newObj);
 

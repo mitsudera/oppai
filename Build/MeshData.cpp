@@ -229,7 +229,6 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap,MeshData* parent)
 	this->index = pAssetsManager->AddMesh(this);
 	this->isRoot = FALSE;
 	this->fileName = parent->GetFileName();
-	this->name = mesh->GetName();
 
 	int PolygonNum = mesh->GetPolygonCount();               //総ポリゴン数
 	if (PolygonNum==0)
@@ -496,17 +495,17 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap,MeshData* parent)
 	FbxVector4 scl = node->EvaluateLocalScaling(FBXSDK_TIME_INFINITE);
 	FbxVector4 rot = node->EvaluateLocalRotation(FBXSDK_TIME_INFINITE);
 
-	this->posOffset.x = pos[0];
-	this->posOffset.y = pos[1];
-	this->posOffset.z = pos[2];
+	this->posOffset.x = (float)pos[0];
+	this->posOffset.y = (float)pos[1];
+	this->posOffset.z = (float)pos[2];
 
-	this->sclOffset.x = scl[0];
-	this->sclOffset.y = scl[1];
-	this->sclOffset.z = scl[2];
+	this->sclOffset.x = (float)scl[0];
+	this->sclOffset.y = (float)scl[1];
+	this->sclOffset.z = (float)scl[2];
 
-	this->rotOffset.x = rot[0];
-	this->rotOffset.y = rot[1];
-	this->rotOffset.z = rot[2];
+	this->rotOffset.x = (float)rot[0];
+	this->rotOffset.y = (float)rot[1];
+	this->rotOffset.z = (float)rot[2];
 
 	// マテリアルの数
 

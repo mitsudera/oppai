@@ -42,6 +42,22 @@ void GameManagerComponent::Update(void)
 	{
 		SetCameraModeDebug();
 	}
+
+	if(input->GetKeyboardTrigger(DIK_3))
+	{
+		pGameEngine->SetFullScreen(TRUE);
+	}
+	if(input->GetKeyboardTrigger(DIK_4))
+	{
+		pGameEngine->SetFullScreen(FALSE);
+	}
+	if(input->GetKeyboardTrigger(DIK_5))
+	{
+		pGameEngine->ChengeWindowSize(960,560);
+	}
+
+
+
 }
 
 void GameManagerComponent::SetCameraModeGame(void)

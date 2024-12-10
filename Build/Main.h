@@ -15,6 +15,12 @@ class Main
 public:
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
+	void ToggleFullScreen(void);
+
+	void ChengeWindowSize(int Width, int height);
+
+
+
 	Main();
 	~Main();
 
@@ -47,6 +53,7 @@ private:
 	float deltaTime;
 	float beforeTime;
 
+	LPRECT windowRect;
 
 	GameEngine* pGameEngine;
 

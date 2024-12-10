@@ -1,9 +1,8 @@
 #pragma once
 #include "Coreminimal.h"
-#include "ColliderComponent.h"
 
 class ColliderComponent;
-class Scene;
+class GameEngine;
 struct ColliderPair
 {
 	ColliderComponent* collider1;
@@ -11,14 +10,12 @@ struct ColliderPair
 
 };
 
-class CollisionManger
+class CollisionManager
 {
 public:
-	CollisionManger(Scene* scene);
-	~CollisionManger();
+	CollisionManager(GameEngine* gameEngine);
+	~CollisionManager();
 
-	void Init(void);
-	void Uninit(void);
 	void Update(void);
 
 	void AddCollider(ColliderComponent* collider);
@@ -31,7 +28,7 @@ public:
 
 private:
 
-	Scene* pScene;
+	GameEngine* pGameEngine;
 	vector<ColliderComponent*> colliderList;
 	vector<ColliderPair> pairList;
 

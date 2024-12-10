@@ -43,6 +43,8 @@ public:
 	int LoadMeshNode(string filepath);
 
 	int LoadAnimationData(string filepath);
+	AnimationData* GetAnimationData(int index);
+
 
 	MeshData* GetMeshTree(int n);
 
@@ -56,7 +58,6 @@ public:
 
 	GameEngine* GetGameEngine(void);
 
-	int LoadMeshAnim(string filepath);
 
 	//SkinMeshDataList* GetSkinMeshDataList(int n);
 	//int LoadSkinMesh(string filepath);

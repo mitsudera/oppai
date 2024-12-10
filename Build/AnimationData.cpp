@@ -40,25 +40,25 @@ void MtxNode::LoadAnimation(FbxNode* node, MtxNode* parent, AnimationData* animd
 
 		for (int i = 0; i < pAnimData->GetFrameNum(); i++)
 		{
-			FbxMatrix framemtx = node->EvaluateGlobalTransform(pAnimData->GetStartTime() + pAnimData->GetOneFrameValue() * i);
-
-			FbxVector4 pos = node->EvaluateLocalTranslation(pAnimData->GetStartTime() + pAnimData->GetOneFrameValue() * i);
-			FbxVector4 scl = node->EvaluateLocalScaling(pAnimData->GetStartTime() + pAnimData->GetOneFrameValue() * i);
-			FbxVector4 rot = node->EvaluateLocalRotation(pAnimData->GetStartTime() + pAnimData->GetOneFrameValue() * i);
-
-			XMMATRIX posMtx = XMMatrixTranslation(pos[0], pos[1], pos[2]);
-			XMMATRIX sclMtx = XMMatrixTranslation(scl[0], scl[1], scl[2]);
-			XMMATRIX rotMtx = XMMatrixTranslation(rot[0], rot[1], rot[2]);
+			//FbxMatrix framemtx = node->EvaluateGlobalTransform(pAnimData->GetStartTime() + pAnimData->GetOneFrameValue() * i);
+			FbxMatrix framemtx = node->EvaluateLocalTransform(pAnimData->GetStartTime() + pAnimData->GetOneFrameValue() * i);
+			XMMATRIX frameMtx = FbxMatrixConvertToXMMATRIX(framemtx);
 
 
-			XMMATRIX localFrameMtx = XMMatrixIdentity();
-			localFrameMtx = XMMatrixMultiply(localFrameMtx, posMtx);
-			localFrameMtx = XMMatrixMultiply(localFrameMtx, sclMtx);
-			localFrameMtx = XMMatrixMultiply(localFrameMtx, rotMtx);
+			//FbxVector4 pos = node->EvaluateLocalTranslation(pAnimData->GetStartTime() + pAnimData->GetOneFrameValue() * i);
+			//FbxVector4 scl = node->EvaluateLocalScaling(pAnimData->GetStartTime() + pAnimData->GetOneFrameValue() * i);
+			//FbxVector4 rot = node->EvaluateLocalRotation(pAnimData->GetStartTime() + pAnimData->GetOneFrameValue() * i);
 
+			//XMMATRIX posMtx = XMMatrixTranslation(pos[0], pos[1], pos[2]);
+			//XMMATRIX sclMtx = XMMatrixTranslation(scl[0], scl[1], scl[2]);
+			//XMMATRIX rotMtx = XMMatrixTranslation(rot[0], rot[1], rot[2]);
 
+			//XMMATRIX localFrameMtx = XMMatrixIdentity();
+			//localFrameMtx = XMMatrixMultiply(localFrameMtx, sclMtx);
+			//localFrameMtx = XMMatrixMultiply(localFrameMtx, rotMtx);
+			//localFrameMtx = XMMatrixMultiply(localFrameMtx, posMtx);
 
-			this->FrameMtx[i] = localFrameMtx;
+			this->frameMtxArray[i] = frameMtx;
 		}
 	}
 
@@ -89,8 +89,47 @@ void MtxNode::LoadAnimation(FbxNode* node, MtxNode* parent, AnimationData* animd
 
 void MtxNode::CreateFrameMtxArray(int n)
 {
-	this->FrameMtx = new XMMATRIX[n];
+	this->frameMtxArray = new XMMATRIX[n];
 
+}
+
+XMMATRIX MtxNode::GetFrameMtx(float frame)
+{
+
+	float frame2weight = frame - (float)(int)frame;
+	float frame1weight = 1.0f - frame2weight;;
+
+
+
+	int frame1 = int(frame);
+	
+	if (frame1 > (float)pAnimData->GetFrameNum())
+	{
+		frame1 %= pAnimData->GetFrameNum();
+	}
+	int frame2 = frame1+1;
+
+
+	if (frame2 >= pAnimData->GetFrameNum())
+	{
+		frame2 = 0;
+	}
+
+	XMMATRIX mtx1 = this->frameMtxArray[frame1];
+	XMMATRIX mtx2 = this->frameMtxArray[frame2];
+
+	return (mtx1 * frame1weight) + (mtx2 * frame2weight);
+
+}
+
+int MtxNode::GetChildCnt(void)
+{
+	return this->childArray.size();
+}
+
+MtxNode* MtxNode::GetChild(int n)
+{
+	return this->childArray[n];
 }
 
 
@@ -197,6 +236,8 @@ void AnimationData::LoadAnimation(string fileName, AssetsManager* assetsManager)
 
 	this->startTime = start_time.Get();
 	this->oneFrameValue = oneFrameValue;
+
+	this->frameNum = framenum;
 
 	this->mtxTreeRoot = new MtxNode();
 

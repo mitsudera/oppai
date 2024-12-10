@@ -23,9 +23,14 @@ public:
 	
 	void CreateFrameMtxArray(int n);
 
+	XMMATRIX GetFrameMtx(float frame);
+
+	int GetChildCnt(void);
+	MtxNode* GetChild(int n);
+
 private:
 
-	XMMATRIX* FrameMtx;
+	XMMATRIX* frameMtxArray;
 	vector<MtxNode*> childArray;
 	MtxNode* parent;
 
