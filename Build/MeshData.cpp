@@ -12,6 +12,7 @@
 #include "LambartMaterial.h"
 #include "PhongMaterial.h"
 #include "ShaderSet.h"
+#include "ShadowMappingMaterial.h"
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
 //*****************************************************************************
@@ -134,6 +135,11 @@ AssetsManager* MeshData::GetpAssetsManager(void)
 int MeshData::GetMaterialIndex(void)
 {
 	return this->materialIndex;
+}
+
+int MeshData::GetShadowMaterialIndex(void)
+{
+	return shadowMaterialIndex;
 }
 
 
@@ -554,6 +560,13 @@ void MeshData::LoadFbxMesh(FbxMesh* mesh,AssetsManager* ap,MeshData* parent)
 			{
 
 			}
+			ShadowMappingMaterial* shadowMat = new ShadowMappingMaterial(this->GetpAssetsManager());
+
+			shadowMat->SetShadowMaterial(pAssetsManager->GetMaterial(this->materialIndex));
+
+			this->shadowMaterialIndex = pAssetsManager->LoadMaterial(shadowMat);
+
+
 
 		}
 	}

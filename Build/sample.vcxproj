@@ -188,14 +188,15 @@
     <ClInclude Include="PointLightComponent.h" />
     <ClInclude Include="primitivecomponent.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="Robot.h" />
     <ClInclude Include="RobotComponent.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderSet.h" />
-    <ClInclude Include="ShadowMapping.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="ShadowMap.h" />
+    <ClInclude Include="ShadowMappingMaterial.h" />
+    <ClInclude Include="ShadowShader.h" />
     <ClInclude Include="SkeletonAnimData.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -267,14 +268,15 @@
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="primitivecomponent.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="Robot.cpp" />
     <ClCompile Include="RobotComponent.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShaderSet.cpp" />
-    <ClCompile Include="ShadowMapping.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp" />
+    <ClCompile Include="ShadowMappingMaterial.cpp" />
+    <ClCompile Include="ShadowShader.cpp" />
     <ClCompile Include="SkeletonAnimData.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>

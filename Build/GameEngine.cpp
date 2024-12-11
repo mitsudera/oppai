@@ -8,6 +8,8 @@
 #include "CBufferManager.h"
 #include "LightManager.h"
 #include "CollisionManager.h"
+#include "CameraComponent.h"
+#include "ShadowMap.h"
 
 GameEngine::GameEngine(Main* main)
 {
@@ -39,14 +41,23 @@ void GameEngine::Init()
 	this->lightManager = new LightManager(this);
 	lightManager->Init();
 
+
+
 	this->assetsManager = new AssetsManager(this);
 	this->assetsManager->Init();
+
+
 
 	this->input = new Input();
 	this->input->Init(*main->GetInstanceHandle(), *main->GetWindowHangle());
 
 	this->sceneManager = new SceneManager(this);
 	this->sceneManager->SetDefaultScene();
+
+	this->shadowMap = new ShadowMap(this);
+	this->shadowMap->CreateShadowMap(ShadowMap::ShadowQuality::Low);
+
+
 	fullscreen = FALSE;
 }
 
@@ -70,8 +81,11 @@ void GameEngine::Update()
 
 void GameEngine::Draw()
 {
-	renderer->Clear();
 
+
+
+	renderer->Clear();
+	this->shadowMap->ShadowMapping();
 	
 
 	this->activeScene->Draw();
@@ -184,6 +198,16 @@ void GameEngine::ChengeWindowSize(int width, int height)
 		return;
 
 	main->ChengeWindowSize(width, height);
+}
+
+void GameEngine::SetMainCamera(CameraComponent* camera)
+{
+	this->mainCamera = camera;
+}
+
+CameraComponent* GameEngine::GetMainCamera(void)
+{
+	return this->mainCamera;
 }
 
 

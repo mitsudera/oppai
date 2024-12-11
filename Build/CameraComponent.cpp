@@ -146,14 +146,14 @@ void CameraComponent::Render(void)
 		break;
 	case MODE::WORLD:
 
-		this->mtxView = XMMatrixLookToLH(XMLoadFloat3(&this->GetWorldPos()), this->GetTransFormComponent()->GetAxisZ(), this->GetTransFormComponent()->GetAxisY());
+		this->mtxView = XMMatrixLookToLH(XMLoadFloat3(&this->GetWorldPos()), XMLoadFloat3(&GetTransFormComponent()->GetForward()), this->GetTransFormComponent()->GetAxisY());
 		break;
 
 	default:
 		break;
 	}
 
-
+	pGameEngine->GetCBufferManager()->SetCameraBuffer(&GetWorldPos());
 
 	//ビューポートセット
 	pRenderer->GetDeviceContext()->RSSetViewports(1, &vp);
@@ -232,6 +232,10 @@ void CameraComponent::Render(void)
 			gameObject->Draw((ShaderSet::ShaderIndex)i);
 		}
 	}
+
+	pRenderer->GetDeviceContext()->OMSetRenderTargets(0, nullptr, nullptr);
+
+
 }
 
 
@@ -281,6 +285,11 @@ void CameraComponent::SetSky(GameObject* sky)
 {
 	this->sky = sky;
 	clearMode = ClearMode::SkySphere;
+}
+
+void CameraComponent::SetMainCamera(void)
+{
+	this->pGameEngine->SetMainCamera(this);
 }
 
 

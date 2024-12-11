@@ -24,6 +24,11 @@ CBufferManager::CBufferManager(GameEngine* gameEngine)
 
 	pRenderer->GetDevice()->CreateBuffer(&hBufferDesc, nullptr, &this->ProjectionBuffer);
 	SetProjectionBuffer(this->ProjectionBuffer);
+
+	hBufferDesc.ByteWidth = sizeof(XMFLOAT4);
+	pRenderer->GetDevice()->CreateBuffer(&hBufferDesc, nullptr, &this->CameraBuffer);
+	SetCameraBuffer(this->CameraBuffer);
+
 }
 
 CBufferManager::~CBufferManager()
@@ -100,6 +105,14 @@ void CBufferManager::SetWorldViewProjection2D(void)
 
 	
 	pDeviceContext->UpdateSubresource(ProjectionBuffer, 0, NULL, &worldViewProjection, 0, 0);
+
+}
+
+void CBufferManager::SetCameraBuffer(XMFLOAT3* pos)
+{
+	XMFLOAT4 float4 = { pos->x,pos->y,pos->z,1.0f };
+
+	pDeviceContext->UpdateSubresource(ProjectionBuffer, 0, NULL, &float4, 0, 0);
 
 }
 

@@ -14,6 +14,7 @@ GameObject::GameObject()
 {
 	pScene =nullptr;
 	this->transformComponent = new TransformComponent(this);
+	this->componentList.push_back(transformComponent);
 
 	tag = ObjectTag::TagNone;
 
@@ -30,6 +31,7 @@ GameObject::GameObject(Scene* scene)
 
 
 	this->transformComponent = new TransformComponent(this);
+	this->componentList.push_back(transformComponent);
 
 }
 
@@ -43,7 +45,7 @@ GameObject::GameObject(GameObject* parent)
 	this->layer = parent->GetLayer();
 
 	this->transformComponent = new TransformComponent(this);
-
+	this->componentList.push_back(transformComponent);
 }
 
 GameObject::~GameObject()
@@ -55,7 +57,7 @@ void GameObject::Init(void)
 {
 	this->collider = nullptr;
 	this->isActive = TRUE;
-	this->componentList.push_back(transformComponent);
+	this->transformComponent->Init();
 
 }
 
@@ -116,7 +118,6 @@ void GameObject::Draw(ShaderSet::ShaderIndex index)
 {
 	if (!isActive)
 		return;
-	this;
 
 	for (Component* component : GetComponentList())
 	{
@@ -141,9 +142,36 @@ void GameObject::Draw(ShaderSet::ShaderIndex index)
 
 }
 
+void GameObject::ShadowMapping(void)
+{
+	if (!isActive)
+		return;
+
+	for (Component* component : GetComponentList())
+	{
+		if (component->GetAttribute() != Component::Attribute::Primitive)
+			continue;
+
+		PrimitiveComponent* primitiveComponent = static_cast<PrimitiveComponent*>(component);
+
+
+		primitiveComponent->ShadowMapping();
+
+	}
+	for (GameObject* child : childList)
+	{
+		if (!child->GetActive())
+			return;
+		child->ShadowMapping();
+	}
+
+
+}
+
 void GameObject::InitAllComponentAndChild(void)
 {
-	this->transformComponent->Init();
+	this->isActive = TRUE;
+
 	for (Component* com : componentList)
 	{
 		com->Init();
@@ -264,6 +292,7 @@ GameObject* GameObject::AddChild(string name)
 {
 	GameObject* newObj = new GameObject(this);
 	newObj->name = name;
+	newObj->Init();
 	this->childList.push_back(newObj);
 	return newObj;
 }
@@ -292,7 +321,6 @@ void GameObject::LoadMeshNode(MeshData* node)
 	if (!node->GetIsRoot())
 	{
 		MeshComponent* mesh = this->AddComponent<MeshComponent>();
-		mesh->Init();
 		mesh->SetMeshDataIndex(node->GetIndex());
 
 	}
@@ -300,17 +328,10 @@ void GameObject::LoadMeshNode(MeshData* node)
 
 	for (MeshData* childData: node->GetChild())
 	{
-		GameObject* newObj = new GameObject(this);
-		newObj->Init();
-		newObj->name = childData->GetName();
-		newObj->LoadMeshNode(childData);
 
-		//if (node->GetIsRoot())
-		//{
-		//	newObj->name = "meshRoot";
-		//}
+		AddChild(childData->GetName())->LoadMeshNode(childData);
 
-		this->childList.push_back(newObj);
+
 
 	}
 

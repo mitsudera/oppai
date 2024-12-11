@@ -10,6 +10,8 @@
 #include "UIShader.h"
 #include "Material.h"
 #include "AnimationData.h"
+#include "RenderTexture.h"
+#include "ShadowShader.h"
 
 #define MESH_PATH "data/MODEL/mesh/"
 #define SKINMESH_PATH "data/MODEL/skinmesh/"
@@ -335,6 +337,7 @@ void AssetsManager::CreateAllShader(void)
 	lambartShader = new LambartShader(this->pGameEngine->GetRenderer());
 	phongShader = new PhongShader(this->pGameEngine->GetRenderer());
 	uiShader = new UIShader(this->pGameEngine->GetRenderer());
+	shadowShader = new ShadowShader(this->pGameEngine->GetRenderer());
 }
 
 LambartShader* AssetsManager::GetLambartShader(void)
@@ -357,6 +360,11 @@ SkyShader* AssetsManager::GetSkyShader(void)
 	return this->skyShader;
 }
 
+ShadowShader* AssetsManager::GetShadowShader(void)
+{
+	return this->shadowShader;
+}
+
 void AssetsManager::SetShader(ShaderSet::ShaderIndex index)
 {
 	switch (index)
@@ -376,6 +384,10 @@ void AssetsManager::SetShader(ShaderSet::ShaderIndex index)
 
 		this->uiShader->SetShaderRenderer();
 		break;
+	case ShaderSet::Shadow:
+
+		this->shadowShader->SetShaderRenderer();
+		break;
 
 	}
 }
@@ -383,6 +395,36 @@ void AssetsManager::SetShader(ShaderSet::ShaderIndex index)
 Material* AssetsManager::GetMaterial(int index)
 {
 	return MaterialArray[index];
+}
+
+int AssetsManager::CreateRenderTexture(int widht, int height, string name)
+{
+	RenderTexture* rtex = new RenderTexture(this);
+	rtex->CreateRenderTexture(widht, height, name);
+	RenderTextureArray.push_back(rtex);
+
+
+
+	return RenderTextureArray.size() - 1;
+}
+
+int AssetsManager::GetRenderTextureIndex(string name)
+{
+
+	for (int i = 0; i < RenderTextureArray.size(); i++)
+	{
+		if (RenderTextureArray[i]->GetName() == name)
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+RenderTexture* AssetsManager::GetRenderTexture(int index)
+{
+	return this->RenderTextureArray[index];
 }
 
 int AssetsManager::LoadMaterial(Material* material)

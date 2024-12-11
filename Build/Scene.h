@@ -19,6 +19,7 @@ public:
 	void Draw();
 	void Uninit();
 
+
 	void InitAllObject(void);
 
 	GameEngine* GetGameEngine(void);

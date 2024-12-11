@@ -23,7 +23,7 @@ void SkySphere::Init(void)
 	this->layer = Layer::Sky;
 	this->name = "SkySphere";
 	this->transformComponent->SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	this->transformComponent->SetScale(XMFLOAT3(100.0f, 100.0f, 100.0f));
+	this->transformComponent->SetScale(XMFLOAT3(1000.0f, 1000.0f, 1000.0f));
 
 
 	this->LoadFbxFileMesh("SkySphere.fbx");

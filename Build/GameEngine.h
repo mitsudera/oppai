@@ -11,6 +11,7 @@ class Scene;
 class CBufferManager;
 class LightManager;
 class CollisionManager;
+class ShadowMap;
 
 class GameEngine
 {
@@ -46,7 +47,9 @@ public:
 
 	void ChengeWindowSize(int width, int height);
 
+	void SetMainCamera(CameraComponent* camera);
 
+	CameraComponent* GetMainCamera(void);
 private:
 
 	Main* main;
@@ -56,6 +59,8 @@ private:
 	Input* input;
 	LightManager* lightManager;
 	CollisionManager* collisionManager;
+	CameraComponent* mainCamera;//バックバッファへの描画を行うカメラ
+	ShadowMap* shadowMap;
 
 	SceneManager* sceneManager;
 	Scene* activeScene;

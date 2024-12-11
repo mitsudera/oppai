@@ -50,6 +50,12 @@ void PrimitiveComponent::Draw(void)
 	}
 }
 
+void PrimitiveComponent::ShadowMapping(void)
+{
+	if (!hasShadow)
+		return;
+}
+
 int PrimitiveComponent::GetMaterialIndex(void)
 {
 	return this->materialIndex;

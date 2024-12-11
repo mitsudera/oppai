@@ -6,6 +6,7 @@ class Scene;
 
 class GameObject;
 
+class CameraComponent;
 
 
 class GameManagerComponent :public Component
@@ -20,8 +21,8 @@ public:
 private:
 	Scene* gameScene;
 
-	Component* gameCamera;
-	Component* debugCamera;
+	CameraComponent* gameCamera;
+	CameraComponent* debugCamera;
 
 
 	void SetCameraModeGame(void);

@@ -78,6 +78,8 @@ public:
 	void SetPointLight(PointLightComponent* pointlightComponent, int index);
 	void SetDirecLight(DirectionalLightComponent* direclightComponent, int index);
 
+	DirectionalLightComponent* GetMainLight(void);
+
 	void SetAllEnable(BOOL flag);
 private:
     GameEngine* pGameEngine;

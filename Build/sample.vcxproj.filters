@@ -34,9 +34,6 @@
     <Filter Include="Light">
       <UniqueIdentifier>{7f67ff35-50c5-4a0a-9602-3a607f746c67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Data">
-      <UniqueIdentifier>{b95820f7-cdb8-472b-9c71-795ab37060c0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="gameobject\2D">
       <UniqueIdentifier>{c26b9ac7-10bb-4165-99f0-99337180336d}</UniqueIdentifier>
     </Filter>
@@ -97,9 +94,6 @@
     <Filter Include="GameEngine">
       <UniqueIdentifier>{b9dca675-2a2c-4887-b62c-0dc6ce728bd9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameEngine\Main">
-      <UniqueIdentifier>{06a6a4f6-6143-4568-b27f-cb07179338ca}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameEngine\Manager">
       <UniqueIdentifier>{70da4c6b-54d9-4707-9895-07d8094c2aa9}</UniqueIdentifier>
     </Filter>
@@ -114,6 +108,18 @@
     </Filter>
     <Filter Include="component\LightComponent">
       <UniqueIdentifier>{2c043215-ebc7-4b5c-8f73-d441a412c6fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{b95820f7-cdb8-472b-9c71-795ab37060c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Main">
+      <UniqueIdentifier>{06a6a4f6-6143-4568-b27f-cb07179338ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Shadow">
+      <UniqueIdentifier>{ea91e91c-9967-4a65-a948-2cf760491172}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\ShadowShader">
+      <UniqueIdentifier>{e729880f-82b7-40f9-8cc5-b229eff4fc26}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -148,13 +154,13 @@
       <Filter>component</Filter>
     </ClInclude>
     <ClInclude Include="MeshAnimData.h">
-      <Filter>Data</Filter>
+      <Filter>Assets</Filter>
     </ClInclude>
     <ClInclude Include="MeshData.h">
-      <Filter>Data</Filter>
+      <Filter>Assets</Filter>
     </ClInclude>
     <ClInclude Include="DX11Texture.h">
-      <Filter>Data</Filter>
+      <Filter>Assets</Filter>
     </ClInclude>
     <ClInclude Include="math.h">
       <Filter>math</Filter>
@@ -256,7 +262,7 @@
       <Filter>component</Filter>
     </ClInclude>
     <ClInclude Include="AnimationData.h">
-      <Filter>Data</Filter>
+      <Filter>Assets</Filter>
     </ClInclude>
     <ClInclude Include="ColliderComponent.h">
       <Filter>component\ColliderComponent</Filter>
@@ -278,9 +284,6 @@
     </ClInclude>
     <ClInclude Include="GameEngine.h">
       <Filter>GameEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowMapping.h">
-      <Filter>misc</Filter>
     </ClInclude>
     <ClInclude Include="SkeletonAnimData.h">
       <Filter>misc</Filter>
@@ -308,6 +311,18 @@
     </ClInclude>
     <ClInclude Include="PointLightComponent.h">
       <Filter>component\LightComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTexture.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>GameEngine\Shadow</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMappingMaterial.h">
+      <Filter>Shader\ShadowShader</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowShader.h">
+      <Filter>Shader\ShadowShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -339,13 +354,13 @@
       <Filter>component</Filter>
     </ClCompile>
     <ClCompile Include="MeshAnimData.cpp">
-      <Filter>Data</Filter>
+      <Filter>Assets</Filter>
     </ClCompile>
     <ClCompile Include="MeshData.cpp">
-      <Filter>Data</Filter>
+      <Filter>Assets</Filter>
     </ClCompile>
     <ClCompile Include="DX11Texture.cpp">
-      <Filter>Data</Filter>
+      <Filter>Assets</Filter>
     </ClCompile>
     <ClCompile Include="math.cpp">
       <Filter>math</Filter>
@@ -447,7 +462,7 @@
       <Filter>component</Filter>
     </ClCompile>
     <ClCompile Include="AnimationData.cpp">
-      <Filter>Data</Filter>
+      <Filter>Assets</Filter>
     </ClCompile>
     <ClCompile Include="ColliderComponent.cpp">
       <Filter>component\ColliderComponent</Filter>
@@ -469,9 +484,6 @@
     </ClCompile>
     <ClCompile Include="GameEngine.cpp">
       <Filter>GameEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadowMapping.cpp">
-      <Filter>misc</Filter>
     </ClCompile>
     <ClCompile Include="SkeletonAnimData.cpp">
       <Filter>misc</Filter>
@@ -500,12 +512,21 @@
     <ClCompile Include="PointLightComponent.cpp">
       <Filter>component\LightComponent</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTexture.cpp">
+      <Filter>Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>GameEngine\Shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMappingMaterial.cpp">
+      <Filter>Shader\ShadowShader</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowShader.cpp">
+      <Filter>Shader\ShadowShader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\shader.hlsl">
-      <Filter>Shader\hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="shaders\ShadowShader.hlsl">
       <Filter>Shader\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="shaders\TerrainShader.hlsl">
@@ -519,6 +540,9 @@
     </FxCompile>
     <FxCompile Include="shaders\UIShader.hlsl">
       <Filter>Shader\UIShader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\ShadowShader.hlsl">
+      <Filter>Shader\ShadowShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

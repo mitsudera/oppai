@@ -28,7 +28,7 @@ TransformComponent::TransformComponent()
 	this->wMtx = XMMatrixIdentity();
 	this->fDirection = { 0.0f,0.0f,1.0f };
 	isMtxUpdate = TRUE;
-
+	rotmode = RotMode::Euler;
 }
 
 TransformComponent::TransformComponent(GameObject* gameObject)
@@ -59,6 +59,7 @@ TransformComponent::TransformComponent(GameObject* gameObject)
 
 	this->pGameObject = gameObject;
 	isMtxUpdate = TRUE;
+	rotmode = RotMode::Euler;
 
 }
 
@@ -97,6 +98,7 @@ void TransformComponent::Init(void)
 	this->lMtx = XMMatrixIdentity();
 	this->wMtx = XMMatrixIdentity();
 	isMtxUpdate = TRUE;
+	rotmode = RotMode::Euler;
 
 }
 
@@ -110,14 +112,6 @@ void TransformComponent::Update(void)
 	Component::Update();
 
 
-
-	XMVECTOR v = XMLoadFloat3(&fDirection);
-
-	v = XMVector3Transform(v, mtxrot);
-
-	v = XMVector3Normalize(v);
-
-	XMStoreFloat3(&this->forward, v);
 
 	
 	
@@ -140,6 +134,17 @@ void TransformComponent::Draw(void)
 
 void TransformComponent::UpdateMatrix(void)
 {
+
+	XMVECTOR v = XMLoadFloat3(&fDirection);
+
+	v = XMVector3Transform(v, mtxrot);
+
+	v = XMVector3Normalize(v);
+
+	XMStoreFloat3(&this->forward, v);
+
+
+
 	if (!this->isMtxUpdate)
 		return;
 	lMtx = XMMatrixIdentity();
@@ -174,7 +179,7 @@ XMFLOAT3 TransformComponent::GetScale(void)
 	return this->scl;
 }
 
-XMFLOAT3 TransformComponent::GetDirection(void)
+XMFLOAT3 TransformComponent::GetForward(void)
 {
 	return this->forward;
 }
@@ -483,29 +488,64 @@ void TransformComponent::SetForwardDiection(XMFLOAT3 dir)
 
 void TransformComponent::RotRoll(float f)
 {
-	XMVECTOR qton = XMQuaternionRotationAxis(this->axisZ, f);
-	this->mtxrot = XMMatrixMultiply(this->mtxrot, XMMatrixRotationQuaternion(qton));
-	this->axisY = XMVector3Rotate(this->axisY, qton);
-	this->axisX = XMVector3Rotate(this->axisX, qton);
+	if (rotmode==RotMode::Euler)
+	{
+		this->rot.z += f;
+		this->mtxrot = XMMatrixRotationRollPitchYaw(rot.x, rot.y, rot.z);
+
+
+	}
+	else if (rotmode==RotMode::Quaternion)
+	{
+		XMVECTOR qton = XMQuaternionRotationAxis(this->axisZ, f);
+		this->mtxrot = XMMatrixMultiply(this->mtxrot, XMMatrixRotationQuaternion(qton));
+		this->axisY = XMVector3Rotate(this->axisY, qton);
+		this->axisX = XMVector3Rotate(this->axisX, qton);
+
+	}
+
 	
 
 }
 
 void TransformComponent::RotPitch(float f)
 {
-	XMVECTOR qton = XMQuaternionRotationAxis(this->axisX, f);
-	this->mtxrot = XMMatrixMultiply(this->mtxrot, XMMatrixRotationQuaternion(qton));
-	this->axisY = XMVector3Rotate(this->axisY, qton);
-	this->axisZ = XMVector3Rotate(this->axisZ, qton);
+	if (rotmode == RotMode::Euler)
+	{
+		this->rot.x += f;
+		this->mtxrot = XMMatrixRotationRollPitchYaw(rot.x, rot.y, rot.z);
+		XMVECTOR qton = XMQuaternionRotationRollPitchYaw(rot.x, rot.y, rot.z);
+
+	}
+	else if (rotmode == RotMode::Quaternion)
+	{
+		XMVECTOR qton = XMQuaternionRotationAxis(this->axisX, f);
+		this->mtxrot = XMMatrixMultiply(this->mtxrot, XMMatrixRotationQuaternion(qton));
+		this->axisY = XMVector3Rotate(this->axisY, qton);
+		this->axisZ = XMVector3Rotate(this->axisZ, qton);
+
+	}
 
 }
 
 void TransformComponent::RotYaw(float f)
 {
-	XMVECTOR qton = XMQuaternionRotationAxis(this->axisY, f);
-	this->mtxrot = XMMatrixMultiply(this->mtxrot, XMMatrixRotationQuaternion(qton));
-	this->axisX = XMVector3Rotate(this->axisX, qton);
-	this->axisZ = XMVector3Rotate(this->axisZ, qton);
+	if (rotmode == RotMode::Euler)
+	{
+		this->rot.y += f;
+		this->mtxrot = XMMatrixRotationRollPitchYaw(rot.x, rot.y, rot.z);
+
+	}
+	else if (rotmode == RotMode::Quaternion)
+	{
+		XMVECTOR qton = XMQuaternionRotationAxis(this->axisY, f);
+		this->mtxrot = XMMatrixMultiply(this->mtxrot, XMMatrixRotationQuaternion(qton));
+		this->axisX = XMVector3Rotate(this->axisX, qton);
+		this->axisZ = XMVector3Rotate(this->axisZ, qton);
+
+
+	}
+
 
 }
 
@@ -533,6 +573,12 @@ float TransformComponent::Length(TransformComponent* transform)
 void TransformComponent::SetMtxUpdate(BOOL flag)
 {
 	this->isMtxUpdate = flag;
+}
+
+void TransformComponent::SetRotMode(RotMode mode)
+{
+	this->rotmode = mode;
+
 }
 
 

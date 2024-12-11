@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "LightManager.h"
+
 class DirectionalLightComponent :public Component
 {
 public:
@@ -15,6 +16,7 @@ public:
 	void SetLight(DIREC_LIGHT_PARAM direcLight);
 	DIREC_LIGHT_PARAM& GetLightParam(void);
 
+	XMFLOAT3 GetDirection(void);
 
 private:
 

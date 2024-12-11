@@ -55,6 +55,7 @@ class AssetsManager;
 	 AssetsManager* GetpAssetsManager(void);
 
 	 int GetMaterialIndex(void);
+	 int GetShadowMaterialIndex(void);
 
 	 BOOL GetIsRoot(void);
 
@@ -82,6 +83,7 @@ class AssetsManager;
 	 vector <MeshData*> childArray;
 
 	 int materialIndex;
+	 int shadowMaterialIndex;
 	 BOOL isRoot;
 
 	 string name;

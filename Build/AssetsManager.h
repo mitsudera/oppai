@@ -19,11 +19,13 @@ class Material;
 
 class AnimationData;
 
+class RenderTexture;
 //shader
 class LambartShader;
 class PhongShader;
 class UIShader;
 class SkyShader;
+class ShadowShader;
 
 class AssetsManager
 {
@@ -77,6 +79,7 @@ public:
 	PhongShader* GetPhongShader(void);
 	UIShader* GetUIShader(void);
 	SkyShader* GetSkyShader(void);
+	ShadowShader* GetShadowShader(void);
 
 	void SetShader(ShaderSet::ShaderIndex index);
 
@@ -84,12 +87,17 @@ public:
 
 	Material* GetMaterial(int index);
 
+	int CreateRenderTexture(int widht, int height, string name);
+	int GetRenderTextureIndex(string name);
+	RenderTexture* GetRenderTexture(int index);
+
 private:
 
 	GameEngine* pGameEngine;
 	vector<MeshData*> MeshDataTree;//メッシュデータのルートの配列
 	vector<MeshData*> MeshDataArray;
 	vector<AnimationData*> AnimDataArray;
+	vector<RenderTexture*> RenderTextureArray;
 
 	//vector<KeyFrameAnimData*>  KeyFrameAnimDataArray;
 	//vector<SkinMeshDataList*> SkinMeshDataListArray;
@@ -104,5 +112,6 @@ private:
 	PhongShader* phongShader;
 	UIShader* uiShader;
 	SkyShader* skyShader;
+	ShadowShader* shadowShader;
 };
 

@@ -25,6 +25,7 @@ public:
 	virtual void Update(void) override;
 	virtual void Uninit(void) override;
 	virtual void Draw(void) override;
+	virtual void ShadowMapping(void);
 
 
 	int GetMaterialIndex(void);
@@ -35,5 +36,6 @@ protected:
 	BOOL hasShadow;
 	BOOL drawShadow;
 	int materialIndex;
+	int shadowMaterialIndex;
 };
 

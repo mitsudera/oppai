@@ -39,4 +39,9 @@ DIREC_LIGHT_PARAM& DirectionalLightComponent::GetLightParam(void)
 	return this->param;
 }
 
+XMFLOAT3 DirectionalLightComponent::GetDirection(void)
+{
+	return XMFLOAT3(param.m_Direction.x, param.m_Direction.y, param.m_Direction.z);
+}
+
 

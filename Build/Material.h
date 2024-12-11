@@ -7,6 +7,8 @@ class ShaderSet;
 
 class AssetsManager;
 
+
+
 class Material
 {
 public:
@@ -17,18 +19,14 @@ public:
 
 	virtual void SetBufferMaterial(void) = 0;
 
+	void SetBufferShadowMapping(void);
+
 	ShaderSet* GetShaderSet(void);
 
 
 	void LoadDiffuseTex(string fName);
 	void LoadNormalTex(string fName);
 	void LoadArmTex(string fName);
-
-
-private:
-
-protected:
-
 
 	XMFLOAT4	ambient;
 	XMFLOAT4	diffuse;
@@ -40,9 +38,19 @@ protected:
 	int			noArmTex;
 
 
+
 	int textureDiffuseIndex;
 	int textureNormalIndex;
 	int textureArmIndex;
+
+
+private:
+
+protected:
+
+
+
+
 
 
 	ShaderSet* pShader;

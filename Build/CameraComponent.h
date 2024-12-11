@@ -85,8 +85,9 @@ public:
 
 	void SetSky(GameObject* sky);
 
+	void SetMainCamera(void);
+
 private:
-	void SetCamera(void);
 
 	D3D11_VIEWPORT vp;
 

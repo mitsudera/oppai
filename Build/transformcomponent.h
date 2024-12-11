@@ -5,6 +5,15 @@
 class TransformComponent:public Component
 {
 public:
+
+	enum class RotMode :int
+	{
+		Euler,
+		Quaternion,
+	};
+
+
+
 	TransformComponent();
 	TransformComponent(GameObject* gameObject);
 	~TransformComponent();
@@ -26,7 +35,7 @@ public:
 	XMFLOAT3 GetRotation(void);
 	XMFLOAT3 GetOldRotation(void);
 	XMFLOAT3 GetScale(void);
-	XMFLOAT3 GetDirection(void);
+	XMFLOAT3 GetForward(void);
 	XMVECTOR GetAxisX(void);
 	XMVECTOR GetAxisY(void);
 	XMVECTOR GetAxisZ(void);
@@ -97,8 +106,11 @@ public:
 
 	void SetMtxUpdate(BOOL flag);
 
+	void SetRotMode(RotMode mode);
+
 protected:
 
+	RotMode rotmode;
 	
 
 	XMFLOAT3		pos;		// ƒ|ƒŠƒSƒ“‚ÌˆÊ’u

@@ -18,6 +18,10 @@ void Material::SetShaderRenderer(void)
 
 }
 
+void Material::SetBufferShadowMapping(void)
+{
+}
+
 ShaderSet* Material::GetShaderSet(void)
 {
 	return this->pShader;

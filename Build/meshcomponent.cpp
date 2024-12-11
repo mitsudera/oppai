@@ -46,14 +46,6 @@ void MeshComponent::Init(void)
 {
 	PrimitiveComponent::Init();
 
-	//SetMeshDataList();
-	//if (animation==TRUE)
-	//{
-	//	SetAnimationArray();
-	//}
-
-	//this->SetpGameEngine(this->GetWorld()->GetGameEngine());
-	//this->SetpMeshDataList();
 	hasShadow = TRUE;
 
 
@@ -62,142 +54,6 @@ void MeshComponent::Init(void)
 void MeshComponent::Update(void)
 {
 	PrimitiveComponent::Update();
-
-	//GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
-
-	//float dTime = pGameEngine->GetDeltaTime();//1.0=1秒
-	//float dFrame = dTime * 60.0f;
-
-	//if (animstate==ANIM_MODE::NO_ANIM)
-	//{
-
-	//}
-	//else if (animstate == ANIM_MODE::DATA_ANIM)
-	//{
-	//	for (int i = 0; i < meshNum; i++)
-	//	{
-	//		int frame1 = (int)(framecnt);
-	//		int frame2 = (int)(framecnt)+1;
-	//		if (frame2 >= framenum)
-	//		{
-	//			frame2 = 0;
-	//		}
-	//		float w2 = framecnt - (float)(int)(framecnt);
-	//		float w1 = 1.0f - w2;
-
-	//		XMMATRIX mtx1 = pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i);
-	//		XMMATRIX mtx2 = pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i);
-
-
-	//		SetMtx((mtx1 * w1) + (mtx2 * w2));
-
-
-	//	}
-
-	//	framecnt += animSpeed*dFrame;
-	//	if (framecnt >= framenum)
-	//	{
-
-
-	//		framecnt = framecnt-(float)framenum;
-
-
-
-	//		if (isOneTime)
-	//		{
-	//			SwichAnimIndex(defaultAnimIndex);
-	//		}
-	//		else if (frameBlendMode)
-	//		{
-	//			SwichAnimIndex(this->animindex);
-	//		}
-	//	}
-
-
-	//}
-	//else if (animstate == ANIM_MODE::BLEND_ANIM)
-	//{
-	//	float blendweight1= (1.0f / blendcntmax) * blendcnt;
-	//	float blendweight2= 1.0f - blendweight1;
-
-
-	//	
-
-	//	for (int i = 0; i < meshNum; i++)
-	//	{
-
-
-	//		int frame1 = (int)(framecnt);
-	//		int frame2 = (int)(framecnt)+1;
-	//		if (frame2>=framenum)
-	//		{
-	//			frame2 = 0;
-	//		}
-	//		float w2 = framecnt - (float)(int)(framecnt);
-	//		float w1 = 1.0f - w2;
-
-	//		XMMATRIX mtx1= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i) * blendweight1) + (this->GetBlendMtx() * blendweight2);
-	//		XMMATRIX mtx2= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i) * blendweight1) + (this->GetBlendMtx() * blendweight2);
-
-
-	//		SetMtx((mtx1 * w1) + (mtx2 * w2));
-
-
-
-
-	//	}
-	//	blendcnt += dFrame;
-	//	if (blendcnt >= blendcntmax)
-	//	{
-	//		animstate = ANIM_MODE::DATA_ANIM;
-	//	}
-
-	//}
-	//else if (animstate == ANIM_MODE::CROSSFADE_ANIM)
-	//{
-	//	float blendweight1= (1.0f / blendcntmax) * blendcnt;
-	//	float blendweight2= 1.0f - blendweight1;
-
-
-	//	
-
-	//	for (int i = 0; i < meshNum; i++)
-	//	{
-
-
-	//		int frame1 = (int)(framecnt);
-	//		int frame2 = (int)(framecnt)+1;
-	//		if (frame2>=framenum)
-	//		{
-	//			frame2 = 0;
-	//		}
-	//		float w2 = framecnt - (float)(int)(framecnt);
-	//		float w1 = 1.0f - w2;
-
-	//		XMMATRIX mtx1= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame1, i) * blendweight1) + (this->GetBlendMtx() * blendweight2);
-	//		XMMATRIX mtx2= (pGameEngine->GetAssetsManager()->GetKeyFrameAnimData(animindex)->GetFrameMeshMtx(frame2, i) * blendweight1) + (this->GetBlendMtx() * blendweight2);
-
-
-
-	//		SetMtx((mtx1* w1) + (mtx2 * w2));
-
-
-
-	//	}
-	//	blendcnt += dFrame;
-	//	if (blendcnt >= blendcntmax)
-	//	{
-	//		animstate = ANIM_MODE::DATA_ANIM;
-	//	}
-	//	framecnt += animSpeed * dFrame;
-	//	if (framecnt >= framenum)
-	//	{
-	//		framecnt = framecnt - (float)framenum;
-	//	}
-
-
-	//}
-
 }
 
 void MeshComponent::Uninit(void)
@@ -232,7 +88,6 @@ void MeshComponent::Draw(void)
 	meshData->BufferSetIndex();
 
 
-	TransformComponent* trans = this->pGameObject->GetTransFormComponent();
 
 	XMMATRIX world = XMMatrixIdentity();
 	world = this->pGameObject->GetTransFormComponent()->GetWorldMtx(world);
@@ -240,6 +95,42 @@ void MeshComponent::Draw(void)
 
 
 	pGameEngine->GetAssetsManager()->GetMaterial(this->materialIndex)->SetBufferMaterial();
+
+	renderer->GetDeviceContext()->DrawIndexed(meshData->GetIndexNum(), 0, 0);
+
+	renderer->SetAlphaTestEnable(FALSE);
+
+}
+
+void MeshComponent::ShadowMapping(void)
+{
+	PrimitiveComponent::ShadowMapping();
+
+
+	Renderer* renderer = pGameEngine->GetRenderer();
+
+
+
+	if (this->alphaTest == TRUE)
+	{
+		renderer->SetAlphaTestEnable(TRUE);
+	}
+
+	MeshData* meshData = pGameEngine->GetAssetsManager()->GetMeshData(this->MeshDataIndex);
+
+
+	renderer->SetCullingMode((CULL_MODE)cullMode);
+	meshData->BufferSetVertex();
+	meshData->BufferSetIndex();
+
+
+
+	XMMATRIX world = XMMatrixIdentity();
+	world = this->pGameObject->GetTransFormComponent()->GetWorldMtx(world);
+	pGameEngine->GetCBufferManager()->SetWorldMtx(&world);
+
+
+	pGameEngine->GetAssetsManager()->GetMaterial(this->shadowMaterialIndex)->SetBufferMaterial();
 
 	renderer->GetDeviceContext()->DrawIndexed(meshData->GetIndexNum(), 0, 0);
 
@@ -280,6 +171,7 @@ void MeshComponent::SetMeshDataIndex(int index)
 	MeshData* meshData = pGameEngine->GetAssetsManager()->GetMeshData(index);
 
 	this->materialIndex = meshData->GetMaterialIndex();
+	this->shadowMaterialIndex = meshData->GetShadowMaterialIndex();
 
 	this->GetTransFormComponent()->SetPosition(meshData->GetPosOffset());
 	this->GetTransFormComponent()->SetRotation(meshData->GetRotOffset());

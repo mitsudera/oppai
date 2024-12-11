@@ -49,6 +49,7 @@ public:
 	virtual void Update(void);
 	virtual void UpdateMatrix(void);
 	virtual void Draw(ShaderSet::ShaderIndex index);
+	virtual void ShadowMapping(void);
 	
 	void InitAllComponentAndChild(void);
 
@@ -79,6 +80,8 @@ public:
 
 	template<class T>
 	T* AddComponent(void);
+
+
 
 	GameObject* AddChild(string name);
 
@@ -127,7 +130,10 @@ template<class T>
 T* GameObject::AddComponent(void)
 {
 	T* com = new T(this);
+
 	this->componentList.push_back(com);
 
+	Component* c = dynamic_cast<Component*>(com);
+	c->Init();
 	return com;
 }

@@ -32,6 +32,9 @@ public:
 
 	virtual void Draw(void) override;
 
+	virtual void ShadowMapping(void) override;
+
+
 	void SetCullingMode(int cullMode);
 	int GetCullingMode(void);
 

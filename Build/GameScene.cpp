@@ -38,7 +38,6 @@ void GameScene::Init()
 	this->gameObjectList.push_back(light);
 
 	DirectionalLightComponent* lcom= light->AddComponent<DirectionalLightComponent>();
-	lcom->Init();
 	DIREC_LIGHT_PARAM lParam;
 	lParam.m_Direction = { 0.0f, - 1.0f, 0.0f, 0.0f };
 	lParam.m_Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };

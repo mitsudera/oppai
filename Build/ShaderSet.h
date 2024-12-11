@@ -24,6 +24,7 @@ public:
 		Lambart,
 		Phong,
 		UI,
+		Shadow,
 		MAX,
 
 	}ShaderIndex;
