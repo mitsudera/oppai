@@ -3,6 +3,7 @@
 GameManager::GameManager(Scene* scene)
 {
 	this->pScene = scene;
+
 }
 
 GameManager::~GameManager()

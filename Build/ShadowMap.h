@@ -39,6 +39,9 @@ public:
 	void SetFar(float vFar);
 	void SetNear(float vNear);
 
+	void SetEnable(BOOL enable);
+	void SetVariance(BOOL enable);
+
 private:
 	GameEngine* pGameEngine;
 	AssetsManager* pAssetsManager;

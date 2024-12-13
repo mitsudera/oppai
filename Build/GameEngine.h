@@ -38,6 +38,7 @@ public:
 	Input* GetInput(void);
 	CollisionManager* GetCollisionManager(void);
 	LightManager* GetLightmanager(void);
+	ShadowMap* GetShadowMap(void);
 
 	Scene* GetActiveScene(void);
 	void SetActiveScene(Scene* scene);

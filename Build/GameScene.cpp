@@ -8,6 +8,10 @@
 #include "Tree.h"
 #include "DirectionalLightComponent.h"
 #include "LightManager.h"
+#include "transformcomponent.h"
+#include "DirectionalLight.h"
+#include "GameEngine.h"
+#include "AssetsManager.h"
 
 GameScene::GameScene(GameEngine* pGameEngine)
 {
@@ -22,28 +26,23 @@ void GameScene::Init()
 {
 	Scene::Init();
 
+
+	DirectionalLight* light = new DirectionalLight(this);
+	this->gameObjectList.push_back(light);
+
+
 	SkySphere* sky = new SkySphere(this);
 	this->gameObjectList.push_back(sky);
 
 	Robot* robot = new Robot(this);
 	this->gameObjectList.push_back(robot);
 
-	//Tree* tree = new Tree(this);
-	//this->gameObjectList.push_back(tree);
+	GameObject* field = new GameObject(this);
+	this->gameObjectList.push_back(field);
+	field->LoadFbxFileMesh("blueplane.fbx");
 
 	DebugCamera* debugCamera=new DebugCamera(this);
 	this->gameObjectList.push_back(debugCamera);
-
-	GameObject* light = new GameObject(this);
-	this->gameObjectList.push_back(light);
-
-	DirectionalLightComponent* lcom= light->AddComponent<DirectionalLightComponent>();
-	DIREC_LIGHT_PARAM lParam;
-	lParam.m_Direction = { 0.0f, - 1.0f, 0.0f, 0.0f };
-	lParam.m_Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
-	lParam.m_Enable = 1;
-	lParam.m_Ambient= { 0.2f, 0.2f, 0.2f, 1.0f };
-	lcom->SetLight(lParam);
 
 
 

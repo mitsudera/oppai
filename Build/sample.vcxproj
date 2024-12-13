@@ -163,6 +163,7 @@
     <ClInclude Include="component.h" />
     <ClInclude Include="Coreminimal.h" />
     <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DirectionalLightComponent.h" />
     <ClInclude Include="DX11Texture.h" />
     <ClInclude Include="FbxConvertDX11.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="component.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DirectionalLightComponent.cpp" />
     <ClCompile Include="DX11Texture.cpp" />
     <ClCompile Include="FbxConvertDX11.cpp" />

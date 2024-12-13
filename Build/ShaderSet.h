@@ -30,8 +30,16 @@ public:
 	}ShaderIndex;
 
 
-	struct MaterialCBuffer
+	struct MaterialCBuffer 
 	{
+		XMFLOAT4	ambient;
+		XMFLOAT4	diffuse;
+		XMFLOAT4	specular;
+		XMFLOAT4	emission;
+		float		shininess;
+		int			noDiffuseTex;
+		int			noNormalTex;
+		int			noArmTex;
 
 	};
 

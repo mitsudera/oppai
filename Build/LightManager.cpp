@@ -136,7 +136,15 @@ void LightManager::SetDirecLight(DirectionalLightComponent* direclightComponent,
 
 DirectionalLightComponent* LightManager::GetMainLight(void)
 {
+	for (DirectionalLightComponent* com:direcLightList)
+	{
+		if (com->GetActive())
+		{
+			return com;
+		}
+	}
 	return this->direcLightList[0];
+
 }
 
 void LightManager::SetAllEnable(BOOL flag)

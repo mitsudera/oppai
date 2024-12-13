@@ -13,10 +13,13 @@ public:
 	virtual void Uninit(void) override;
 	virtual void Update(void) override;
 
-	void SetLight(DIREC_LIGHT_PARAM direcLight);
 	DIREC_LIGHT_PARAM& GetLightParam(void);
 
 	XMFLOAT3 GetDirection(void);
+
+	void SetDiffuse(XMFLOAT4 dif);
+	void SetAmbient(XMFLOAT4 amb);
+	void SetEnable(BOOL enable);
 
 private:
 

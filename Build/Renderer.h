@@ -97,6 +97,8 @@ public:
 	ID3D11RenderTargetView* GetBackBuffer(void);
 	ID3D11DepthStencilView* GetBackBufferDSV(void);
 
+	GameEngine* GetGameEngine(void);
+
 private:
 
 	GameEngine* pGameEngine;

@@ -11,6 +11,7 @@
 #include "Scene.h"
 #include "gameobject.h"
 #include "ShadowShader.h"
+#include "transformcomponent.h"
 
 ShadowMap::ShadowMap(GameEngine* gameEngine)
 {
@@ -31,11 +32,11 @@ ShadowMap::ShadowMap(GameEngine* gameEngine)
 	pCBufferManager->SetShadowBuffer(this->shadowBuffer);
 	quality = ShadowQuality::Low;
 	vhwn = 128.0f;
-	vhwn = 1024.0f;
+	vhwf = 1024.0f;
 	variance = TRUE;
 
-	vNear = 10.0f;
-	vFar = 1000.0f;
+	vNear = 0.0f;
+	vFar = 500.0f;
 
 
 }
@@ -46,7 +47,6 @@ ShadowMap::~ShadowMap()
 
 void ShadowMap::CreateShadowMap(ShadowQuality quality)
 {
-
 	switch (quality)
 	{
 	case ShadowQuality::Low:
@@ -97,6 +97,10 @@ void ShadowMap::CreateShadowMap(ShadowQuality quality)
 
 void ShadowMap::ShadowMapping(void)
 {
+	if (!shadowBufferStruct.enable)
+		return;
+
+
 	this->shadowBufferStruct.mode = variance;
 
 	XMMATRIX view;
@@ -109,7 +113,7 @@ void ShadowMap::ShadowMapping(void)
 
 	at = XMLoadFloat3(&pGameEngine->GetMainCamera()->GetWorldPos());
 
-	lDir = XMLoadFloat3(&pGameEngine->GetLightmanager()->GetMainLight()->GetDirection());
+	lDir = pGameEngine->GetLightmanager()->GetMainLight()->GetTransFormComponent()->GetAxisZ();
 
 
 
@@ -119,16 +123,21 @@ void ShadowMap::ShadowMapping(void)
 
 	mapPos = mapPos * (vFar / 2);
 
-	view = XMMatrixLookAtLH(mapPos, at, yonevec());
+
+	view = XMMatrixLookAtLH(mapPos, at, zonevec());
 
 	proj = XMMatrixOrthographicLH(vhwn, vhwn, vNear, vFar);
+	//proj = XMMatrixPerspectiveFovLH(90.0f, 1.0f, vNear, vFar);
 	pAssetsManager->GetRenderTexture(this->shadowNearTextureIndex)->ClearRTV(XMFLOAT4(1.0f, 1.0f, 1.0f,1.0f));
 	pAssetsManager->GetRenderTexture(this->shadowNearTextureIndex)->ClearDSV(1.0f);
 
-	
+
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	pRenderer->GetDeviceContext()->PSSetShaderResources(3, 1, nullSRV);
+	pRenderer->GetDeviceContext()->PSSetShaderResources(4, 1, nullSRV);
+
 	pAssetsManager->GetRenderTexture(this->shadowNearTextureIndex)->SetRTV(RenderTexture::BindMode::BOTH, 0);
 
-	pAssetsManager->GetShadowShader()->SetShaderRenderer();
 
 	pRenderer->GetDeviceContext()->RSSetViewports(1,&ViewPortShadowMap);
 
@@ -137,6 +146,8 @@ void ShadowMap::ShadowMapping(void)
 	pCBufferManager->SetProjectionMtx(&proj);
 
 	this->shadowBufferStruct.wvp = XMMatrixTranspose(XMMatrixIdentity() * view * proj);
+	pAssetsManager->GetShadowShader()->SetShaderRenderer();
+
 
 	for (GameObject* gameObj : pGameEngine->GetActiveScene()->GetGameObject())
 	{
@@ -171,4 +182,15 @@ void ShadowMap::SetFar(float vFar)
 void ShadowMap::SetNear(float vNear)
 {
 	this->vNear = vNear;
+}
+
+void ShadowMap::SetEnable(BOOL enable)
+{
+	this->shadowBufferStruct.enable = enable;
+}
+
+void ShadowMap::SetVariance(BOOL enable)
+{
+	this->variance = enable;
+	this->shadowBufferStruct.mode = variance;
 }

@@ -1,6 +1,7 @@
 #include "ShaderSet.h"
 #include "renderer.h"
 #include "CBufferManager.h"
+#include "GameEngine.h"
 
 ShaderSet::ShaderSet()
 {
@@ -40,6 +41,9 @@ void ShaderSet::SetShaderRenderer(void)
 	if (this->PS) pRenderer->GetDeviceContext()->PSSetShader(this->PS, NULL, 0);
 
 	pRenderer->GetDeviceContext()->PSSetConstantBuffers((UINT)CBufferManager::BufferSlot::Material, 1, &this->materialBuffer);
+
+	pRenderer->GetGameEngine()->GetCBufferManager()->SetMaterialBuffer(this->materialBuffer);
+	
 }
 
 void ShaderSet::ShaderRelease(void)

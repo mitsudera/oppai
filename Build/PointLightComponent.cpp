@@ -29,10 +29,6 @@ void PointLightComponent::Update(void)
 	Component::Update();
 }
 
-void PointLightComponent::SetLight(POINT_LIGHT_PARAM pointLight)
-{
-	this->param = pointLight;
-}
 
 POINT_LIGHT_PARAM& PointLightComponent::GetLightParam(void)
 {

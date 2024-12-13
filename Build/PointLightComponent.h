@@ -13,7 +13,6 @@ public:
 	virtual void Uninit(void) override;
 	virtual void Update(void) override;
 
-	void SetLight(POINT_LIGHT_PARAM pointLight);
 	POINT_LIGHT_PARAM& GetLightParam(void);
 
 private:

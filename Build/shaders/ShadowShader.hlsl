@@ -23,9 +23,14 @@ cbuffer ProjectionBuffer : register(b2)
 // マテリアルバッファ
 struct MATERIAL
 {
+    float4 Ambient;
     float4 Diffuse;
+    float4 Specular;
+    float4 Emission;
+    float Shininess;
     int noDiffuseTex;
-    int dummy[3];
+    int noNormalTex;
+    int noArmTex;
 };
 
 cbuffer MaterialBuffer : register(b3)

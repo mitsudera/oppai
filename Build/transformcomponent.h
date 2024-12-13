@@ -6,11 +6,6 @@ class TransformComponent:public Component
 {
 public:
 
-	enum class RotMode :int
-	{
-		Euler,
-		Quaternion,
-	};
 
 
 
@@ -39,13 +34,7 @@ public:
 	XMVECTOR GetAxisX(void);
 	XMVECTOR GetAxisY(void);
 	XMVECTOR GetAxisZ(void);
-	XMVECTOR GetQtonX(void);
-	XMVECTOR GetQtonY(void);
-	XMVECTOR GetQtonZ(void);
 	XMMATRIX GetMtxRot(void);
-	XMMATRIX GetMtxRotX(void);
-	XMMATRIX GetMtxRotY(void);
-	XMMATRIX GetMtxRotZ(void);
 
 
 
@@ -56,19 +45,8 @@ public:
 	void SetPosition(XMFLOAT3 pos);
 	void SetRotation(XMFLOAT3 rot);
 	void SetScale(XMFLOAT3 scl);
-	void SetForward(XMFLOAT3 forward);
 	void RotForward(XMFLOAT3 forward);
-	void SetAxisX(XMVECTOR axis);
-	void SetAxizY(XMVECTOR axis);
-	void SetAxizZ(XMVECTOR axis);
-	void SetQtonX(XMVECTOR qton);
-	void SetQtonY(XMVECTOR qton);
-	void SetQtonZ(XMVECTOR qton);
 	void SetMtxRot(XMMATRIX mtx);
-	void SetMtxRotX(XMMATRIX mtx);
-	void SetMtxRotY(XMMATRIX mtx);
-	void SetMtxRotZ(XMMATRIX mtx);
-	void SetWorldMtx(XMMATRIX mtx);
 	void SetLocalMtx(XMMATRIX mtx);
 	void SetTransForm(XMFLOAT3 pos, XMFLOAT3 rot, XMFLOAT3 scl);
 
@@ -98,6 +76,14 @@ public:
 	void RotPitch(float f);
 	void RotYaw(float f);
 
+	void RotWorldRoll(float f);
+
+	void RotWorldPitch(float f);
+
+	void RotWorldYaw(float f);
+
+	void Rotate(float f, XMVECTOR axis);
+
 	void RotAxis(XMVECTOR qton);
 
 	void RotAxisAngle(XMVECTOR axis, float angle);
@@ -106,11 +92,9 @@ public:
 
 	void SetMtxUpdate(BOOL flag);
 
-	void SetRotMode(RotMode mode);
 
 protected:
 
-	RotMode rotmode;
 	
 
 	XMFLOAT3		pos;		// ポリゴンの位置
@@ -125,21 +109,14 @@ protected:
 	XMVECTOR		axisY;
 	XMVECTOR		axisZ;
 
-	XMVECTOR		qtonX;		//X軸回転のクォータニオン
-	XMVECTOR		qtonY;		//Y軸回転のクォータニオン
-	XMVECTOR		qtonZ;		//Z軸回転のクォータニオン
 
 	XMMATRIX		mtxpos;
 	XMMATRIX		mtxscl;
 
 	XMMATRIX		mtxrot;			//回転行列
-	XMMATRIX		mtxrotx;		//回転行列
-	XMMATRIX		mtxroty;		//回転行列
-	XMMATRIX		mtxrotz;		//回転行列
 
 
 	XMMATRIX		lMtx;
-	XMMATRIX		wMtx;	// ワールドマトリックス
 
 	BOOL			isMtxUpdate;
 

@@ -31,9 +31,6 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{92240370-249c-4cc6-b751-f4db8574ec29}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Light">
-      <UniqueIdentifier>{7f67ff35-50c5-4a0a-9602-3a607f746c67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="gameobject\2D">
       <UniqueIdentifier>{c26b9ac7-10bb-4165-99f0-99337180336d}</UniqueIdentifier>
     </Filter>
@@ -121,6 +118,18 @@
     <Filter Include="Shader\ShadowShader">
       <UniqueIdentifier>{e729880f-82b7-40f9-8cc5-b229eff4fc26}</UniqueIdentifier>
     </Filter>
+    <Filter Include="component\TransformComponent">
+      <UniqueIdentifier>{4679350b-514b-4e5b-a2d7-d3e16ee8d8d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="component\AnimationContoroler">
+      <UniqueIdentifier>{13897a7f-2df5-4955-bd33-69c793a8f180}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="component\Component">
+      <UniqueIdentifier>{c97cef2c-80ae-4f94-be2f-a777d2782128}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject\Light">
+      <UniqueIdentifier>{7f67ff35-50c5-4a0a-9602-3a607f746c67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coreminimal.h">
@@ -146,12 +155,6 @@
     </ClInclude>
     <ClInclude Include="CameraComponent.h">
       <Filter>component\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="transformcomponent.h">
-      <Filter>component</Filter>
-    </ClInclude>
-    <ClInclude Include="component.h">
-      <Filter>component</Filter>
     </ClInclude>
     <ClInclude Include="MeshAnimData.h">
       <Filter>Assets</Filter>
@@ -258,9 +261,6 @@
     <ClInclude Include="SpriteComponent.h">
       <Filter>component\primitiveComponent</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationControlerComponent.h">
-      <Filter>component</Filter>
-    </ClInclude>
     <ClInclude Include="AnimationData.h">
       <Filter>Assets</Filter>
     </ClInclude>
@@ -324,6 +324,18 @@
     <ClInclude Include="ShadowShader.h">
       <Filter>Shader\ShadowShader</Filter>
     </ClInclude>
+    <ClInclude Include="transformcomponent.h">
+      <Filter>component\TransformComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationControlerComponent.h">
+      <Filter>component\AnimationContoroler</Filter>
+    </ClInclude>
+    <ClInclude Include="component.h">
+      <Filter>component\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>gameobject\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -346,12 +358,6 @@
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
       <Filter>component\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="transformcomponent.cpp">
-      <Filter>component</Filter>
-    </ClCompile>
-    <ClCompile Include="component.cpp">
-      <Filter>component</Filter>
     </ClCompile>
     <ClCompile Include="MeshAnimData.cpp">
       <Filter>Assets</Filter>
@@ -458,9 +464,6 @@
     <ClCompile Include="SpriteComponent.cpp">
       <Filter>component\primitiveComponent</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationControlerComponent.cpp">
-      <Filter>component</Filter>
-    </ClCompile>
     <ClCompile Include="AnimationData.cpp">
       <Filter>Assets</Filter>
     </ClCompile>
@@ -523,6 +526,18 @@
     </ClCompile>
     <ClCompile Include="ShadowShader.cpp">
       <Filter>Shader\ShadowShader</Filter>
+    </ClCompile>
+    <ClCompile Include="transformcomponent.cpp">
+      <Filter>component\TransformComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationControlerComponent.cpp">
+      <Filter>component\AnimationContoroler</Filter>
+    </ClCompile>
+    <ClCompile Include="component.cpp">
+      <Filter>component\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>gameobject\Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

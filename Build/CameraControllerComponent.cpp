@@ -69,7 +69,7 @@ void CameraControllerComponent::Update(void)
 		x *= 0.001f;
 		y *= 0.001f;
 
-		this->camara->GetTransFormComponent()->RotYaw(x);
+		this->camara->GetTransFormComponent()->RotWorldYaw(x);
 		this->camara->GetTransFormComponent()->RotPitch(y);
 
 	}

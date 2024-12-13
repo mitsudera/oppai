@@ -53,7 +53,8 @@ public:
 
 	void UpdateAnimation(MtxNode* node, GameObject* gameObject);
 
-
+	void SetAnimation(int index);//番号でセット
+	void SetAnimation(string name);//名前で探してセットこっちの方が安全
 
 	int GetDefaultAnimIndex(void);
 	void SetDefaultAnimIndex(int n);
@@ -62,14 +63,14 @@ public:
 	void SetAnimationSpeed(float speed);
 	float GetAnimationSpeed(void);
 
-	void CreateAnimationNode(string name);
 
 
 protected:
 	
 	AssetsManager* pAssetsManager;
 
-
+	vector<int> animIndexArray;
+	vector<string> animNameArray;
 	int animindex;
 	int lastanimindex;
 	float framecnt;
@@ -88,7 +89,6 @@ protected:
 
 
 
-	vector<AnimationNode*>  animNodeArray;
 
 
 

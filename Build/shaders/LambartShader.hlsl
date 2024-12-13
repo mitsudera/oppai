@@ -23,12 +23,16 @@ cbuffer ProjectionBuffer : register( b2 )
 // マテリアルバッファ
 struct MATERIAL
 {
-	float4		Diffuse;
-	int			noDiffuseTex;
-	int			noNormalTex;
-	int			noArmTex;
-    int         dummy;
+    float4 Ambient;
+    float4 Diffuse;
+    float4 Specular;
+    float4 Emission;
+    float Shininess;
+    int noDiffuseTex;
+    int noNormalTex;
+    int noArmTex;
 };
+
 
 cbuffer MaterialBuffer : register( b3 )
 {
@@ -251,7 +255,7 @@ void PSmain(in float4 inPosition : SV_POSITION,
             float sm0 = ShadowMap.Sample(BorderSampler, inPosSM.xy);
 
             
-            if (inPosSM.z - 0.0002 > sm0)
+            if (inPosSM.z - 0.001 > sm0)
             {
                 sma = 0.5;
 

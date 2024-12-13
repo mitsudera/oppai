@@ -6,6 +6,7 @@
 #include "CameraComponent.h"
 #include "RobotComponent.h"
 #include "CameraComponent.h"
+#include "ShadowMap.h"
 
 GameManagerComponent::GameManagerComponent(GameObject* gameObject)
 {
@@ -25,6 +26,10 @@ void GameManagerComponent::Init(void)
 	this->debugCamera = gameScene->GetGameObjectName("DebugCamera")->GetComponent<CameraComponent>();
 
 	SetCameraModeDebug();
+
+	pGameEngine->GetShadowMap()->SetEnable(TRUE);
+	pGameEngine->GetShadowMap()->SetVariance(FALSE);
+
 }
 
 void GameManagerComponent::Uninit(void)
@@ -66,7 +71,7 @@ void GameManagerComponent::SetCameraModeGame(void)
 	gameCamera->SetActive(TRUE);
 	gameCamera->SetMainCamera();
 	debugCamera->SetActive(FALSE);
-	pGameObject->GetScene()->GetGameObjectName("Robot")->GetComponent<RobotComponent>()->SetActive(TRUE);
+	//pGameObject->GetScene()->GetGameObjectName("Robot")->GetComponent<RobotComponent>()->SetActive(TRUE);
 
 
 }
@@ -76,7 +81,7 @@ void GameManagerComponent::SetCameraModeDebug(void)
 	gameCamera->SetActive(FALSE);
 	debugCamera->SetActive(TRUE);
 	debugCamera->SetMainCamera();
-	pGameObject->GetScene()->GetGameObjectName("Robot")->GetComponent<RobotComponent>()->SetActive(FALSE);
+	//pGameObject->GetScene()->GetGameObjectName("Robot")->GetComponent<RobotComponent>()->SetActive(FALSE);
 
 }
 

@@ -35,7 +35,7 @@ void AnimationControlerComponent::Update(void)
 	Component::Update();
 
 
-	AnimationData* animData = pAssetsManager->GetAnimationData(animindex);
+	AnimationData* animData = pAssetsManager->GetAnimationData(animIndexArray[animindex]);
 
 	MtxNode* root = animData->GetMtxTreeRoot();
 
@@ -47,11 +47,7 @@ void AnimationControlerComponent::Update(void)
 		UpdateAnimation(child, childObj);
 	}
 	
-	if (pGameObject->GetScene()->GetGameEngine()->GetInput()->GetKeyboardPress(DIK_K)==TRUE)
-	{
-		framecnt+=1;
-	}
-
+	framecnt += pGameEngine->GetDeltaTime()*60.0f;
 }
 
 void AnimationControlerComponent::Uninit(void)
@@ -62,12 +58,9 @@ void AnimationControlerComponent::Uninit(void)
 int AnimationControlerComponent::LoadAnimationData(string fileName,string name)
 {
 	int index = pAssetsManager->LoadAnimationData(fileName);
-
-	AnimationNode* newNode = new AnimationNode(index, name);
-
-	this->animNodeArray.push_back(newNode);
-
-	return (int)this->animNodeArray.size()-1;
+	animIndexArray.push_back(index);
+	animNameArray.push_back(name);
+	return animIndexArray.size() - 1;
 }
 
 void AnimationControlerComponent::UpdateAnimation(MtxNode* node, GameObject* gameObject)
@@ -89,13 +82,22 @@ void AnimationControlerComponent::UpdateAnimation(MtxNode* node, GameObject* gam
 
 }
 
-
-
-AnimationNode::AnimationNode(int animIndex, string name)
+void AnimationControlerComponent::SetAnimation(int index)
 {
-	animDataIndex = animIndex;
-	this->name = name;
+	this->animindex = index;
 }
+
+void AnimationControlerComponent::SetAnimation(string name)
+{
+	for (int i = 0; i < animNameArray.size(); i++)
+	{
+		if (animNameArray[i] == name)
+			animindex = i;
+
+	}
+}
+
+
 
 AnimationNode::~AnimationNode()
 {

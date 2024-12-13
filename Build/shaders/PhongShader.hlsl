@@ -25,8 +25,6 @@ struct MATERIAL
     int noDiffuseTex;
     int noNormalTex;
     int noArmTex;
-    int phong;
-    int dummy[3];
 };
 
 cbuffer MaterialBuffer : register(b3)

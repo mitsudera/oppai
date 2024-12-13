@@ -51,11 +51,13 @@ void GameEngine::Init()
 	this->input = new Input();
 	this->input->Init(*main->GetInstanceHandle(), *main->GetWindowHangle());
 
+	this->shadowMap = new ShadowMap(this);
+	this->shadowMap->CreateShadowMap(ShadowMap::ShadowQuality::Low);
+
+
 	this->sceneManager = new SceneManager(this);
 	this->sceneManager->SetDefaultScene();
 
-	this->shadowMap = new ShadowMap(this);
-	this->shadowMap->CreateShadowMap(ShadowMap::ShadowQuality::Low);
 
 
 	fullscreen = FALSE;
@@ -159,6 +161,11 @@ CollisionManager* GameEngine::GetCollisionManager(void)
 LightManager* GameEngine::GetLightmanager(void)
 {
 	return this->lightManager;
+}
+
+ShadowMap* GameEngine::GetShadowMap(void)
+{
+	return this->shadowMap;
 }
 
 

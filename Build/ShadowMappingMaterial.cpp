@@ -1,7 +1,7 @@
 #include "ShadowMappingMaterial.h"
 #include "ShadowShader.h"
 #include "AssetsManager.h"
-
+#include "DX11Texture.h"
 
 ShadowMappingMaterial::ShadowMappingMaterial(AssetsManager* assetsManager)
 {
@@ -21,6 +21,7 @@ void ShadowMappingMaterial::SetBufferMaterial(void)
 	mCBuffer.diffuse = this->diffuse;
 	mCBuffer.noDiffuseTex = this->noDiffuseTex;
 	this->shadowShader->SetMaterialCbuffer(mCBuffer);
+	if (!noDiffuseTex) pAssetsManager->GetTexture(textureDiffuseIndex)->SetShaderResourcePS(0);
 
 
 }

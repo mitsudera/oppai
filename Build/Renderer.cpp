@@ -207,6 +207,11 @@ ID3D11DepthStencilView* Renderer::GetBackBufferDSV(void)
 	return this->DepthStencilViewBackBuffer;
 }
 
+GameEngine* Renderer::GetGameEngine(void)
+{
+	return this->pGameEngine;
+}
+
 
 
 
@@ -234,7 +239,6 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
 	sd.Windowed = bWindow;
-
 	// ï∂éöèoóÕópê›íË
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	sd.Flags = DXGI_SWAP_CHAIN_FLAG_GDI_COMPATIBLE;

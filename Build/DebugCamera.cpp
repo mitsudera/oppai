@@ -10,6 +10,7 @@ DebugCamera::DebugCamera(Scene* scene)
 	this->pScene = scene;
 	this->parent = nullptr;
 
+
 }
 
 DebugCamera::DebugCamera(GameObject* gameObject)
@@ -37,11 +38,7 @@ void DebugCamera::Init(void)
 
 	this->componentList.push_back(cameraComponent);
 
-	CameraControllerComponent* cameraController = new CameraControllerComponent(this);
-	cameraController->Init();
-
-	this->componentList.push_back(cameraController);
-
+	this->AddComponent<CameraControllerComponent>(); 
 
 }
 

@@ -10,6 +10,7 @@
 SkySphere::SkySphere(Scene* scene)
 {
 	pScene = scene;
+
 }
 
 SkySphere::~SkySphere()

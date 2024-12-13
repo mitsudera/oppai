@@ -11,6 +11,7 @@
 Robot::Robot(Scene* scene)
 {
 	this->pScene = scene;
+
 }
 
 Robot::~Robot()
@@ -31,10 +32,9 @@ void Robot::Init(void)
 	AnimationControlerComponent* animControler = this->AddComponent<AnimationControlerComponent>();
 	animControler->Init();
 	animControler->LoadAnimationData("robotwalk.fbx","walk");
+	animControler->LoadAnimationData("robotrun.fbx","run");
 	
-	RobotComponent* robotComponent = new RobotComponent(this);
-	robotComponent->Init();
-	this->componentList.push_back(robotComponent);
+	RobotComponent* robotComponent = this->AddComponent<RobotComponent>();
 
 
 	//子オブジェクトとしてカメラを作成
