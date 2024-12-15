@@ -24,15 +24,15 @@ void Robot::Init(void)
 	GameObject::Init();
 
 	this->name = "Robot";
-	this->transformComponent->SetPosition(XMFLOAT3(0.0f, 0.0f, 10.0f));
+	this->transformComponent->SetPosition(XMFLOAT3(0.0f, 10.0f, 10.0f));
 	this->transformComponent->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
-	this->LoadFbxFileMesh("robot.fbx");
+	this->LoadFbxFileMesh("sentouki.fbx");
 
-	AnimationControlerComponent* animControler = this->AddComponent<AnimationControlerComponent>();
-	animControler->Init();
-	animControler->LoadAnimationData("robotwalk.fbx","walk");
-	animControler->LoadAnimationData("robotrun.fbx","run");
+	//AnimationControlerComponent* animControler = this->AddComponent<AnimationControlerComponent>();
+	//animControler->Init();
+	//animControler->LoadAnimationData("robotwalk.fbx","walk");
+	//animControler->LoadAnimationData("robotrun.fbx","run");
 	
 	RobotComponent* robotComponent = this->AddComponent<RobotComponent>();
 

@@ -154,8 +154,8 @@ void VSmain(in float4 inPosition : POSITION0,
 Texture2D DiffuseTexture : register(t0);
 Texture2D NormalTex : register(t1);
 Texture2D armTex : register(t2);
-Texture2D ShadowMap : register(t3);
-Texture2D ShadowMapTex : register(t4);
+Texture2D ShadowMapNear : register(t3);
+Texture2D ShadowMapFar : register(t4);
 
 SamplerState WrapSampler : register(s0);
 SamplerState BorderSampler : register(s1);
@@ -169,10 +169,10 @@ SamplerState BorderSampler : register(s1);
 float GetVarianceDirectionalShadowFactor(float4 shadowCoord)
 {
     
-    float2 depth = ShadowMapTex.Sample(BorderSampler, shadowCoord.xy).xy;
+    float2 depth = ShadowMapNear.Sample(BorderSampler, shadowCoord.xy).xy;
     float depth_sq = depth.x * depth.x; // E(x)^2
     float variance = depth.y - depth_sq; // ƒĞ^2 = E(x^2) - E(x^2)
-    variance = saturate(variance + 0.0001); // 0.0001‚ğ’Ç‰Á‚µ‚ÄˆÀ’è«‚ğŒüã
+    variance = saturate(variance + 0.005); // 0.0001‚ğ’Ç‰Á‚µ‚ÄˆÀ’è«‚ğŒüã
 
     float fragDepth = shadowCoord.z;
     float md = fragDepth - depth.x; // t - ƒÊ
@@ -181,22 +181,6 @@ float GetVarianceDirectionalShadowFactor(float4 shadowCoord)
     return saturate(max(p, fragDepth <= depth.x)); // P(x >= t)‚ğ–‚½‚·‚Æ‚«‚Ì‚İ
 }
 
-float VSM_Filter(float2 texcoord, float fragDepth)
-{
-
-    float4 depth = ShadowMapTex.Sample(BorderSampler, texcoord);
-  
-
-    float depth_sq = depth.x * depth.x;
-
-    float variance = depth.y - depth_sq;
-    variance = min(1.0f, max(0.0f, variance + 0.0001f));
-
-    float md = fragDepth - depth.x;
-    float p = variance / (variance + (md * md));
-  
-    return saturate(max(p, depth.x <= fragDepth));
-}
 
 void PSmain(in float4 inPosition : SV_POSITION,
 						 in float4 inNormal : NORMAL0,
@@ -245,7 +229,7 @@ void PSmain(in float4 inPosition : SV_POSITION,
         }
         else if (Shadow.mode == 0)
         {
-            float sm0 = ShadowMap.Sample(BorderSampler, inPosSM.xy);
+            float sm0 = ShadowMapNear.Sample(BorderSampler, inPosSM.xy);
 
             
             if (inPosSM.z - 0.0002 > sm0)
@@ -324,13 +308,13 @@ void PSmain(in float4 inPosition : SV_POSITION,
                         
                         
                         
-                iD = color * Material.Diffuse * light * direcLight.m_Diffuse[i];
+                iD = color * Material.Diffuse * light * direcLight.m_Diffuse[i]*sma;
                 iS = color.xyz * pow(saturate(dot(r, v)), Material.Shininess) * Material.Specular.xyz;
 
-                if (light > 0.5)
-                {
-                    iD *= sma;
-                }
+                //if (light > 0.5)
+                //{
+                //    iD *= sma;
+                //}
                         
 
                        
@@ -340,6 +324,12 @@ void PSmain(in float4 inPosition : SV_POSITION,
 
                 
             }
+            else
+            {
+                tempColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+            }
+            
+            outColor += tempColor;
             
             for (int i = 0; i < MAX_POINT_LIGHT; i++)
             {

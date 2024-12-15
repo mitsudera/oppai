@@ -37,7 +37,7 @@ ShadowMap::ShadowMap(GameEngine* gameEngine)
 	variance = TRUE;
 
 	vNear = 0.0f;
-	vFar = 500.0f;
+	vFar = 50.0f;
 
 }
 
@@ -47,8 +47,8 @@ ShadowMap::~ShadowMap()
 
 void ShadowMap::CreateShadowMap(ShadowQuality quality)
 {
-	int w;
-	int h;
+	int w = 64;
+	int h = 64;
 
 	switch (quality)
 	{
@@ -159,10 +159,14 @@ void ShadowMap::ShadowMapping(void)
 
 
 		blurShader->PostEffectDraw(pAssetsManager->GetRenderTexture(this->shadowNearTextureIndex)->GetSRV(), pAssetsManager->GetRenderTexture(this->shadowNearResultTextureIndex)->GetRenderTargetView());
+		pAssetsManager->GetRenderTexture(this->shadowNearResultTextureIndex)->SetPSSRV(RenderTexture::BindMode::Texture, 3);
 
 	}
+	else
+	{
+		pAssetsManager->GetRenderTexture(this->shadowNearTextureIndex)->SetPSSRV(RenderTexture::BindMode::DepthTexture, 3);
 
-	pAssetsManager->GetRenderTexture(this->shadowNearTextureIndex)->SetPSSRV(RenderTexture::BindMode::BOTH, 3);
+	}
 
 }
 

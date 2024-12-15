@@ -161,8 +161,8 @@ void VSmain( in  float4 inPosition		: POSITION0,
 Texture2D		DiffuseTexture       : register(t0);
 Texture2D		NormalTex       : register(t1);
 Texture2D       armTex           : register(t2);
-Texture2D       ShadowMap       : register(t3);
-Texture2D       ShadowMapTex    : register(t4);
+Texture2D       ShadowMapNear       : register(t3);
+Texture2D       ShadowMapFar    : register(t4);
 
 SamplerState	WrapSampler : register( s0 );
 SamplerState BorderSampler : register(s1);
@@ -176,12 +176,12 @@ SamplerState BorderSampler : register(s1);
 float GetVarianceDirectionalShadowFactor(float4 shadowCoord)
 {
     
-    float2 depth = ShadowMapTex.Sample(BorderSampler, shadowCoord.xy).xy;
+    float2 depth = ShadowMapNear.Sample(BorderSampler, shadowCoord.xy).xy;
     float depth_sq = depth.x * depth.x; // E(x)^2
     float variance = depth.y - depth_sq; // σ^2 = E(x^2) - E(x^2)
     variance = saturate(variance + 0.0001); // 0.0001を追加して安定性を向上
 
-    float fragDepth = shadowCoord.z-0.001f;
+    float fragDepth = shadowCoord.z;//-0.001することでシャドウアクネを軽減
     float md = fragDepth - depth.x; // t - μ
     float p = variance / (variance + (md * md)); // σ^2 / (σ^2 + (t - μ)^2)
 
@@ -191,7 +191,7 @@ float GetVarianceDirectionalShadowFactor(float4 shadowCoord)
 //float VSM_Filter(float2 texcoord, float fragDepth)
 //{
 
-//    float4 depth = ShadowMapTex.Sample(BorderSampler, texcoord);
+//    float4 depth = ShadowMapFar.Sample(BorderSampler, texcoord);
   
 
 //    float depth_sq = depth.x * depth.x;
@@ -252,7 +252,7 @@ void PSmain(in float4 inPosition : SV_POSITION,
         }
         else if (Shadow.mode == 0)
         {
-            float sm0 = ShadowMap.Sample(BorderSampler, inPosSM.xy);
+            float sm0 = ShadowMapNear.Sample(BorderSampler, inPosSM.xy);
 
             
             if (inPosSM.z - 0.001 > sm0)

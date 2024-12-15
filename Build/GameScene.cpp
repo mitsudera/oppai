@@ -33,6 +33,11 @@ void GameScene::Init()
 
 	SkySphere* sky = new SkySphere(this);
 	this->gameObjectList.push_back(sky);
+	sky->SetHasShadowAll(FALSE);
+
+
+
+
 
 	Robot* robot = new Robot(this);
 	this->gameObjectList.push_back(robot);
