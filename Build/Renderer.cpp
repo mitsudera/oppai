@@ -7,6 +7,7 @@
 #include "Renderer.h"
 #include "CameraComponent.h"
 #include "GameEngine.h"
+#include "FullScreenQuadVertex.h"
 //デバッグ用画面テキスト出力を有効にする
 #define DEBUG_DISP_TEXTOUT
 //シェーダーデバッグ設定を有効にする
@@ -210,6 +211,16 @@ ID3D11DepthStencilView* Renderer::GetBackBufferDSV(void)
 GameEngine* Renderer::GetGameEngine(void)
 {
 	return this->pGameEngine;
+}
+
+void Renderer::DrawFullScreen(void)
+{
+	return this->fullScreenVertex->Draw();
+}
+
+void Renderer::SetRenderTargetBackBuffer(void)
+{
+	this->m_ImmediateContext->OMSetRenderTargets(1,&this->RenderTargetViewBackBuffer, this->DepthStencilViewBackBuffer);
 }
 
 
@@ -439,6 +450,8 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_D3DDevice->CreateSamplerState(&samplerDesc, &samplerState);
 	m_ImmediateContext->PSSetSamplers(1, 1, &samplerState);
 
+	this->fullScreenVertex = new FullScreenQuadVertex(this);
+	
 
 	return S_OK;
 }

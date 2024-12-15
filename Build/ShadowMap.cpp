@@ -12,6 +12,7 @@
 #include "gameobject.h"
 #include "ShadowShader.h"
 #include "transformcomponent.h"
+#include "GausianBlurShader.h"
 
 ShadowMap::ShadowMap(GameEngine* gameEngine)
 {
@@ -30,14 +31,13 @@ ShadowMap::ShadowMap(GameEngine* gameEngine)
 
 	pRenderer->GetDevice()->CreateBuffer(&hBufferDesc, nullptr, &this->shadowBuffer);
 	pCBufferManager->SetShadowBuffer(this->shadowBuffer);
-	quality = ShadowQuality::Low;
-	vhwn = 128.0f;
+	quality = ShadowQuality::High;
+	vhwn = 64.0f;
 	vhwf = 1024.0f;
 	variance = TRUE;
 
 	vNear = 0.0f;
 	vFar = 500.0f;
-
 
 }
 
@@ -47,51 +47,44 @@ ShadowMap::~ShadowMap()
 
 void ShadowMap::CreateShadowMap(ShadowQuality quality)
 {
+	int w;
+	int h;
+
 	switch (quality)
 	{
 	case ShadowQuality::Low:
-		this->shadowNearTextureIndex = pAssetsManager->CreateRenderTexture(1024, 1024, "ShadowMapNear");
-		this->shadowFarTextureIndex = pAssetsManager->CreateRenderTexture(1024, 1024, "ShadowMapFar");
-
-		// ビューポートの設定
-		ViewPortShadowMap.TopLeftX = 0.0f;		// ビューポート領域の左上X座標。
-		ViewPortShadowMap.TopLeftY = 0.0f;		// ビューポート領域の左上Y座標。
-		ViewPortShadowMap.Width = 1024.0f;	// ビューポート領域の幅
-		ViewPortShadowMap.Height = 1024.0f;	// ビューポート領域の高さ
-		ViewPortShadowMap.MinDepth = 0.0f;		// ビューポート領域の深度値の最小値
-		ViewPortShadowMap.MaxDepth = 1.0f;		// ビューポート領域の深度値の最大値
-
+		w = 1024;
+		h = 1024;
 		break;
 
 	case ShadowQuality::Middle:
-		this->shadowNearTextureIndex = pAssetsManager->CreateRenderTexture(2048, 2048, "ShadowMapNear");
-		this->shadowFarTextureIndex = pAssetsManager->CreateRenderTexture(2048, 2048, "ShadowMapFar");
-		// ビューポートの設定
-		ViewPortShadowMap.TopLeftX = 0.0f;		// ビューポート領域の左上X座標。
-		ViewPortShadowMap.TopLeftY = 0.0f;		// ビューポート領域の左上Y座標。
-		ViewPortShadowMap.Width = 2048.0f;	// ビューポート領域の幅
-		ViewPortShadowMap.Height = 2048.0f;	// ビューポート領域の高さ
-		ViewPortShadowMap.MinDepth = 0.0f;		// ビューポート領域の深度値の最小値
-		ViewPortShadowMap.MaxDepth = 1.0f;		// ビューポート領域の深度値の最大値
-
-
+		w = 2048;
+		h = 2048;
 		break;
 
 	case ShadowQuality::High:
-		this->shadowNearTextureIndex = pAssetsManager->CreateRenderTexture(4096, 4096, "ShadowMapNear");
-		this->shadowFarTextureIndex = pAssetsManager->CreateRenderTexture(4096, 4096, "ShadowMapFar");
-		// ビューポートの設定
-		ViewPortShadowMap.TopLeftX = 0.0f;		// ビューポート領域の左上X座標。
-		ViewPortShadowMap.TopLeftY = 0.0f;		// ビューポート領域の左上Y座標。
-		ViewPortShadowMap.Width = 4096.0f;	// ビューポート領域の幅
-		ViewPortShadowMap.Height = 4096.0f;	// ビューポート領域の高さ
-		ViewPortShadowMap.MinDepth = 0.0f;		// ビューポート領域の深度値の最小値
-		ViewPortShadowMap.MaxDepth = 1.0f;		// ビューポート領域の深度値の最大値
-
-
+		w = 4096;
+		h = 4096;
 		break;
 
 	}
+
+	this->shadowNearTextureIndex = pAssetsManager->CreateRenderTexture(w, h, "ShadowMapNear");
+	this->shadowNearResultTextureIndex = pAssetsManager->CreateRenderTexture(w, h, "ShadowMapNearResult");
+	this->shadowFarTextureIndex = pAssetsManager->CreateRenderTexture(w, h, "ShadowMapFar");
+
+	// ビューポートの設定
+	ViewPortShadowMap.TopLeftX = 0.0f;		// ビューポート領域の左上X座標。
+	ViewPortShadowMap.TopLeftY = 0.0f;		// ビューポート領域の左上Y座標。
+	ViewPortShadowMap.Width = (float)w ;	// ビューポート領域の幅
+	ViewPortShadowMap.Height = (float)h;	// ビューポート領域の高さ
+	ViewPortShadowMap.MinDepth = 0.0f;		// ビューポート領域の深度値の最小値
+	ViewPortShadowMap.MaxDepth = 1.0f;		// ビューポート領域の深度値の最大値
+
+	blurShader = new GausianBlurShader(pRenderer);
+	blurShader->SetTexSize((float)w, (float)h);
+	blurShader->Init();
+
 
 }
 
@@ -107,24 +100,22 @@ void ShadowMap::ShadowMapping(void)
 	XMMATRIX proj;
 
 	XMVECTOR mapPos;
-	XMVECTOR at;
+	XMVECTOR camPos;
 	XMVECTOR lDir;
 
 
-	at = XMLoadFloat3(&pGameEngine->GetMainCamera()->GetWorldPos());
+	camPos = XMLoadFloat3(&pGameEngine->GetMainCamera()->GetWorldPos());
 
 	lDir = pGameEngine->GetLightmanager()->GetMainLight()->GetTransFormComponent()->GetAxisZ();
 
+	lDir = XMVector3Normalize(lDir);
+
+	mapPos = camPos - (lDir * vFar * 0.5f);
 
 
-	mapPos = at - lDir;
-
-	mapPos = XMVector3Normalize(mapPos);
-
-	mapPos = mapPos * (vFar / 2);
 
 
-	view = XMMatrixLookAtLH(mapPos, at, zonevec());
+	view = XMMatrixLookToLH(mapPos, lDir, zonevec());
 
 	proj = XMMatrixOrthographicLH(vhwn, vhwn, vNear, vFar);
 	//proj = XMMatrixPerspectiveFovLH(90.0f, 1.0f, vNear, vFar);
@@ -159,9 +150,20 @@ void ShadowMap::ShadowMapping(void)
 	pRenderer->GetDeviceContext()->OMSetRenderTargets(0, nullptr, nullptr);
 
 
-	pAssetsManager->GetRenderTexture(this->shadowNearTextureIndex)->SetPSSRV(RenderTexture::BindMode::BOTH, 3);
 
 	pGameEngine->GetRenderer()->GetDeviceContext()->UpdateSubresource(shadowBuffer, 0, NULL, &shadowBufferStruct, 0, 0);
+
+	if (variance)
+	{
+		//分散シャドウマップならブラーをかける
+
+
+		blurShader->PostEffectDraw(pAssetsManager->GetRenderTexture(this->shadowNearTextureIndex)->GetSRV(), pAssetsManager->GetRenderTexture(this->shadowNearResultTextureIndex)->GetRenderTargetView());
+
+	}
+
+	pAssetsManager->GetRenderTexture(this->shadowNearTextureIndex)->SetPSSRV(RenderTexture::BindMode::BOTH, 3);
+
 }
 
 int ShadowMap::GetNearShadowTexIndex(void)

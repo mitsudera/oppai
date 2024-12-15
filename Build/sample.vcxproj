@@ -167,11 +167,13 @@
     <ClInclude Include="DirectionalLightComponent.h" />
     <ClInclude Include="DX11Texture.h" />
     <ClInclude Include="FbxConvertDX11.h" />
+    <ClInclude Include="FullScreenQuadVertex.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameManagerComponent.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="GausianBlurShader.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="LambartMaterial.h" />
     <ClInclude Include="LambartShader.h" />
@@ -187,6 +189,7 @@
     <ClInclude Include="PhongShader.h" />
     <ClInclude Include="PointColliderComponent.h" />
     <ClInclude Include="PointLightComponent.h" />
+    <ClInclude Include="PostEffectShader.h" />
     <ClInclude Include="primitivecomponent.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="RenderTexture.h" />
@@ -248,11 +251,13 @@
     <ClCompile Include="DirectionalLightComponent.cpp" />
     <ClCompile Include="DX11Texture.cpp" />
     <ClCompile Include="FbxConvertDX11.cpp" />
+    <ClCompile Include="FullScreenQuadVertex.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameManagerComponent.cpp" />
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="GausianBlurShader.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="LambartMaterial.cpp" />
     <ClCompile Include="LambartShader.cpp" />
@@ -268,6 +273,7 @@
     <ClCompile Include="PhongShader.cpp" />
     <ClCompile Include="PointColliderComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
+    <ClCompile Include="PostEffectShader.cpp" />
     <ClCompile Include="primitivecomponent.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="RenderTexture.cpp" />
@@ -311,6 +317,9 @@
     <ClCompile Include="UIShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="shaders\GausianBlur.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="shaders\LambartShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>

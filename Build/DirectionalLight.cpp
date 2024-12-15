@@ -22,5 +22,6 @@ void DirectionalLight::Init(void)
 	lcom->SetEnable(TRUE);
 
 	this->transformComponent->RotWorldPitch(XM_PIDIV2);
+	this->transformComponent->RotWorldRoll(XM_PIDIV4);
 
 }

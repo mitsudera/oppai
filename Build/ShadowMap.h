@@ -6,6 +6,7 @@ class GameEngine;
 class AssetsManager;
 class Renderer;
 class CBufferManager;
+class GausianBlurShader;
 
 struct ShadowCbuffer
 {
@@ -48,10 +49,13 @@ private:
 	Renderer* pRenderer;
 	CBufferManager* pCBufferManager;
 	int shadowNearTextureIndex;
+	int shadowNearResultTextureIndex;
 	int shadowFarTextureIndex;
 	ShadowQuality quality;
 	ID3D11Buffer* shadowBuffer;
 	ShadowCbuffer shadowBufferStruct;
+
+	GausianBlurShader* blurShader;
 
 	float vhwn;
 	float vhwf;

@@ -59,7 +59,7 @@ enum TEXT_ANCHOR
 };
 
 class GameEngine;
-
+class FullScreenQuadVertex;
 class Renderer
 {
 public:
@@ -99,6 +99,10 @@ public:
 
 	GameEngine* GetGameEngine(void);
 
+	void DrawFullScreen(void);
+
+	void SetRenderTargetBackBuffer(void);
+
 private:
 
 	GameEngine* pGameEngine;
@@ -128,6 +132,11 @@ private:
 	ID3D11RasterizerState*		RasterStateCullCCW;
 	ID3D11RasterizerState*		RasterStateFillSOLID;
 	ID3D11RasterizerState*		RasterStateFillWIRE;
+
+
+	//utility
+	FullScreenQuadVertex* fullScreenVertex;
+
 };
 
 

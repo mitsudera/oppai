@@ -67,6 +67,14 @@ void LambartMaterial::LoadFbxMaterial(FbxSurfaceMaterial* fbxmaterial)
 	diffuse.y = (float)fbxdiffuse[1];
 	diffuse.z = (float)fbxdiffuse[2];
 
+
+	FbxDouble3 fbxambient = lambert->Ambient;
+
+	ambient.x = (float)fbxambient[0];
+	ambient.y = (float)fbxambient[1];
+	ambient.z = (float)fbxambient[2];
+
+
 	// “§‰ß“x
 	FbxDouble transparency = lambert->TransparencyFactor;
 	diffuse.w = (float)transparency;

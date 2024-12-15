@@ -60,7 +60,6 @@ void SpriteComponent::Draw(void)
 	
 	pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->GetTexture(texIndex)->SetShaderResourcePS(0);
 
-	this->GetGameObject()->GetScene()->GetGameEngine()->GetCBufferManager()->SetWorldViewProjection2D();
 
 	renderer->GetDeviceContext()->Draw(4, 0);
 
@@ -85,22 +84,34 @@ void SpriteComponent::SetSpriteCenter(string texPath, XMFLOAT3 pos, float width,
 {
 	this->texIndex = pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->LoadTexture(texPath);
 
+	XMFLOAT2 screenHW = pGameEngine->GetWindowSize();
+	float z = pos.z;
+
+	float w = (width / screenHW.x) * 2.0f;
+	float h = (height / screenHW.y) * 2.0f;
+	float l = (((pos.x / screenHW.x) - 0.5f) * 2.0f) - w * 0.5f;
+	float t = (((pos.y / screenHW.y) - 0.5f) * 2.0f) - h * 0.5f;
+
+
+	this->texIndex = pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->LoadTexture(texPath);
+
 	VERTEX_3D vertexArray[4];
 
-	vertexArray[0].Position = { (pos.x - (width * 0.5f)),(pos.y - (height * 0.5f)),0.0f };
+
+	vertexArray[0].Position = { l,t + h,z };
 	vertexArray[0].Diffuse = { 1.0f,1.0f,1.0f,1.0f };
 	vertexArray[0].TexCoord = { 0.0f,0.0f };
 
 
-	vertexArray[1].Position = { (pos.x + (width * 0.5f)),(pos.y - (height * 0.5f)),0.0f };
+	vertexArray[1].Position = { l + w,t + h,z };
 	vertexArray[1].Diffuse = { 1.0f,1.0f,1.0f,1.0f };
 	vertexArray[1].TexCoord = { 1.0f,0.0f };
 
-	vertexArray[2].Position = { (pos.x - (width * 0.5f)),(pos.y + (height * 0.5f)),0.0f };
+	vertexArray[2].Position = { l,t ,z };
 	vertexArray[2].Diffuse = { 1.0f,1.0f,1.0f,1.0f };
 	vertexArray[2].TexCoord = { 0.0f,1.0f };
 
-	vertexArray[3].Position = { (pos.x + (width * 0.5f)),(pos.y + (height * 0.5f)),0.0f };
+	vertexArray[3].Position = { l + w ,t,z };
 	vertexArray[3].Diffuse = { 1.0f,1.0f,1.0f,1.0f };
 	vertexArray[3].TexCoord = { 1.0f,1.0f };
 
@@ -124,24 +135,34 @@ void SpriteComponent::SetSpriteLeftTop(string texPath, XMFLOAT3 pos, float width
 {
 
 
+	XMFLOAT2 screenHW = pGameEngine->GetWindowSize();
+	float z = pos.z;
+
+	float w = (width / screenHW.x) * 2.0f;
+	float h = (height / screenHW.y) * 2.0f;
+	float l = ((pos.x / screenHW.x) - 0.5f) * 2.0f;
+	float t = ((pos.y / screenHW.y) - 0.5f) * 2.0f;
+
+
 	this->texIndex = pGameObject->GetScene()->GetGameEngine()->GetAssetsManager()->LoadTexture(texPath);
 
 	VERTEX_3D vertexArray[4];
 
-	vertexArray[0].Position = { 0.0f,0.0f,0.0f };
+
+	vertexArray[0].Position = { l,t+h,z };
 	vertexArray[0].Diffuse = { 1.0f,1.0f,1.0f,1.0f };
 	vertexArray[0].TexCoord = { 0.0f,0.0f };
 
 
-	vertexArray[1].Position = { (pos.x + width),0.0f,0.0f };
+	vertexArray[1].Position = { l + w,t+h,z };
 	vertexArray[1].Diffuse = { 1.0f,1.0f,1.0f,1.0f };
 	vertexArray[1].TexCoord = { 1.0f,0.0f };
 
-	vertexArray[2].Position = { 0.0f,(pos.y + height),0.0f };
+	vertexArray[2].Position = { l,t ,z };
 	vertexArray[2].Diffuse = { 1.0f,1.0f,1.0f,1.0f };
 	vertexArray[2].TexCoord = { 0.0f,1.0f };
 
-	vertexArray[3].Position = { (pos.x + width),(pos.y + height),0.0f };
+	vertexArray[3].Position = { l+w ,t,z };
 	vertexArray[3].Diffuse = { 1.0f,1.0f,1.0f,1.0f };
 	vertexArray[3].TexCoord = { 1.0f,1.0f };
 

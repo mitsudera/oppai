@@ -152,6 +152,16 @@ ID3D11DepthStencilView* RenderTexture::GetDepthStencilView(void)
 	return this->dsv;
 }
 
+ID3D11ShaderResourceView* RenderTexture::GetSRV(void)
+{
+	return srv;
+}
+
+ID3D11ShaderResourceView* RenderTexture::GetDSSRV(void)
+{
+	return dssrv;
+}
+
 void RenderTexture::ClearRTV(XMFLOAT4 clearColor)
 {
 	float cc[4] = { clearColor.x,clearColor.y,clearColor.z,clearColor.w };

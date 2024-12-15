@@ -40,6 +40,8 @@ void GameScene::Init()
 	GameObject* field = new GameObject(this);
 	this->gameObjectList.push_back(field);
 	field->LoadFbxFileMesh("blueplane.fbx");
+	field->SetHasShadowAll(FALSE);
+
 
 	DebugCamera* debugCamera=new DebugCamera(this);
 	this->gameObjectList.push_back(debugCamera);

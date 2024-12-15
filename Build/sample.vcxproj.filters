@@ -130,6 +130,15 @@
     <Filter Include="gameobject\Light">
       <UniqueIdentifier>{7f67ff35-50c5-4a0a-9602-3a607f746c67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\PostEffect">
+      <UniqueIdentifier>{24ce974c-0428-45ec-bc17-dda07ea45f9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\PostEffect\GausianBlur">
+      <UniqueIdentifier>{3de713dc-c535-4b32-9241-9a63a3665991}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Renderer\Utility">
+      <UniqueIdentifier>{acde035f-92f1-46ed-bf66-94895c1673df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coreminimal.h">
@@ -336,6 +345,15 @@
     <ClInclude Include="DirectionalLight.h">
       <Filter>gameobject\Light</Filter>
     </ClInclude>
+    <ClInclude Include="PostEffectShader.h">
+      <Filter>Shader\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="FullScreenQuadVertex.h">
+      <Filter>GameEngine\Renderer\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GausianBlurShader.h">
+      <Filter>Shader\PostEffect\GausianBlur</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -539,6 +557,15 @@
     <ClCompile Include="DirectionalLight.cpp">
       <Filter>gameobject\Light</Filter>
     </ClCompile>
+    <ClCompile Include="PostEffectShader.cpp">
+      <Filter>Shader\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="FullScreenQuadVertex.cpp">
+      <Filter>GameEngine\Renderer\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="GausianBlurShader.cpp">
+      <Filter>Shader\PostEffect\GausianBlur</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\shader.hlsl">
@@ -558,6 +585,9 @@
     </FxCompile>
     <FxCompile Include="shaders\ShadowShader.hlsl">
       <Filter>Shader\ShadowShader</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\GausianBlur.hlsl">
+      <Filter>Shader\PostEffect\GausianBlur</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

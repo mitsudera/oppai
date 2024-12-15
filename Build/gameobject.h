@@ -82,6 +82,7 @@ public:
 	T* AddComponent(void);
 
 
+	void SetHasShadowAll(BOOL b);
 
 	GameObject* AddChild(string name);
 
@@ -104,6 +105,8 @@ protected:
 	string name;
 	ObjectTag tag;
 	Layer layer;
+
+	
 
 	BOOL isActive;
 

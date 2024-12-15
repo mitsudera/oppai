@@ -27,6 +27,9 @@ class UIShader;
 class SkyShader;
 class ShadowShader;
 
+//posteffect
+class GausianBlurShader;
+
 class AssetsManager
 {
 
@@ -81,6 +84,8 @@ public:
 	SkyShader* GetSkyShader(void);
 	ShadowShader* GetShadowShader(void);
 
+	GausianBlurShader* GetGausianBlurShader(void);
+
 	void SetShader(ShaderSet::ShaderIndex index);
 
 	int LoadMaterial(Material* material);
@@ -90,6 +95,8 @@ public:
 	int CreateRenderTexture(int widht, int height, string name);
 	int GetRenderTextureIndex(string name);
 	RenderTexture* GetRenderTexture(int index);
+
+
 
 private:
 
@@ -113,5 +120,7 @@ private:
 	UIShader* uiShader;
 	SkyShader* skyShader;
 	ShadowShader* shadowShader;
+
+	GausianBlurShader* gausianBlur;
 };
 

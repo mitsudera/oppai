@@ -12,6 +12,7 @@
 #include "AnimationData.h"
 #include "RenderTexture.h"
 #include "ShadowShader.h"
+#include "GausianBlurShader.h"
 
 #define MESH_PATH "data/MODEL/mesh/"
 #define SKINMESH_PATH "data/MODEL/skinmesh/"
@@ -334,10 +335,15 @@ void AssetsManager::SetSkinMeshCompute(void)
 
 void AssetsManager::CreateAllShader(void)
 {
+	//
 	lambartShader = new LambartShader(this->pGameEngine->GetRenderer());
 	phongShader = new PhongShader(this->pGameEngine->GetRenderer());
 	uiShader = new UIShader(this->pGameEngine->GetRenderer());
 	shadowShader = new ShadowShader(this->pGameEngine->GetRenderer());
+
+	//posteffect
+	gausianBlur = new GausianBlurShader(this->pGameEngine->GetRenderer());
+
 }
 
 LambartShader* AssetsManager::GetLambartShader(void)
@@ -363,6 +369,11 @@ SkyShader* AssetsManager::GetSkyShader(void)
 ShadowShader* AssetsManager::GetShadowShader(void)
 {
 	return this->shadowShader;
+}
+
+GausianBlurShader* AssetsManager::GetGausianBlurShader(void)
+{
+	return this->gausianBlur;
 }
 
 void AssetsManager::SetShader(ShaderSet::ShaderIndex index)

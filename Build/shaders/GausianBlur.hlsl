@@ -1,45 +1,3 @@
-
-
-//*****************************************************************************
-// 定数バッファ
-//*****************************************************************************
-
-// マトリクスバッファ
-cbuffer WorldBuffer : register(b0)
-{
-    matrix World;
-}
-
-cbuffer ViewBuffer : register(b1)
-{
-    matrix View;
-}
-
-cbuffer ProjectionBuffer : register(b2)
-{
-    matrix Projection;
-}
-
-// マテリアルバッファ
-struct MATERIAL
-{
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-    float4 Emission;
-    float Shininess;
-    int noDiffuseTex;
-    int noNormalTex;
-    int noArmTex;
-};
-
-cbuffer MaterialBuffer : register(b3)
-{
-    MATERIAL Material;
-}
-
-
-
 struct GAUSSIAN
 {
     float4 weight1;
@@ -47,7 +5,7 @@ struct GAUSSIAN
 
 };
 
-cbuffer GaussianBuffer : register(b9)
+cbuffer GaussianBuffer : register(b8)
 {
     GAUSSIAN gaus;
 
@@ -56,103 +14,10 @@ cbuffer GaussianBuffer : register(b9)
 
 
 
-//=============================================================================
-// 頂点シェーダ
-//=============================================================================
-
 
 Texture2D Texture : register(t0);
 SamplerState smpWrap : register(s0);
 SamplerState smpBorder : register(s1);
-
-void VS_SM(
-		in float4 inPosition : POSITION0,
-		in float4 inNormal : NORMAL0,
-		in float4 inDiffuse : COLOR0,
-		in float2 inTexCoord : TEXCOORD0,
-        in float4 inTangent : TANGENT0,
-		in float4 inBiNoramal : BINORMAL0,
-
-        
-        out float4 outPosition : SV_POSITION,
-		out float2 outTexCoord : TEXCOORD0,
-		out float4 outDiffuse : COLOR0,
-		out float4 outWorldPos : POSITION0
-)
-{
-    matrix wvp;
-    wvp = mul(World, View);
-    wvp = mul(wvp, Projection);
-    outPosition = mul(inPosition, wvp);
-
-
-    outTexCoord = inTexCoord;
-
-    outWorldPos = mul(inPosition, World);
-
-    outDiffuse = inDiffuse;
-}
-
-
-//シャドウマップ用ピクセルシェーダー
-void PS_SM(
-		in float4 inPosition : SV_POSITION,
-		in float2 inTexCoord : TEXCOORD0,
-		in float4 inDiffuse : COLOR0,
-		in float4 inWorldPos : POSITION0,
-
-
-		out float4 outDiffuse : SV_Target
-		)
-{
-    float4 color;
-    if (Material.noDiffuseTex == 0)
-    {
-        color = Texture.Sample(smpWrap, inTexCoord);
-
-        color *= inDiffuse;
-    }
-    else
-    {
-        
-        color = inDiffuse;
-    }
-    
-    color = color * Material.Diffuse;
-
-    color.r = inPosition.z;
-    color.g = color.r * color.r;
-    
-    outDiffuse = color;
-}
-
-
-
-//ブラー用
-void VS_2D(
-		in float4 inPosition : POSITION0,
-		in float4 inNormal : NORMAL0,
-		in float4 inDiffuse : COLOR0,
-		in float2 inTexCoord : TEXCOORD0,
-
-		out float4 outPosition : SV_POSITION,
-		out float2 outTexCoord : TEXCOORD0,
-		out float4 outDiffuse : COLOR0
-)
-{
-    matrix wvp;
-    wvp = mul(World, View);
-    wvp = mul(wvp, Projection);
-    outPosition = mul(inPosition, wvp);
-
-
-    outTexCoord = inTexCoord;
-
-
-    outDiffuse = inDiffuse;
-}
-
-//const float sValue = 0.8f;
 
 void xpass(
 		in float4 inPosition : SV_POSITION,

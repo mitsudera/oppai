@@ -181,29 +181,29 @@ float GetVarianceDirectionalShadowFactor(float4 shadowCoord)
     float variance = depth.y - depth_sq; // ƒĞ^2 = E(x^2) - E(x^2)
     variance = saturate(variance + 0.0001); // 0.0001‚ğ’Ç‰Á‚µ‚ÄˆÀ’è«‚ğŒüã
 
-    float fragDepth = shadowCoord.z;
+    float fragDepth = shadowCoord.z-0.001f;
     float md = fragDepth - depth.x; // t - ƒÊ
     float p = variance / (variance + (md * md)); // ƒĞ^2 / (ƒĞ^2 + (t - ƒÊ)^2)
 
     return saturate(max(p, fragDepth <= depth.x)); // P(x >= t)‚ğ–‚½‚·‚Æ‚«‚Ì‚İ
 }
 
-float VSM_Filter(float2 texcoord, float fragDepth)
-{
+//float VSM_Filter(float2 texcoord, float fragDepth)
+//{
 
-    float4 depth = ShadowMapTex.Sample(BorderSampler, texcoord);
+//    float4 depth = ShadowMapTex.Sample(BorderSampler, texcoord);
   
 
-    float depth_sq = depth.x * depth.x;
+//    float depth_sq = depth.x * depth.x;
 
-    float variance = depth.y - depth_sq;
-    variance = min(1.0f, max(0.0f, variance + 0.0001f));
+//    float variance = depth.y - depth_sq;
+//    variance = min(1.0f, max(0.0f, variance + 0.0001f));
 
-    float md = fragDepth - depth.x;
-    float p = variance / (variance + (md * md));
+//    float md = fragDepth - depth.x;
+//    float p = variance / (variance + (md * md));
   
-    return saturate(max(p, depth.x <= fragDepth));
-}
+//    return saturate(max(p, depth.x <= fragDepth));
+//}
 
 void PSmain(in float4 inPosition : SV_POSITION,
 						 in  float4 inNormal		: NORMAL0,
@@ -322,7 +322,7 @@ void PSmain(in float4 inPosition : SV_POSITION,
 
                 light = (0.5 - 0.5 * light) * sma;
                 tempColor = color * Material.Diffuse * light * direcLight.m_Diffuse[i];
-                tempColor += direcLight.m_Ambient[i];
+                tempColor += direcLight.m_Ambient[i]*Material.Diffuse;
                 outColor += tempColor;
             }
             

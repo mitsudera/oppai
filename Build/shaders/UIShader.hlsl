@@ -1,19 +1,3 @@
-// マトリクスバッファ
-cbuffer WorldBuffer : register(b0)
-{
-    matrix World;
-}
-
-cbuffer ViewBuffer : register(b1)
-{
-    matrix View;
-}
-
-cbuffer ProjectionBuffer : register(b2)
-{
-    matrix Projection;
-}
-
 
 
 //=============================================================================
@@ -30,10 +14,7 @@ void VSmain(              in float4 inPosition : POSITION0,
 						  out float2 outTexCoord : TEXCOORD0,
 						  out float4 outDiffuse : COLOR0)
 {
-    matrix wvp;
-    wvp = mul(World, View);
-    wvp = mul(wvp, Projection);
-    outPosition = mul(inPosition, wvp);
+    outPosition = inPosition;
 
     outTexCoord = inTexCoord;
     outDiffuse = inDiffuse;

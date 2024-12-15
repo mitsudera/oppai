@@ -136,7 +136,7 @@ void GameObject::Draw(ShaderSet::ShaderIndex index)
 	for (GameObject* child:childList)
 	{
 		if (!child->GetActive())
-			return;
+			continue;
 		child->Draw(index);
 	}
 
@@ -154,6 +154,8 @@ void GameObject::ShadowMapping(void)
 
 		PrimitiveComponent* primitiveComponent = static_cast<PrimitiveComponent*>(component);
 
+		if (!primitiveComponent->GetHasShadow()||!primitiveComponent->GetActive())
+			continue;
 
 		primitiveComponent->ShadowMapping();
 
@@ -161,7 +163,7 @@ void GameObject::ShadowMapping(void)
 	for (GameObject* child : childList)
 	{
 		if (!child->GetActive())
-			return;
+			continue;
 		child->ShadowMapping();
 	}
 
@@ -288,6 +290,27 @@ Component* GameObject::GetComponentAttrbute(Component::Attribute attr, int n)
 	return nullptr;
 }
 
+void GameObject::SetHasShadowAll(BOOL b)
+{
+
+	for (Component* component : GetComponentList())
+	{
+		if (component->GetAttribute() != Component::Attribute::Primitive)
+			continue;
+
+		PrimitiveComponent* primitiveComponent = static_cast<PrimitiveComponent*>(component);
+
+
+		primitiveComponent->SetHasShadow(b);
+
+	}
+	for (GameObject* child : childList)
+	{
+		child->SetHasShadowAll(b);
+	}
+
+}
+
 GameObject* GameObject::AddChild(string name)
 {
 	GameObject* newObj = new GameObject(this);
@@ -337,9 +360,3 @@ void GameObject::LoadMeshNode(MeshData* node)
 
 
 }
-
-
-
-
-
-

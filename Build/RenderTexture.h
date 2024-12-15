@@ -29,6 +29,9 @@ public:
 	ID3D11RenderTargetView* GetRenderTargetView(void);
 	ID3D11DepthStencilView* GetDepthStencilView(void);
 
+	ID3D11ShaderResourceView* GetSRV(void);
+	ID3D11ShaderResourceView* GetDSSRV(void);
+
 	void ClearRTV(XMFLOAT4 clearColor);
 	void ClearDSV(float f);
 

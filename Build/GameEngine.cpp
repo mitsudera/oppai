@@ -52,7 +52,7 @@ void GameEngine::Init()
 	this->input->Init(*main->GetInstanceHandle(), *main->GetWindowHangle());
 
 	this->shadowMap = new ShadowMap(this);
-	this->shadowMap->CreateShadowMap(ShadowMap::ShadowQuality::Low);
+	this->shadowMap->CreateShadowMap(ShadowMap::ShadowQuality::High);
 
 
 	this->sceneManager = new SceneManager(this);

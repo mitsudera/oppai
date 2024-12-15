@@ -28,7 +28,7 @@ void GameManagerComponent::Init(void)
 	SetCameraModeDebug();
 
 	pGameEngine->GetShadowMap()->SetEnable(TRUE);
-	pGameEngine->GetShadowMap()->SetVariance(FALSE);
+	pGameEngine->GetShadowMap()->SetVariance(TRUE);
 
 }
 
@@ -56,10 +56,6 @@ void GameManagerComponent::Update(void)
 	if(input->GetKeyboardTrigger(DIK_4))
 	{
 		pGameEngine->SetFullScreen(FALSE);
-	}
-	if(input->GetKeyboardTrigger(DIK_5))
-	{
-		pGameEngine->ChengeWindowSize(960,560);
 	}
 
 
