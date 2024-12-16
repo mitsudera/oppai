@@ -8,6 +8,7 @@
 #include "CameraComponent.h"
 #include "GameEngine.h"
 #include "FullScreenQuadVertex.h"
+#include "MeshFieldVertex.h"
 //デバッグ用画面テキスト出力を有効にする
 #define DEBUG_DISP_TEXTOUT
 //シェーダーデバッグ設定を有効にする
@@ -221,6 +222,11 @@ void Renderer::DrawFullScreen(void)
 void Renderer::SetRenderTargetBackBuffer(void)
 {
 	this->m_ImmediateContext->OMSetRenderTargets(1,&this->RenderTargetViewBackBuffer, this->DepthStencilViewBackBuffer);
+}
+
+void Renderer::SetMeshFieldVertex(void)
+{
+	this->meshFieldVertex->SetVertexBuffer();
 }
 
 
@@ -451,7 +457,7 @@ HRESULT Renderer::InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_ImmediateContext->PSSetSamplers(1, 1, &samplerState);
 
 	this->fullScreenVertex = new FullScreenQuadVertex(this);
-	
+	this->meshFieldVertex = new MeshFieldVertex(this);
 
 	return S_OK;
 }

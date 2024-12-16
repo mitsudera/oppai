@@ -24,9 +24,9 @@ Main::~Main()
 {
 }
 
-HWND* Main::GetWindowHangle(void)
+HWND Main::GetWindowHangle(void)
 {
-	return &this->hWnd;
+	return this->hWnd;
 
 }
 

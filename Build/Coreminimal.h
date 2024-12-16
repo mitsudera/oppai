@@ -16,6 +16,7 @@
 #include "dinput.h"
 #include "mmsystem.h"
 
+
 // C++ ライブラリ
 #include <stdio.h>
 #include <iostream>
@@ -30,7 +31,7 @@
 #include <fstream>
 #include <windows.h>
 #include <stdexcept>
-
+#include <filesystem>
 
 //FBXSDKライブラリ
 #include <fbxsdk.h>

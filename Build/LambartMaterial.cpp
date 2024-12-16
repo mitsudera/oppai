@@ -11,6 +11,14 @@ LambartMaterial::LambartMaterial(AssetsManager* assetsManager)
 	this->pShader = assetsManager->GetLambartShader();
 	this->pLambartShader = assetsManager->GetLambartShader();
 
+	this->diffuse = { 1.0f,1.0f,1.0f,1.0f };
+	this->noDiffuseTex = 1;
+	this->noNormalTex = 1;
+	this->noArmTex = 1;
+	this->textureDiffuseIndex = 0;
+	this->textureNormalIndex = 0;
+	this->textureArmIndex = 0;
+
 
 }
 

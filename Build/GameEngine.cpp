@@ -10,6 +10,7 @@
 #include "CollisionManager.h"
 #include "CameraComponent.h"
 #include "ShadowMap.h"
+#include "SoundEngine.h"
 
 GameEngine::GameEngine(Main* main)
 {
@@ -30,7 +31,9 @@ void GameEngine::Init()
 
 
 	this->renderer = new Renderer(this);
-	this->renderer->InitRenderer(*main->GetInstanceHandle(), *main->GetWindowHangle(), true);
+	this->renderer->InitRenderer(*main->GetInstanceHandle(), main->GetWindowHangle(), true);
+
+	this->soundEngine = new SoundEngine(this);
 
 	this->cBufferManager = new CBufferManager(this);
 
@@ -41,7 +44,7 @@ void GameEngine::Init()
 	this->lightManager = new LightManager(this);
 	lightManager->Init();
 
-
+	
 
 	this->assetsManager = new AssetsManager(this);
 	this->assetsManager->Init();
@@ -49,7 +52,7 @@ void GameEngine::Init()
 
 
 	this->input = new Input();
-	this->input->Init(*main->GetInstanceHandle(), *main->GetWindowHangle());
+	this->input->Init(*main->GetInstanceHandle(), main->GetWindowHangle());
 
 	this->shadowMap = new ShadowMap(this);
 	this->shadowMap->CreateShadowMap(ShadowMap::ShadowQuality::High);
@@ -168,6 +171,11 @@ ShadowMap* GameEngine::GetShadowMap(void)
 	return this->shadowMap;
 }
 
+SoundEngine* GameEngine::GetSoundEngine(void)
+{
+	return this->soundEngine;
+}
+
 
 Scene* GameEngine::GetActiveScene(void)
 {
@@ -215,6 +223,11 @@ void GameEngine::SetMainCamera(CameraComponent* camera)
 CameraComponent* GameEngine::GetMainCamera(void)
 {
 	return this->mainCamera;
+}
+
+HWND GameEngine::GetWindowHandle(void)
+{
+	return main->GetWindowHangle();
 }
 
 

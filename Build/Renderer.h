@@ -2,7 +2,6 @@
 #include "CoreMinimal.h"
 
 
-
 //*********************************************************
 // マクロ定義
 //*********************************************************
@@ -60,6 +59,9 @@ enum TEXT_ANCHOR
 
 class GameEngine;
 class FullScreenQuadVertex;
+class MeshFieldVertex;
+
+
 class Renderer
 {
 public:
@@ -103,6 +105,8 @@ public:
 
 	void SetRenderTargetBackBuffer(void);
 
+	void SetMeshFieldVertex(void);
+
 private:
 
 	GameEngine* pGameEngine;
@@ -136,7 +140,7 @@ private:
 
 	//utility
 	FullScreenQuadVertex* fullScreenVertex;
-
+	MeshFieldVertex* meshFieldVertex;
 };
 
 

@@ -139,6 +139,18 @@
     <Filter Include="GameEngine\Renderer\Utility">
       <UniqueIdentifier>{acde035f-92f1-46ed-bf66-94895c1673df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="component\SoundComponent">
+      <UniqueIdentifier>{d7775d8d-6102-4467-86fa-04e7d80c7fa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\SoundEngine">
+      <UniqueIdentifier>{6af55bbf-5525-47f8-bec7-ae76818e9d77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject\Sound">
+      <UniqueIdentifier>{e6b91966-5b7c-443f-9154-f913d2a5137a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameobject\3D\Field">
+      <UniqueIdentifier>{e0f225da-6219-4983-87f7-eb518628afba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coreminimal.h">
@@ -354,6 +366,24 @@
     <ClInclude Include="GausianBlurShader.h">
       <Filter>Shader\PostEffect\GausianBlur</Filter>
     </ClInclude>
+    <ClInclude Include="SoundSpeakerComponent.h">
+      <Filter>component\SoundComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEngine.h">
+      <Filter>GameEngine\SoundEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="BGMPlayer.h">
+      <Filter>gameobject\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshFieldComponent.h">
+      <Filter>component\primitiveComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshFieldVertex.h">
+      <Filter>GameEngine\Renderer\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshField.h">
+      <Filter>gameobject\3D\Field</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -473,9 +503,6 @@
     <ClCompile Include="Tree.cpp">
       <Filter>gameobject\3D\Tree</Filter>
     </ClCompile>
-    <ClCompile Include="MeshComponent.cpp">
-      <Filter>component\primitiveComponent</Filter>
-    </ClCompile>
     <ClCompile Include="primitivecomponent.cpp">
       <Filter>component\primitiveComponent</Filter>
     </ClCompile>
@@ -565,6 +592,27 @@
     </ClCompile>
     <ClCompile Include="GausianBlurShader.cpp">
       <Filter>Shader\PostEffect\GausianBlur</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundSpeakerComponent.cpp">
+      <Filter>component\SoundComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEngine.cpp">
+      <Filter>GameEngine\SoundEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="BGMPlayer.cpp">
+      <Filter>gameobject\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshComponent.cpp">
+      <Filter>component\primitiveComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshFieldComponent.cpp">
+      <Filter>component\primitiveComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshFieldVertex.cpp">
+      <Filter>GameEngine\Renderer\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshField.cpp">
+      <Filter>gameobject\3D\Field</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

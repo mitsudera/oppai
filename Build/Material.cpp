@@ -31,14 +31,19 @@ ShaderSet* Material::GetShaderSet(void)
 void Material::LoadDiffuseTex(string fName)
 {
 	textureDiffuseIndex = pAssetsManager->LoadTexture(fName);
+	this->noDiffuseTex = 0;
 }
 
 void Material::LoadNormalTex(string fName)
 {
 	textureNormalIndex = pAssetsManager->LoadTexture(fName);
+	this->noNormalTex = 0;
+
 }
 
 void Material::LoadArmTex(string fName)
 {
 	textureArmIndex = pAssetsManager->LoadTexture(fName);
+	this->noArmTex = 0;
+
 }

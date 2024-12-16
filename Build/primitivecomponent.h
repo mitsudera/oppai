@@ -6,7 +6,9 @@ class LambartMaterial;
 class PhongMaterial;
 class SkyMaterial;
 class UIMaterial;
-
+class Renderer;
+class CBufferManager;
+class AssetsManager;
 
 class PrimitiveComponent : public Component
 {
@@ -29,13 +31,17 @@ public:
 
 
 	int GetMaterialIndex(void);
-
+	void SetMaterialIndex(int index);
+	int LoadMaterial(Material* material);
 
 protected:
-
+	Renderer* pRenderer;
 	BOOL hasShadow;
 	BOOL drawShadow;
 	int materialIndex;
 	int shadowMaterialIndex;
+	BOOL alphaTest;
+	CBufferManager* pCBufferManager;
+	AssetsManager* pAssetsManager;
 };
 

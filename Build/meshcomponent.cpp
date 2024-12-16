@@ -69,21 +69,19 @@ void MeshComponent::Draw(void)
 {
 	PrimitiveComponent::Draw();
 
-	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
 
-	Renderer* renderer = pGameEngine->GetRenderer();
 
 
 
 	if (this->alphaTest==TRUE)
 	{
-		renderer->SetAlphaTestEnable(TRUE);
+		this->pRenderer->SetAlphaTestEnable(TRUE);
 	}
 	
-	MeshData* meshData = pGameEngine->GetAssetsManager()->GetMeshData(this->MeshDataIndex);
+	MeshData* meshData = this->pGameEngine->GetAssetsManager()->GetMeshData(this->MeshDataIndex);
 
 
-	renderer->SetCullingMode((CULL_MODE)cullMode);
+	this->pRenderer->SetCullingMode((CULL_MODE)cullMode);
 	meshData->BufferSetVertex();
 	meshData->BufferSetIndex();
 
@@ -91,14 +89,14 @@ void MeshComponent::Draw(void)
 
 	XMMATRIX world = XMMatrixIdentity();
 	world = this->pGameObject->GetTransFormComponent()->GetWorldMtx(world);
-	pGameEngine->GetCBufferManager()->SetWorldMtx(&world);
+	this->pGameEngine->GetCBufferManager()->SetWorldMtx(&world);
 
 
-	pGameEngine->GetAssetsManager()->GetMaterial(this->materialIndex)->SetBufferMaterial();
+	this->pGameEngine->GetAssetsManager()->GetMaterial(this->materialIndex)->SetBufferMaterial();
 
-	renderer->GetDeviceContext()->DrawIndexed(meshData->GetIndexNum(), 0, 0);
+	this->pRenderer->GetDeviceContext()->DrawIndexed(meshData->GetIndexNum(), 0, 0);
 
-	renderer->SetAlphaTestEnable(FALSE);
+	this->pRenderer->SetAlphaTestEnable(FALSE);
 
 }
 
@@ -107,19 +105,18 @@ void MeshComponent::ShadowMapping(void)
 	PrimitiveComponent::ShadowMapping();
 
 
-	Renderer* renderer = pGameEngine->GetRenderer();
 
 
 
 	if (this->alphaTest == TRUE)
 	{
-		renderer->SetAlphaTestEnable(TRUE);
+		this->pRenderer->SetAlphaTestEnable(TRUE);
 	}
 
-	MeshData* meshData = pGameEngine->GetAssetsManager()->GetMeshData(this->MeshDataIndex);
+	MeshData* meshData = this->pGameEngine->GetAssetsManager()->GetMeshData(this->MeshDataIndex);
 
 
-	renderer->SetCullingMode((CULL_MODE)cullMode);
+	this->pRenderer->SetCullingMode((CULL_MODE)cullMode);
 	meshData->BufferSetVertex();
 	meshData->BufferSetIndex();
 
@@ -127,14 +124,14 @@ void MeshComponent::ShadowMapping(void)
 
 	XMMATRIX world = XMMatrixIdentity();
 	world = this->pGameObject->GetTransFormComponent()->GetWorldMtx(world);
-	pGameEngine->GetCBufferManager()->SetWorldMtx(&world);
+	this->pGameEngine->GetCBufferManager()->SetWorldMtx(&world);
 
 
-	pGameEngine->GetAssetsManager()->GetMaterial(this->shadowMaterialIndex)->SetBufferMaterial();
+	this->pGameEngine->GetAssetsManager()->GetMaterial(this->shadowMaterialIndex)->SetBufferMaterial();
 
-	renderer->GetDeviceContext()->DrawIndexed(meshData->GetIndexNum(), 0, 0);
+	this->pRenderer->GetDeviceContext()->DrawIndexed(meshData->GetIndexNum(), 0, 0);
 
-	renderer->SetAlphaTestEnable(FALSE);
+	this->pRenderer->SetAlphaTestEnable(FALSE);
 
 }
 
@@ -164,11 +161,9 @@ void MeshComponent::SetMeshDataIndex(int index)
 {
 	this->MeshDataIndex = index;
 
-	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
 
-	Renderer* renderer = pGameEngine->GetRenderer();
 
-	MeshData* meshData = pGameEngine->GetAssetsManager()->GetMeshData(index);
+	MeshData* meshData = this->pGameEngine->GetAssetsManager()->GetMeshData(index);
 
 	this->materialIndex = meshData->GetMaterialIndex();
 	this->shadowMaterialIndex = meshData->GetShadowMaterialIndex();
@@ -181,57 +176,3 @@ void MeshComponent::SetMeshDataIndex(int index)
 
 
 }
-
-
-//void MeshComponent::SetMeshDataList(void)
-//{
-//
-//	GameEngine* pGameEngine = pGameObject->GetScene()->GetGameEngine();
-//
-//	Renderer* renderer = pGameEngine->GetRenderer();
-//
-//	this->MeshDataIndex = pGameEngine->GetAssetsManager()->LoadMeshTree(this->meshFilePath);
-//	MeshDataList* l = pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex);
-//
-//	MeshData* md=nullptr;
-//
-//
-//	DX11_SUBSET* sub = nullptr;
-//	int rootNum;
-//
-//	for (int i = 0; i < l->GetMeshDataNum(); i++)
-//	{
-//		md = &l->GetMeshData()[i];
-//		sub = &md->GetSubset()[0];
-//
-//		if (sub != nullptr)
-//		{
-//			rootNum = i;
-//			break;
-//		}
-//	}
-//
-//	if (md->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Lambart)
-//	{
-//		this->material = new LambartMaterial(dynamic_cast<LambartMaterial*>( pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshData()->GetSubset()->GetMaterial()));
-//	}
-//	else if (md->GetSubset()->GetMaterial()->GetShaderSet()->GetShaderIndex() == ShaderSet::ShaderIndex::Phong)
-//	{
-//		this->material = new PhongMaterial(dynamic_cast<PhongMaterial*>(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshData()->GetSubset()->GetMaterial()));
-//
-//	}
-//
-//	this->CreateMeshArray(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshDataNum());
-//
-//	for (int i = 0; i < this->meshNum; i++)
-//	{
-//		if (pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshData()[i].GetSubset() == nullptr)
-//			continue;
-//
-//		mesh[i].SetMtx(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshData()[i].GetWorldOffset());
-//		mesh[i].SetMaterial(pGameEngine->GetAssetsManager()->GetMeshDataList(this->MeshDataIndex)->GetMeshData()[i].GetSubset()->GetMaterial());
-//	}
-//	this->SetBlendMtx();
-//	isOriginalDiffuse = FALSE;
-//}
-

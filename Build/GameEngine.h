@@ -12,6 +12,7 @@ class CBufferManager;
 class LightManager;
 class CollisionManager;
 class ShadowMap;
+class SoundEngine;
 
 class GameEngine
 {
@@ -39,6 +40,7 @@ public:
 	CollisionManager* GetCollisionManager(void);
 	LightManager* GetLightmanager(void);
 	ShadowMap* GetShadowMap(void);
+	SoundEngine* GetSoundEngine(void);
 
 	Scene* GetActiveScene(void);
 	void SetActiveScene(Scene* scene);
@@ -51,6 +53,9 @@ public:
 	void SetMainCamera(CameraComponent* camera);
 
 	CameraComponent* GetMainCamera(void);
+
+	HWND GetWindowHandle(void);
+
 private:
 
 	Main* main;
@@ -62,6 +67,8 @@ private:
 	CollisionManager* collisionManager;
 	CameraComponent* mainCamera;//バックバッファへの描画を行うカメラ
 	ShadowMap* shadowMap;
+	SoundEngine* soundEngine;
+
 
 	SceneManager* sceneManager;
 	Scene* activeScene;

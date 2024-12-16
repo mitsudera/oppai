@@ -24,7 +24,7 @@ public:
 	Main();
 	~Main();
 
-	HWND* GetWindowHangle(void);
+	HWND GetWindowHangle(void);
 	HINSTANCE* GetInstanceHandle(void);
 	//void SetWindowType();
 	int Run(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd);

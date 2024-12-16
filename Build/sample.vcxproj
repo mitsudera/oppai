@@ -151,6 +151,7 @@
     <ClInclude Include="AnimationControlerComponent.h" />
     <ClInclude Include="AnimationData.h" />
     <ClInclude Include="AssetsManager.h" />
+    <ClInclude Include="BGMPlayer.h" />
     <ClInclude Include="BoxColliderComponent.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
@@ -167,6 +168,7 @@
     <ClInclude Include="DirectionalLightComponent.h" />
     <ClInclude Include="DX11Texture.h" />
     <ClInclude Include="FbxConvertDX11.h" />
+    <ClInclude Include="MeshField.h" />
     <ClInclude Include="FullScreenQuadVertex.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameManager.h" />
@@ -185,6 +187,8 @@
     <ClInclude Include="MeshAnimData.h" />
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="MeshData.h" />
+    <ClInclude Include="MeshFieldComponent.h" />
+    <ClInclude Include="MeshFieldVertex.h" />
     <ClInclude Include="PhongMaterial.h" />
     <ClInclude Include="PhongShader.h" />
     <ClInclude Include="PointColliderComponent.h" />
@@ -220,6 +224,8 @@
     <ClInclude Include="sound.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="SoundSpeakerComponent.h" />
+    <ClInclude Include="SoundEngine.h" />
     <ClInclude Include="SphereColliderComponent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TitleLogo.h" />
@@ -236,6 +242,7 @@
     <ClCompile Include="AnimationControlerComponent.cpp" />
     <ClCompile Include="AnimationData.cpp" />
     <ClCompile Include="AssetsManager.cpp" />
+    <ClCompile Include="BGMPlayer.cpp" />
     <ClCompile Include="BoxColliderComponent.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
@@ -251,6 +258,7 @@
     <ClCompile Include="DirectionalLightComponent.cpp" />
     <ClCompile Include="DX11Texture.cpp" />
     <ClCompile Include="FbxConvertDX11.cpp" />
+    <ClCompile Include="MeshField.cpp" />
     <ClCompile Include="FullScreenQuadVertex.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameManager.cpp" />
@@ -269,6 +277,8 @@
     <ClCompile Include="MeshAnimData.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="MeshData.cpp" />
+    <ClCompile Include="MeshFieldComponent.cpp" />
+    <ClCompile Include="MeshFieldVertex.cpp" />
     <ClCompile Include="PhongMaterial.cpp" />
     <ClCompile Include="PhongShader.cpp" />
     <ClCompile Include="PointColliderComponent.cpp" />
@@ -304,6 +314,8 @@
     <ClCompile Include="sound.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="SoundSpeakerComponent.cpp" />
+    <ClCompile Include="SoundEngine.cpp" />
     <ClCompile Include="SphereColliderComponent.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TitleLogo.cpp" />

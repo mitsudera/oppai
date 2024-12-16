@@ -4,6 +4,9 @@
 #include "PhongMaterial.h"
 #include "UIMaterial.h"
 #include "SkyMaterial.h"
+#include "GameEngine.h"
+#include "Material.h"
+#include "AssetsManager.h"
 
 PrimitiveComponent::PrimitiveComponent()
 {
@@ -13,6 +16,7 @@ PrimitiveComponent::PrimitiveComponent()
 PrimitiveComponent::PrimitiveComponent(GameObject* gameObject)
 {
 	this->pGameObject = gameObject;
+
 }
 
 PrimitiveComponent::~PrimitiveComponent()
@@ -23,6 +27,9 @@ PrimitiveComponent::~PrimitiveComponent()
 void PrimitiveComponent::Init(void)
 {
 	Component::Init();
+	this->pRenderer = pGameEngine->GetRenderer();
+	this->pCBufferManager = pGameEngine->GetCBufferManager();
+	this->pAssetsManager = pGameEngine->GetAssetsManager();
 	attribute = Attribute::Primitive;
 
 	hasShadow = FALSE;
@@ -59,6 +66,18 @@ void PrimitiveComponent::ShadowMapping(void)
 int PrimitiveComponent::GetMaterialIndex(void)
 {
 	return this->materialIndex;
+}
+
+void PrimitiveComponent::SetMaterialIndex(int index)
+{
+	this->materialIndex = index;
+}
+
+int PrimitiveComponent::LoadMaterial(Material* material)
+{
+
+	materialIndex = pGameEngine->GetAssetsManager()->LoadMaterial(material);
+	return materialIndex;
 }
 
 

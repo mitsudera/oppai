@@ -55,7 +55,6 @@ protected:
 
 	
 	int cullMode;
-	BOOL alphaTest;
 
 
 	BOOL isRoot;

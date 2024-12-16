@@ -13,6 +13,7 @@
 #include "RenderTexture.h"
 #include "ShadowShader.h"
 #include "GausianBlurShader.h"
+#include "LambartMaterial.h"
 
 #define MESH_PATH "data/MODEL/mesh/"
 #define SKINMESH_PATH "data/MODEL/skinmesh/"
@@ -45,7 +46,6 @@ void AssetsManager::Init(void)
 	
 	CreateAllShader();
 
-	
 }
 
 void AssetsManager::Uninit(void)
